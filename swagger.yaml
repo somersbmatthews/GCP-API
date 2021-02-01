@@ -1,0 +1,576 @@
+swagger: "2.0"
+info:
+  description: "This is test server for GIRC app"
+  version: "2.0.0"
+  title: "GIRC App API"
+  # termsOfService: "http://swagger.io/terms/"
+ # contact:
+   # email: "apiteam@swagger.io"
+#  license:
+  #  name: "Apache 2.0"
+  #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "TODO"
+basePath: "/"
+tags:
+- name: "incident"
+  description: "to create, update, and delete incidents"
+- name: "user"
+  description: "for user registration and authentication"
+- name: verify
+  description: only used for testing and will be removed in production
+#  externalDocs:
+ #   description: "Find out more about our store"
+ #   url: "http://swagger.io"
+schemes:
+- "https"
+paths:
+  /v2/verify:
+    patch:
+      tags:
+        - "verify"
+      summary: used for testing, use this to verify or unverify a user
+      description: "verified field is true to verify, false to unverify"
+      operationId: verify
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: header
+        description: "authorization header contains refresh token"
+        type: string
+        required: true
+      - name: verified
+        in: body
+        description: "verified field is true to verify, false to unverify"
+        required: true
+        schema:
+          $ref: "#/definitions/Verify"
+      responses:
+          200:
+            description: successful operation
+            schema:
+              $ref: "#/definitions/UpdateUserGoodResponse"
+          404:
+            description: userid not found
+            schema: 
+              $ref: "#/definitions/UpdateUserNotFoundResponse"
+  /v2/user:
+    get:
+      tags:
+      - "user"
+      summary: "Get user's information."
+      description: "Get a user's information."
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains refresh token"
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetUserGoodResponse"
+        "404":
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/GetUserBadResponse"
+          
+    patch:
+      tags:
+      - "user"
+      summary: "Update user"
+      description: "Update a user's info"
+      operationId: "updateUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains refresh token"
+        type: string
+        required: true
+      - name: "user"
+        in: "body"
+        description: "Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateUser"
+      responses:
+        "200":
+          description: "successful operation"
+          schema: 
+            $ref: "#/definitions/UpdateUserGoodResponse"
+        "400":
+          description: "Invalid user supplied"
+          schema:
+            $ref: "#/definitions/UpdateUserInvalidResponse"
+        "404":
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/UpdateUserNotFoundResponse"
+  /v2/incidents:
+    post:
+      tags:
+      - "incident"
+      summary: "Create an incident"
+      description: "use this to create an incident for a userId"
+      operationId: "createIncident"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains refresh token"
+        type: string
+        required: true
+      - in: "body"
+        name: "incident"
+        description: "Creates an incident and returns the created incident"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIncident"
+      responses:
+        "200":
+          description: "successful operation, only returns token if not using OAuth"
+          schema:
+            $ref: "#/definitions/CreateIncidentGoodResponse"
+          headers:
+            Authentication:
+              description: "token"
+              type: "string"
+        400:
+          description: "invalid incident data"
+          schema:
+            $ref: "#/definitions/CreateIncidentInvalidIncidentResponse"
+        "404":
+          description: "userId for this incident is not found"
+          schema:
+            $ref: "#/definitions/CreateIncidentUserIdNotFoundResponse"
+    get:
+      tags:
+      - "incident"
+      summary: "Get incidents"
+      description: "Use this to get all incidents created by a user"
+      operationId: "getIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: Authorization
+        description: "authorization header contains refresh token"
+        type: string
+        required: true
+      - in: "body"
+        name: "incident"
+        description: "returns the incidents for a userId"
+        required: true
+        schema:
+          $ref: "#/definitions/GetIncidents"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetIncidentsGoodResponse"
+        404:
+          description: "userid not found"
+          schema:
+            $ref:  "#/definitions/GetIncidentsUserIdNotFoundResponse"
+    patch:
+      tags:
+      - "incident"
+      summary: "Update incident"
+      description: "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string"
+      operationId: "updateIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: token
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/UpdateIncidentGoodResponse"
+        400:
+          description: invalid incident data
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            
+    delete:
+      tags:
+      - "incident"
+      summary: "Delete incident"
+      description: "Use this to delete an incident by incidentId"
+      operationId: "deleteIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains refresh token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+      
+definitions:
+
+  CreateIncident:
+    type: "object"
+    required:
+      - incidentId
+    properties:
+      incidentId:
+        type: "string"
+      dateMicros:
+        type: "number"
+        format: "float"
+        example: 1234.8
+      doctorId:
+        type: "string"
+      hospitalId:
+        type: "string"
+      patientGender:
+        type: "string"
+      patientAgeMonths:
+        type: "integer"
+        example: 12
+      prognosis:
+        type: "string"
+      chokingObject:
+       $ref: "#/definitions/ChokingObject"
+      
+  CreateIncidentGoodResponse:
+    allOf:
+      - $ref: "#/definitions/CreateIncident"
+      - type: "object" 
+        properties:
+          created:
+            type: boolean
+      
+          
+        
+     
+    
+  
+  CreateIncidentInvalidIncidentResponse:
+      allOf:
+      - $ref: "#/definitions/CreateIncident"
+      - type: "object" 
+        properties:
+          created:
+            type: boolean
+            default: false
+  
+  CreateIncidentUserIdNotFoundResponse:
+      allOf:
+      - $ref: "#/definitions/CreateIncident"
+      - type: "object" 
+        properties:
+          created:
+            type: boolean
+            default: false
+  
+  GetIncidents:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+  
+  
+  GetIncidentsUserIdNotFoundResponse:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+        
+  GetIncidentsGoodResponse:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+      incidents:
+        type: array
+        items: 
+          $ref: "#/definitions/CreateIncident"
+          
+        
+  
+  
+  UpdateIncident:
+    allOf:
+    - $ref: "#/definitions/CreateIncident"
+    - type: "object"
+
+  UpdateIncidentGoodResponse:
+    allOf:
+    - $ref: "#/definitions/CreateIncident"
+    - type: "object"
+      properties:
+        updated:
+          type: boolean
+          default: true         
+  
+  
+  UpdateIncidentIncidentIdNotFoundResponse:
+    allOf:
+    - $ref: "#/definitions/CreateIncident"
+    - type: "object"
+      properties:
+        updated:
+          type: boolean
+          default: false
+          
+  
+  
+  
+  DeleteIncident:
+      type: "object"
+      required:
+        - incidentId
+      properties:
+        incidentId:
+          type: string
+          
+  DeleteIncidentIncidentIdNotFoundResponse:
+      type: "object"
+      required:
+        - incidentId
+      properties:
+        incidentId:
+          type: string
+        deleted:
+          type: boolean
+          default: true
+  
+  DeleteIncidentGoodResponse:
+      type: "object"
+      required:
+        - incidentId
+      properties:
+        incidentId:
+          type: string
+        deleted:
+          type: boolean
+          default: true
+  
+  ChokingObject:
+    type: "object"
+    required:
+      - chokingObjectId
+    properties:
+      chokingObjectId:
+        type: "string"
+      name:
+        type: "string"
+      shippable:
+        type: "boolean"
+      brand:
+        type: "string"
+      shape: 
+        type: "string"
+      largestLengthMillimeters:
+        type: "number"
+        format: "double"
+        example: 2.42
+      largestWidthMillimeters:
+        type: "number"
+        format: "double"
+        example: 2.42
+      largestDepthMillimeters:
+        type: "number"
+        format: "double"
+        example: 2.42
+      objectDescription:
+        type: "string"
+      consistency:
+        type: "string"
+      contour:
+        type: "array"
+        items:
+          type: "string"
+          example: 
+            - "inside"
+            - "outside"
+      material:
+        type: "string"
+      objectLocation:
+        type: "string"
+      removalTechnique:
+        type: "string"
+      severity:
+        type: "string"
+      impairment:
+        type: "string"
+      ingestionDescription:
+        type: "string"
+      objectImageUrls:
+        type: "array"
+        items:
+          type: "string"
+          example: 
+            - "url1"
+            - "url2"
+  
+  UpdateUserGoodResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - updated
+      - email
+      - speciality
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        default: false
+      updated:
+        type: "boolean"
+        
+  UpdateUser:
+    type: "object"
+    required:
+      - name
+      - degree
+      - speciality
+    properties:
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+
+  UpdateUserInvalidResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - speciality
+      - updated
+      - email
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        example: false
+      updated:
+        type: "boolean"
+        example: false
+  UpdateUserNotFoundResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - speciality
+      - updated
+      - email
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        default: false
+      updated:
+        type: "boolean"
+        default: false
+  GetUserGoodResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - speciality
+      - email
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        example: false
+  GetUserBadResponse:
+    type: "object"
+  Verify:
+    type: "object"
+    required:
+      - verified
+    properties:
+      verified:
+        type: "boolean"
+        
