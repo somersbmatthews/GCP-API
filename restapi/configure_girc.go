@@ -99,7 +99,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			return middleware.Error(404, updateUserInvalidResponse(params))
+			return middleware.Error(400, updateUserInvalidResponse(params))
 		}
 
 		updatedUser := pg.User{
@@ -112,7 +112,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		payload, ok := pg.UpdateUser(ctx, updatedUser)
 		if !ok {
-			return middleware.Error(404, nil)
+			return middleware.Error(404, updateUserNotFoundResponse(params))
 		}
 		response := user.NewUpdateUserOK()
 		response.WithPayload(payload)
@@ -138,7 +138,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		payload, ok := pg.VerifyUser(ctx, verifiedUser)
 		if !ok {
-			return middleware.Error(404, nil)
+			return middleware.Error(404, verifyUserNotFoundResponse(params))
 		}
 		response := verify.NewVerifyOK()
 		response.WithPayload(payload)
@@ -215,5 +215,22 @@ func updateUserInvalidResponse(params user.UpdateUserParams) models.UpdateUserIn
 		Updated:  &booleanFalse,
 	}
 	return updateUserInvalidResponse
+}
 
+func updateUserNotFoundResponse(params user.UpdateUserParams) models.UpdateUserNotFoundResponse {
+	booleanFalse := false
+	updateUserNotFoundResponse := models.UpdateUserNotFoundResponse{
+		UserID:  params.User.UserID,
+		Updated: &booleanFalse,
+	}
+	return updateUserNotFoundResponse
+}
+
+func verifyUserNotFoundResponse(params verify.VerifyParams) models.UpdateUserNotFoundResponse {
+	booleanFalse := false
+	updateUserNotFoundResponse := models.UpdateUserNotFoundResponse{
+		UserID:  params.Verified.UserID,
+		Updated: &booleanFalse,
+	}
+	return updateUserNotFoundResponse
 }
