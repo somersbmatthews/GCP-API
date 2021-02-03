@@ -28,17 +28,6 @@ func VerifyToken(ctx context.Context, tokenStr string) bool {
 	return true
 }
 
-func GetUserIdFromToken(ctx context.Context, tokenStr string) (string, error) {
-	token, err := jwt.Parse(tokenStr, nil)
-	if token == nil {
-		return "", err
-	}
-	claims, _ := token.Claims.(jwt.MapClaims)
-	// claims are actually a map[string]interface{}
-	userId := claims["UID"].(string)
-	return userId, nil
-}
-
 func newAuth() *auth.Client {
 	ctx := context.Background()
 	app, err := firebase.NewApp(ctx, nil)
