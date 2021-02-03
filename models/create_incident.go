@@ -27,7 +27,8 @@ type CreateIncident struct {
 	DateMicros float32 `json:"dateMicros,omitempty"`
 
 	// doctor Id
-	DoctorID string `json:"doctorId,omitempty"`
+	// Required: true
+	DoctorID *string `json:"doctorId"`
 
 	// hospital Id
 	HospitalID string `json:"hospitalId,omitempty"`
@@ -55,6 +56,10 @@ func (m *CreateIncident) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateDoctorID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateIncidentID(formats); err != nil {
 		res = append(res, err)
 	}
@@ -77,6 +82,15 @@ func (m *CreateIncident) validateChokingObject(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *CreateIncident) validateDoctorID(formats strfmt.Registry) error {
+
+	if err := validate.Required("doctorId", "body", m.DoctorID); err != nil {
+		return err
 	}
 
 	return nil

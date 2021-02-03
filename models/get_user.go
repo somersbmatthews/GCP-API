@@ -14,30 +14,18 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// UpdateUser update user
+// GetUser get user
 //
-// swagger:model UpdateUser
-type UpdateUser struct {
-
-	// degree
-	Degree string `json:"degree,omitempty"`
-
-	// email
-	Email string `json:"email,omitempty"`
-
-	// name
-	Name string `json:"name,omitempty"`
-
-	// speciality
-	Speciality string `json:"speciality,omitempty"`
+// swagger:model GetUser
+type GetUser struct {
 
 	// user Id
 	// Required: true
 	UserID *string `json:"userId"`
 }
 
-// Validate validates this update user
-func (m *UpdateUser) Validate(formats strfmt.Registry) error {
+// Validate validates this get user
+func (m *GetUser) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateUserID(formats); err != nil {
@@ -50,7 +38,7 @@ func (m *UpdateUser) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UpdateUser) validateUserID(formats strfmt.Registry) error {
+func (m *GetUser) validateUserID(formats strfmt.Registry) error {
 
 	if err := validate.Required("userId", "body", m.UserID); err != nil {
 		return err
@@ -59,13 +47,13 @@ func (m *UpdateUser) validateUserID(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this update user based on context it is used
-func (m *UpdateUser) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this get user based on context it is used
+func (m *GetUser) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *UpdateUser) MarshalBinary() ([]byte, error) {
+func (m *GetUser) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -73,8 +61,8 @@ func (m *UpdateUser) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UpdateUser) UnmarshalBinary(b []byte) error {
-	var res UpdateUser
+func (m *GetUser) UnmarshalBinary(b []byte) error {
+	var res GetUser
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

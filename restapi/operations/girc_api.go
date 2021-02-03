@@ -49,6 +49,9 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		IncidentCreateIncidentHandler: incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.CreateIncident has not yet been implemented")
 		}),
+		UserCreateUserHandler: user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
+			return middleware.NotImplemented("operation user.CreateUser has not yet been implemented")
+		}),
 		IncidentDeleteIncidentsHandler: incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
 		}),
@@ -105,6 +108,8 @@ type GircAPI struct {
 
 	// IncidentCreateIncidentHandler sets the operation handler for the create incident operation
 	IncidentCreateIncidentHandler incident.CreateIncidentHandler
+	// UserCreateUserHandler sets the operation handler for the create user operation
+	UserCreateUserHandler user.CreateUserHandler
 	// IncidentDeleteIncidentsHandler sets the operation handler for the delete incidents operation
 	IncidentDeleteIncidentsHandler incident.DeleteIncidentsHandler
 	// IncidentGetIncidentsHandler sets the operation handler for the get incidents operation
@@ -196,6 +201,9 @@ func (o *GircAPI) Validate() error {
 
 	if o.IncidentCreateIncidentHandler == nil {
 		unregistered = append(unregistered, "incident.CreateIncidentHandler")
+	}
+	if o.UserCreateUserHandler == nil {
+		unregistered = append(unregistered, "user.CreateUserHandler")
 	}
 	if o.IncidentDeleteIncidentsHandler == nil {
 		unregistered = append(unregistered, "incident.DeleteIncidentsHandler")
@@ -307,6 +315,10 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/v2/incidents"] = incident.NewCreateIncident(o.context, o.IncidentCreateIncidentHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/v2/user"] = user.NewCreateUser(o.context, o.UserCreateUserHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}

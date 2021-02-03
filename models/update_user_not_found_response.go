@@ -19,64 +19,19 @@ import (
 // swagger:model UpdateUserNotFoundResponse
 type UpdateUserNotFoundResponse struct {
 
-	// degree
-	// Required: true
-	Degree *string `json:"degree"`
-
-	// email
-	// Required: true
-	Email *string `json:"email"`
-
-	// name
-	// Required: true
-	Name *string `json:"name"`
-
-	// speciality
-	// Required: true
-	Speciality *string `json:"speciality"`
-
 	// updated
-	// Required: true
-	Updated bool `json:"updated"`
+	Updated *bool `json:"updated,omitempty"`
 
 	// user Id
 	// Required: true
 	UserID *string `json:"userId"`
-
-	// verified
-	// Required: true
-	Verified bool `json:"verified"`
 }
 
 // Validate validates this update user not found response
 func (m *UpdateUserNotFoundResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateDegree(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateEmail(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateName(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateSpeciality(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateUpdated(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateUserID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateVerified(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -86,63 +41,9 @@ func (m *UpdateUserNotFoundResponse) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UpdateUserNotFoundResponse) validateDegree(formats strfmt.Registry) error {
-
-	if err := validate.Required("degree", "body", m.Degree); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *UpdateUserNotFoundResponse) validateEmail(formats strfmt.Registry) error {
-
-	if err := validate.Required("email", "body", m.Email); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *UpdateUserNotFoundResponse) validateName(formats strfmt.Registry) error {
-
-	if err := validate.Required("name", "body", m.Name); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *UpdateUserNotFoundResponse) validateSpeciality(formats strfmt.Registry) error {
-
-	if err := validate.Required("speciality", "body", m.Speciality); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *UpdateUserNotFoundResponse) validateUpdated(formats strfmt.Registry) error {
-
-	if err := validate.Required("updated", "body", bool(m.Updated)); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (m *UpdateUserNotFoundResponse) validateUserID(formats strfmt.Registry) error {
 
 	if err := validate.Required("userId", "body", m.UserID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *UpdateUserNotFoundResponse) validateVerified(formats strfmt.Registry) error {
-
-	if err := validate.Required("verified", "body", bool(m.Verified)); err != nil {
 		return err
 	}
 

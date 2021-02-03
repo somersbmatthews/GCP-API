@@ -19,6 +19,10 @@ import (
 // swagger:model Verify
 type Verify struct {
 
+	// user Id
+	// Required: true
+	UserID *string `json:"userId"`
+
 	// verified
 	// Required: true
 	Verified *bool `json:"verified"`
@@ -28,6 +32,10 @@ type Verify struct {
 func (m *Verify) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateUserID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateVerified(formats); err != nil {
 		res = append(res, err)
 	}
@@ -35,6 +43,15 @@ func (m *Verify) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Verify) validateUserID(formats strfmt.Registry) error {
+
+	if err := validate.Required("userId", "body", m.UserID); err != nil {
+		return err
+	}
+
 	return nil
 }
 

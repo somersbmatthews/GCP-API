@@ -3,6 +3,7 @@
 package restapi
 
 import (
+	"context"
 	"crypto/tls"
 	"net/http"
 
@@ -10,6 +11,9 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
+	"github.com/somersbmatthews/gircapp2/fba"
+	"github.com/somersbmatthews/gircapp2/models"
+	"github.com/somersbmatthews/gircapp2/pg"
 	"github.com/somersbmatthews/gircapp2/restapi/operations"
 	"github.com/somersbmatthews/gircapp2/restapi/operations/incident"
 	"github.com/somersbmatthews/gircapp2/restapi/operations/user"
@@ -45,31 +49,95 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			return middleware.NotImplemented("operation incident.CreateIncident has not yet been implemented")
 		})
 	}
-	if api.IncidentDeleteIncidentsHandler == nil {
-		api.IncidentDeleteIncidentsHandler = incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
-			return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
-		})
-	}
+
+	api.UserCreateUserHandler = user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
+		ctx := context.Background()
+
+		tokenStr := params.Authorization
+
+		ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return middleware.Error(400, createUserBadResponse(params))
+		}
+		newUser := pg.User{
+			UserId:     *params.User.UserID,
+			Email:      *params.User.Email,
+			Speciality: *params.User.Speciality,
+			Degree:     *params.User.Degree,
+			Name:       *params.User.Name,
+			Verified:   false,
+		}
+		payload := pg.CreateUser(ctx, newUser)
+		response := user.NewCreateUserOK()
+		response.WithPayload(payload)
+		return response
+
+	})
+
+	api.UserGetUserHandler = user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
+		ctx := context.Background()
+
+		tokenStr := params.Authorization
+
+		ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return middleware.Error(400, nil)
+		}
+
+		payload, ok := pg.GetUser(ctx, *params.User.UserID)
+		if !ok {
+			return middleware.Error(404, nil)
+		}
+		response := user.NewGetUserOK()
+		response.WithPayload(payload)
+		return response
+		//return middleware.NotImplemented("operation user.GetUser has not yet been implemented")
+	})
+
+	api.UserUpdateUserHandler = user.UpdateUserHandlerFunc(func(params user.UpdateUserParams) middleware.Responder {
+		ctx := context.Background()
+
+		tokenStr := params.Authorization
+
+		ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return middleware.Error(404, updateUserInvalidResponse(params))
+		}
+
+		updatedUser := pg.User{
+			UserId:     *params.User.UserID,
+			Email:      params.User.Email,
+			Speciality: params.User.Speciality,
+			Degree:     params.User.Degree,
+			Name:       params.User.Name,
+		}
+
+		payload, ok := pg.UpdateUser(ctx, updatedUser)
+
+		response := user.NewUpdateUserOK()
+		response.WithPayload(payload)
+		return response
+
+		//	return middleware.NotImplemented("operation user.UpdateUser has not yet been implemented")
+	})
+
+	api.IncidentDeleteIncidentsHandler = incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
+
+		return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
+	})
+
 	if api.IncidentGetIncidentsHandler == nil {
 		api.IncidentGetIncidentsHandler = incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
 		})
 	}
-	if api.UserGetUserHandler == nil {
-		api.UserGetUserHandler = user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.GetUser has not yet been implemented")
-		})
-	}
+
 	if api.IncidentUpdateIncidentsHandler == nil {
 		api.IncidentUpdateIncidentsHandler = incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.UpdateIncidents has not yet been implemented")
 		})
 	}
-	if api.UserUpdateUserHandler == nil {
-		api.UserUpdateUserHandler = user.UpdateUserHandlerFunc(func(params user.UpdateUserParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.UpdateUser has not yet been implemented")
-		})
-	}
+
 	if api.VerifyVerifyHandler == nil {
 		api.VerifyVerifyHandler = verify.VerifyHandlerFunc(func(params verify.VerifyParams) middleware.Responder {
 			return middleware.NotImplemented("operation verify.Verify has not yet been implemented")
@@ -105,4 +173,29 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // So this is a good place to plug in a panic handling middleware, logging and metrics.
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	return handler
+}
+
+func createUserBadResponse(params user.CreateUserParams) models.CreateUserBadResponse {
+	booleanFalse := false
+	createUserBadResponse := models.CreateUserBadResponse{
+		Created:    &booleanFalse,
+		Email:      params.User.Email,
+		Degree:     params.User.Degree,
+		Speciality: params.User.Speciality,
+		Name:       params.User.Name,
+	}
+	return createUserBadResponse
+}
+
+func updateUserInvalidResponse(params user.UpdateUserParams) models.UpdateUserInvalidResponse {
+	booleanFalse := false
+	updateUserInvalidResponse := models.UpdateUserInvalidResponse{
+		Degree:   &params.User.Degree,
+		Email:    &params.User.Email,
+		Name:     &params.User.Name,
+		Verified: &booleanFalse,
+		Updated:  &booleanFalse,
+	}
+	return updateUserInvalidResponse
+
 }

@@ -36,7 +36,7 @@ type GetIncidentsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*authorization header contains refresh token
+	/*authorization header contains firebase ID token
 	  Required: true
 	  In: header
 	*/

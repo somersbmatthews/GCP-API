@@ -13,7 +13,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 
 	"github.com/somersbmatthews/gircapp2/models"
@@ -36,11 +35,6 @@ type VerifyParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*authorization header contains refresh token
-	  Required: true
-	  In: header
-	*/
-	Authorization string
 	/*verified field is true to verify, false to unverify
 	  Required: true
 	  In: body
@@ -56,10 +50,6 @@ func (o *VerifyParams) BindRequest(r *http.Request, route *middleware.MatchedRou
 	var res []error
 
 	o.HTTPRequest = r
-
-	if err := o.bindAuthorization(r.Header[http.CanonicalHeaderKey("Authorization")], true, route.Formats); err != nil {
-		res = append(res, err)
-	}
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
@@ -91,25 +81,5 @@ func (o *VerifyParams) BindRequest(r *http.Request, route *middleware.MatchedRou
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-// bindAuthorization binds and validates parameter Authorization from header.
-func (o *VerifyParams) bindAuthorization(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	if !hasKey {
-		return errors.Required("Authorization", "header", rawData)
-	}
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: true
-
-	if err := validate.RequiredString("Authorization", "header", raw); err != nil {
-		return err
-	}
-	o.Authorization = raw
-
 	return nil
 }

@@ -14,10 +14,14 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// UpdateUser update user
+// CreateUserGoodResponse create user good response
 //
-// swagger:model UpdateUser
-type UpdateUser struct {
+// swagger:model CreateUserGoodResponse
+type CreateUserGoodResponse struct {
+
+	// created
+	// Required: true
+	Created *bool `json:"created"`
 
 	// degree
 	Degree string `json:"degree,omitempty"`
@@ -32,15 +36,14 @@ type UpdateUser struct {
 	Speciality string `json:"speciality,omitempty"`
 
 	// user Id
-	// Required: true
-	UserID *string `json:"userId"`
+	UserID string `json:"userId,omitempty"`
 }
 
-// Validate validates this update user
-func (m *UpdateUser) Validate(formats strfmt.Registry) error {
+// Validate validates this create user good response
+func (m *CreateUserGoodResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateUserID(formats); err != nil {
+	if err := m.validateCreated(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -50,22 +53,22 @@ func (m *UpdateUser) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UpdateUser) validateUserID(formats strfmt.Registry) error {
+func (m *CreateUserGoodResponse) validateCreated(formats strfmt.Registry) error {
 
-	if err := validate.Required("userId", "body", m.UserID); err != nil {
+	if err := validate.Required("created", "body", m.Created); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// ContextValidate validates this update user based on context it is used
-func (m *UpdateUser) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this create user good response based on context it is used
+func (m *CreateUserGoodResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *UpdateUser) MarshalBinary() ([]byte, error) {
+func (m *CreateUserGoodResponse) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -73,8 +76,8 @@ func (m *UpdateUser) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UpdateUser) UnmarshalBinary(b []byte) error {
-	var res UpdateUser
+func (m *CreateUserGoodResponse) UnmarshalBinary(b []byte) error {
+	var res CreateUserGoodResponse
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

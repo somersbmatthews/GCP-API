@@ -143,7 +143,135 @@ paths:
           description: "User not found"
           schema:
             $ref: "#/definitions/UpdateUserNotFoundResponse"
- 
+  /v2/incidents:
+    post:
+      tags:
+      - "incident"
+      summary: "Create an incident"
+      description: "use this to create an incident for a userId"
+      operationId: "createIncident"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - in: "body"
+        name: "incident"
+        description: "Creates an incident and returns the created incident"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIncident"
+      responses:
+        "200":
+          description: "successful operation, only returns token if not using OAuth"
+          schema:
+            $ref: "#/definitions/CreateIncidentGoodResponse"
+          headers:
+            Authentication:
+              description: "token"
+              type: "string"
+        400:
+          description: "invalid incident data"
+          schema:
+            $ref: "#/definitions/CreateIncidentInvalidIncidentResponse"
+        "404":
+          description: "userId for this incident is not found"
+          schema:
+            $ref: "#/definitions/CreateIncidentUserIdNotFoundResponse"
+    get:
+      tags:
+      - "incident"
+      summary: "Get incidents"
+      description: "Use this to get all incidents created by a user"
+      operationId: "getIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: Authorization
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - in: "body"
+        name: "incident"
+        description: "returns the incidents for a userId"
+        required: true
+        schema:
+          $ref: "#/definitions/GetIncidents"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetIncidentsGoodResponse"
+        404:
+          description: "userid not found"
+          schema:
+            $ref:  "#/definitions/GetIncidentsUserIdNotFoundResponse"
+    patch:
+      tags:
+      - "incident"
+      summary: "Update incident"
+      description: "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string"
+      operationId: "updateIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/UpdateIncidentGoodResponse"
+        400:
+          description: invalid incident data
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            
+    delete:
+      tags:
+      - "incident"
+      summary: "Delete incident"
+      description: "Use this to delete an incident by incidentId"
+      operationId: "deleteIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+      
 definitions:
 
   CreateIncident:

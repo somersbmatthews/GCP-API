@@ -1,10 +1,9 @@
 package pg
 
 import (
-	"errors"
+	"context"
 
 	"github.com/somersbmatthews/gircapp2/models"
-	"golang.org/x/crypto/bcrypt"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -55,59 +54,28 @@ func open() *gorm.DB {
 	return db
 }
 
-func CreateUser(user models.User, token string) models.RegisterUserResponse {
+func CreateUser(ctx context.Context, user User) *models.CreateUserGoodResponse {
 	db := open()
 
-	model := User{
-		UserId:     *user.UserID,
-		Email:      user.Email,
-		Name:       *user.Name,
-		Speciality: *user.Speciality,
-		Degree:     *user.Degree,
-		Verified:   false,
-	}
-
-	if user.Password != "" {
-		if user.Email == "" {
-			err := errors.New("must have both email and password")
-			panic(err)
-		}
-	}
-
-	err := db.Create(model).Error
-	if err != nil {
-		panic(err)
-	}
-}
-
-func CreateAndVerifyUser(user models.User) models.RegisterAndVerifyUserResponse {
-	db := open()
-
-	model := User{
-		UserId:     *user.UserID,
-		Email:      user.Email,
-		Name:       *user.Name,
-		Speciality: *user.Speciality,
-		Degree:     *user.Degree,
-		Verified:   true,
-	}
-
-	if user.Password != "" {
-		if user.Email == "" {
-			err := errors.New("must have both email and password")
-			panic(err)
-		}
-
-	}
-
-	err := db.Create(model).Error
+	err := db.Create(user).Error
 	if err != nil {
 		panic(err)
 	}
 
+	booleanFalse := true
+
+	response := models.CreateUserGoodResponse{
+		UserID:     user.UserId,
+		Email:      user.Email,
+		Speciality: user.Speciality,
+		Degree:     user.Degree,
+		Created:    &booleanFalse,
+		Name:       user.Name,
+	}
+	return &response
 }
 
-func GetUser(userId string) (models.GetUserGoodResponse, bool) {
+func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, bool) {
 	db := open()
 
 	model := User{}
@@ -117,10 +85,12 @@ func GetUser(userId string) (models.GetUserGoodResponse, bool) {
 		return models.GetUserGoodResponse{}, false
 	}
 
+	booleanTrue := true
+
 	return models.GetUserGoodResponse{
 			Name:       &model.Name,
 			Degree:     &model.Degree,
-			Verified:   model.Verified,
+			Verified:   &booleanTrue,
 			Email:      &model.Email,
 			Speciality: &model.Speciality,
 			UserID:     &model.UserId,
@@ -128,16 +98,9 @@ func GetUser(userId string) (models.GetUserGoodResponse, bool) {
 		true
 }
 
-func FindUserWithEmailAndPassword(email string, password string) (models.LoginGoodResponse, string, bool) {
-	db := open()
+func UpdateUser(ctx context.Context, user User) models.UpdateUserGoodResponse {
 
-	model := User{
-
-
-	err := db.Where(
 }
-
-// func UpdateUser
 
 // func CreateIncident
 
@@ -146,28 +109,3 @@ func FindUserWithEmailAndPassword(email string, password string) (models.LoginGo
 // func UpdateIncident
 
 // func DeleteIncident
-
-func hashAndSalt(pwd string) string {
-	bytePwd := []byte(pwd)
-	hash, err := bcrypt.GenerateFromPassword(bytePwd, bcrypt.DefaultCost)
-	if err != nil {
-		panic(err)
-	}
-	hashedPassword := string(hash)
-	ok := comparePasswords(hashedPassword, pwd)
-	if !ok {
-		panic(err)
-	}
-
-}
-
-func comparePasswords(hashedPassword string, plainPassword string) bool {
-	bytePassword := []byte(plainPassword)
-	byteHash := []byte(hashedPassword)
-
-	err := bcrypt.CompareHashAndPassword(byteHash, bytePassword)
-	if err != nil {
-		return false
-	}
-	return true
-}

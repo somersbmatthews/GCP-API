@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// UpdateUserInvalidResponse update user invalid response
+// CreateUser create user
 //
-// swagger:model UpdateUserInvalidResponse
-type UpdateUserInvalidResponse struct {
+// swagger:model CreateUser
+type CreateUser struct {
 
 	// degree
 	// Required: true
@@ -35,19 +35,13 @@ type UpdateUserInvalidResponse struct {
 	// Required: true
 	Speciality *string `json:"speciality"`
 
-	// updated
-	// Example: false
+	// user Id
 	// Required: true
-	Updated *bool `json:"updated"`
-
-	// verified
-	// Example: false
-	// Required: true
-	Verified *bool `json:"verified"`
+	UserID *string `json:"userId"`
 }
 
-// Validate validates this update user invalid response
-func (m *UpdateUserInvalidResponse) Validate(formats strfmt.Registry) error {
+// Validate validates this create user
+func (m *CreateUser) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDegree(formats); err != nil {
@@ -66,11 +60,7 @@ func (m *UpdateUserInvalidResponse) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateUpdated(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateVerified(formats); err != nil {
+	if err := m.validateUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -80,7 +70,7 @@ func (m *UpdateUserInvalidResponse) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UpdateUserInvalidResponse) validateDegree(formats strfmt.Registry) error {
+func (m *CreateUser) validateDegree(formats strfmt.Registry) error {
 
 	if err := validate.Required("degree", "body", m.Degree); err != nil {
 		return err
@@ -89,7 +79,7 @@ func (m *UpdateUserInvalidResponse) validateDegree(formats strfmt.Registry) erro
 	return nil
 }
 
-func (m *UpdateUserInvalidResponse) validateEmail(formats strfmt.Registry) error {
+func (m *CreateUser) validateEmail(formats strfmt.Registry) error {
 
 	if err := validate.Required("email", "body", m.Email); err != nil {
 		return err
@@ -98,7 +88,7 @@ func (m *UpdateUserInvalidResponse) validateEmail(formats strfmt.Registry) error
 	return nil
 }
 
-func (m *UpdateUserInvalidResponse) validateName(formats strfmt.Registry) error {
+func (m *CreateUser) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -107,7 +97,7 @@ func (m *UpdateUserInvalidResponse) validateName(formats strfmt.Registry) error 
 	return nil
 }
 
-func (m *UpdateUserInvalidResponse) validateSpeciality(formats strfmt.Registry) error {
+func (m *CreateUser) validateSpeciality(formats strfmt.Registry) error {
 
 	if err := validate.Required("speciality", "body", m.Speciality); err != nil {
 		return err
@@ -116,31 +106,22 @@ func (m *UpdateUserInvalidResponse) validateSpeciality(formats strfmt.Registry) 
 	return nil
 }
 
-func (m *UpdateUserInvalidResponse) validateUpdated(formats strfmt.Registry) error {
+func (m *CreateUser) validateUserID(formats strfmt.Registry) error {
 
-	if err := validate.Required("updated", "body", m.Updated); err != nil {
+	if err := validate.Required("userId", "body", m.UserID); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *UpdateUserInvalidResponse) validateVerified(formats strfmt.Registry) error {
-
-	if err := validate.Required("verified", "body", m.Verified); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// ContextValidate validates this update user invalid response based on context it is used
-func (m *UpdateUserInvalidResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this create user based on context it is used
+func (m *CreateUser) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *UpdateUserInvalidResponse) MarshalBinary() ([]byte, error) {
+func (m *CreateUser) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -148,8 +129,8 @@ func (m *UpdateUserInvalidResponse) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UpdateUserInvalidResponse) UnmarshalBinary(b []byte) error {
-	var res UpdateUserInvalidResponse
+func (m *CreateUser) UnmarshalBinary(b []byte) error {
+	var res CreateUser
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

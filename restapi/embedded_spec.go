@@ -44,7 +44,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -87,7 +87,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -142,7 +142,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -184,7 +184,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -234,10 +234,19 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "description": "object that contains userId of user you want to get",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetUser"
+            }
           }
         ],
         "responses": {
@@ -255,6 +264,49 @@ func init() {
           }
         }
       },
+      "post": {
+        "description": "register a user with his information",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "register a user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "a user's information",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CreateUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "user not created",
+            "schema": {
+              "$ref": "#/definitions/CreateUserBadResponse"
+            }
+          }
+        }
+      },
       "patch": {
         "description": "Update a user's info",
         "produces": [
@@ -268,7 +320,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -317,13 +369,6 @@ func init() {
         "summary": "used for testing, use this to verify or unverify a user",
         "operationId": "verify",
         "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains refresh token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
           {
             "description": "verified field is true to verify, false to unverify",
             "name": "verified",
@@ -437,7 +482,8 @@ func init() {
     "CreateIncident": {
       "type": "object",
       "required": [
-        "incidentId"
+        "incidentId",
+        "doctorId"
       ],
       "properties": {
         "chokingObject": {
@@ -516,6 +562,87 @@ func init() {
         }
       ]
     },
+    "CreateUser": {
+      "type": "object",
+      "required": [
+        "userId",
+        "name",
+        "email",
+        "degree",
+        "speciality"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "speciality": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserBadResponse": {
+      "type": "object",
+      "required": [
+        "created",
+        "name",
+        "email",
+        "speciality",
+        "degree"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean",
+          "example": false
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "speciality": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "created"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean"
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "speciality": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
     "DeleteIncident": {
       "type": "object",
       "required": [
@@ -586,6 +713,17 @@ func init() {
       }
     },
     "GetIncidentsUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetUser": {
       "type": "object",
       "required": [
         "userId"
@@ -676,18 +814,22 @@ func init() {
     "UpdateUser": {
       "type": "object",
       "required": [
-        "name",
-        "degree",
-        "speciality"
+        "userId"
       ],
       "properties": {
         "degree": {
+          "type": "string"
+        },
+        "email": {
           "type": "string"
         },
         "name": {
           "type": "string"
         },
         "speciality": {
+          "type": "string"
+        },
+        "userId": {
           "type": "string"
         }
       }
@@ -731,7 +873,6 @@ func init() {
     "UpdateUserInvalidResponse": {
       "type": "object",
       "required": [
-        "userId",
         "verified",
         "name",
         "degree",
@@ -755,9 +896,6 @@ func init() {
         "updated": {
           "type": "boolean",
           "example": false
-        },
-        "userId": {
-          "type": "string"
         },
         "verified": {
           "type": "boolean",
@@ -768,46 +906,28 @@ func init() {
     "UpdateUserNotFoundResponse": {
       "type": "object",
       "required": [
-        "userId",
-        "verified",
-        "name",
-        "degree",
-        "speciality",
-        "updated",
-        "email"
+        "userId"
       ],
       "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "speciality": {
-          "type": "string"
-        },
         "updated": {
           "type": "boolean",
           "default": false
         },
         "userId": {
           "type": "string"
-        },
-        "verified": {
-          "type": "boolean",
-          "default": false
         }
       }
     },
     "Verify": {
       "type": "object",
       "required": [
+        "userId",
         "verified"
       ],
       "properties": {
+        "userId": {
+          "type": "string"
+        },
         "verified": {
           "type": "boolean"
         }
@@ -856,7 +976,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -899,7 +1019,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -954,7 +1074,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -996,7 +1116,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1046,10 +1166,19 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "description": "object that contains userId of user you want to get",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetUser"
+            }
           }
         ],
         "responses": {
@@ -1067,6 +1196,49 @@ func init() {
           }
         }
       },
+      "post": {
+        "description": "register a user with his information",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "register a user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "a user's information",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CreateUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "user not created",
+            "schema": {
+              "$ref": "#/definitions/CreateUserBadResponse"
+            }
+          }
+        }
+      },
       "patch": {
         "description": "Update a user's info",
         "produces": [
@@ -1080,7 +1252,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains refresh token",
+            "description": "authorization header contains firebase ID token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1129,13 +1301,6 @@ func init() {
         "summary": "used for testing, use this to verify or unverify a user",
         "operationId": "verify",
         "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains refresh token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
           {
             "description": "verified field is true to verify, false to unverify",
             "name": "verified",
@@ -1249,7 +1414,8 @@ func init() {
     "CreateIncident": {
       "type": "object",
       "required": [
-        "incidentId"
+        "incidentId",
+        "doctorId"
       ],
       "properties": {
         "chokingObject": {
@@ -1328,6 +1494,87 @@ func init() {
         }
       ]
     },
+    "CreateUser": {
+      "type": "object",
+      "required": [
+        "userId",
+        "name",
+        "email",
+        "degree",
+        "speciality"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "speciality": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserBadResponse": {
+      "type": "object",
+      "required": [
+        "created",
+        "name",
+        "email",
+        "speciality",
+        "degree"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean",
+          "example": false
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "speciality": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "created"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean"
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "speciality": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
     "DeleteIncident": {
       "type": "object",
       "required": [
@@ -1398,6 +1645,17 @@ func init() {
       }
     },
     "GetIncidentsUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetUser": {
       "type": "object",
       "required": [
         "userId"
@@ -1491,18 +1749,22 @@ func init() {
     "UpdateUser": {
       "type": "object",
       "required": [
-        "name",
-        "degree",
-        "speciality"
+        "userId"
       ],
       "properties": {
         "degree": {
+          "type": "string"
+        },
+        "email": {
           "type": "string"
         },
         "name": {
           "type": "string"
         },
         "speciality": {
+          "type": "string"
+        },
+        "userId": {
           "type": "string"
         }
       }
@@ -1546,7 +1808,6 @@ func init() {
     "UpdateUserInvalidResponse": {
       "type": "object",
       "required": [
-        "userId",
         "verified",
         "name",
         "degree",
@@ -1570,9 +1831,6 @@ func init() {
         "updated": {
           "type": "boolean",
           "example": false
-        },
-        "userId": {
-          "type": "string"
         },
         "verified": {
           "type": "boolean",
@@ -1583,46 +1841,28 @@ func init() {
     "UpdateUserNotFoundResponse": {
       "type": "object",
       "required": [
-        "userId",
-        "verified",
-        "name",
-        "degree",
-        "speciality",
-        "updated",
-        "email"
+        "userId"
       ],
       "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "speciality": {
-          "type": "string"
-        },
         "updated": {
           "type": "boolean",
           "default": false
         },
         "userId": {
           "type": "string"
-        },
-        "verified": {
-          "type": "boolean",
-          "default": false
         }
       }
     },
     "Verify": {
       "type": "object",
       "required": [
+        "userId",
         "verified"
       ],
       "properties": {
+        "userId": {
+          "type": "string"
+        },
         "verified": {
           "type": "boolean"
         }
