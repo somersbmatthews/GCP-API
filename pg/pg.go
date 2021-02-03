@@ -45,8 +45,8 @@ func init() {
 }
 func open() *gorm.DB {
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "host=localhost user=gorm password=gorm DB.name=postgres port=9920 sslmode=disable", // data source name, refer https://github.com/jackc/pgx
-		PreferSimpleProtocol: true,                                                                                // disables implicit prepared statement usage. By default pgx automatically uses the extended protocol
+		DSN:                  "host=localhost user=gorm password=gorm DB.name=postgres port=5432 sslmode=disable",
+		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -82,12 +82,12 @@ func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, b
 
 	err := db.Where(&User{UserId: userId}).First(model).Error
 	if err == gorm.ErrRecordNotFound {
-		return models.GetUserGoodResponse{}, false
+		return &models.GetUserGoodResponse{}, false
 	}
 
 	booleanTrue := true
 
-	return models.GetUserGoodResponse{
+	return &models.GetUserGoodResponse{
 			Name:       &model.Name,
 			Degree:     &model.Degree,
 			Verified:   &booleanTrue,
@@ -98,14 +98,56 @@ func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, b
 		true
 }
 
-func UpdateUser(ctx context.Context, user User) models.UpdateUserGoodResponse {
+func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
+	db := open()
+
+	model := User{}
+
+	err := db.Model(&model).Where("userId = ?", user.UserId).Select("*").Updates(user).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	}
+
+	err = db.Where("userId = ?", user.UserId).First(&model).Error
+
+	booleanTrue := true
+
+	return &models.UpdateUserGoodResponse{
+			Name:       &model.Name,
+			Email:      &model.Email,
+			Degree:     &model.Degree,
+			Speciality: &model.Speciality,
+			Updated:    &booleanTrue,
+			Verified:   model.Verified,
+		},
+		true
 
 }
 
-// func CreateIncident
+func VerifyUser(ctx context.Context, verify models.Verify) (*models.UpdateUserGoodResponse, bool) {
+	db := open()
 
-// func GetIncidents
+	model := User{}
 
-// func UpdateIncident
+	err := db.Where("userId = ?", verify.UserID).Update("verified", verify.Verified).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	}
 
-// func DeleteIncident
+	err = db.Where("userId = ?", verify.UserID).First(&model).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	}
+
+	booleanTrue := true
+
+	return &models.UpdateUserGoodResponse{
+			Name:       &model.Name,
+			Email:      &model.Email,
+			Degree:     &model.Degree,
+			Speciality: &model.Speciality,
+			Updated:    &booleanTrue,
+			Verified:   model.Verified,
+		},
+		true
+}
