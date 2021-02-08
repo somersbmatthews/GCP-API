@@ -30,6 +30,196 @@ func init() {
   "host": "TODO",
   "basePath": "/",
   "paths": {
+    "/v2/incidents": {
+      "get": {
+        "description": "Use this to get all incidents created by a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Get incidents",
+        "operationId": "getIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "returns the incidents for a userId",
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetIncidents"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsGoodResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "use this to create an incident for a userId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Create an incident",
+        "operationId": "createIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "Creates an incident and returns the created incident",
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation, only returns token if not using OAuth",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentGoodResponse"
+            },
+            "headers": {
+              "Authentication": {
+                "type": "string",
+                "description": "token"
+              }
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
+            }
+          },
+          "404": {
+            "description": "userId for this incident is not found",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this to delete an incident by incidentId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Delete incident",
+        "operationId": "deleteIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Update incident",
+        "operationId": "updateIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      }
+    },
     "/v2/user": {
       "get": {
         "description": "Get a user's information.",
@@ -207,6 +397,205 @@ func init() {
     }
   },
   "definitions": {
+    "CreateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentInvalidIncidentResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
     "CreateUser": {
       "type": "object",
       "required": [
@@ -288,6 +677,86 @@ func init() {
         }
       }
     },
+    "DeleteIncident": {
+      "type": "object",
+      "required": [
+        "incidentId"
+      ],
+      "properties": {
+        "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "incidentId"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "incidentId"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidents": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "incidents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateIncident"
+          }
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
     "GetUser": {
       "type": "object",
       "required": [
@@ -331,6 +800,155 @@ func init() {
         "verified": {
           "type": "boolean",
           "example": false
+        }
+      }
+    },
+    "UpdateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "UpdateIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean",
+          "default": false
         }
       }
     },
@@ -485,6 +1103,196 @@ func init() {
   "host": "TODO",
   "basePath": "/",
   "paths": {
+    "/v2/incidents": {
+      "get": {
+        "description": "Use this to get all incidents created by a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Get incidents",
+        "operationId": "getIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "returns the incidents for a userId",
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetIncidents"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsGoodResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "use this to create an incident for a userId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Create an incident",
+        "operationId": "createIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "Creates an incident and returns the created incident",
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation, only returns token if not using OAuth",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentGoodResponse"
+            },
+            "headers": {
+              "Authentication": {
+                "type": "string",
+                "description": "token"
+              }
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
+            }
+          },
+          "404": {
+            "description": "userId for this incident is not found",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this to delete an incident by incidentId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Delete incident",
+        "operationId": "deleteIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Update incident",
+        "operationId": "updateIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      }
+    },
     "/v2/user": {
       "get": {
         "description": "Get a user's information.",
@@ -662,6 +1470,205 @@ func init() {
     }
   },
   "definitions": {
+    "CreateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentInvalidIncidentResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
     "CreateUser": {
       "type": "object",
       "required": [
@@ -743,6 +1750,86 @@ func init() {
         }
       }
     },
+    "DeleteIncident": {
+      "type": "object",
+      "required": [
+        "incidentId"
+      ],
+      "properties": {
+        "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "incidentId"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "incidentId"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidents": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "incidents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateIncident"
+          }
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
     "GetUser": {
       "type": "object",
       "required": [
@@ -786,6 +1873,155 @@ func init() {
         "verified": {
           "type": "boolean",
           "example": false
+        }
+      }
+    },
+    "UpdateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "UpdateIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean",
+          "default": false
         }
       }
     },

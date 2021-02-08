@@ -15,6 +15,7 @@ import (
 	"github.com/somersbmatthews/gircapp2/models"
 	"github.com/somersbmatthews/gircapp2/pg"
 	"github.com/somersbmatthews/gircapp2/restapi/operations"
+	"github.com/somersbmatthews/gircapp2/restapi/operations/incident"
 	"github.com/somersbmatthews/gircapp2/restapi/operations/user"
 	"github.com/somersbmatthews/gircapp2/restapi/operations/verify"
 )
@@ -43,12 +44,6 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	// if api.IncidentCreateIncidentHandler == nil {
-	// 	api.IncidentCreateIncidentHandler = incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
-	// 		return middleware.NotImplemented("operation incident.CreateIncident has not yet been implemented")
-	// 	})
-	// }
-
 	api.UserCreateUserHandler = user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
 		ctx := context.Background()
 
@@ -66,7 +61,10 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			Name:       *params.User.Name,
 			Verified:   false,
 		}
-		payload := pg.CreateUser(ctx, newUser)
+		payload, ok := pg.CreateUser(ctx, newUser)
+		if !ok {
+			return middleware.Error(400, createUserBadResponse(params))
+		}
 		response := user.NewCreateUserOK()
 		response.WithPayload(payload)
 		return response
@@ -114,11 +112,10 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		if !ok {
 			return middleware.Error(404, updateUserNotFoundResponse(params))
 		}
+
 		response := user.NewUpdateUserOK()
 		response.WithPayload(payload)
 		return response
-
-		//	return middleware.NotImplemented("operation user.UpdateUser has not yet been implemented")
 	})
 
 	api.VerifyVerifyHandler = verify.VerifyHandlerFunc(func(params verify.VerifyParams) middleware.Responder {
@@ -145,22 +142,120 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		return response
 	})
 
-	// api.IncidentDeleteIncidentsHandler = incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
+	api.IncidentCreateIncidentHandler = incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
+		ctx := context.Background()
 
-	// 	return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
+		tokenStr := params.Authorization
+
+		ok := fba.VerifyToken(ctx, tokenStr)
+
+		booleanFalse := false
+		if !ok {
+			return middleware.Error(400, models.CreateIncidentInvalidIncidentResponse{
+				ID:                            params.Incident.ID,
+				DateOfIncident:                params.Incident.DateOfIncident,
+				ApproximatePatientAge:         params.Incident.ApproximatePatientAge,
+				Gender:                        params.Incident.Gender,
+				LongTermPrognosis:             params.Incident.LongTermPrognosis,
+				IncidentDescription:           params.Incident.IncidentDescription,
+				Anterior:                      params.Incident.Anterior,
+				ObjectConsistency:             params.Incident.ObjectConsistency,
+				ObjectBasicShape:              params.Incident.ObjectBasicShape,
+				WhatMaterialIsTheObjectMadeOf: params.Incident.WhatMaterialIsTheObjectMadeOf,
+				TheObjectIs:                   params.Incident.TheObjectIs,
+				LargestLength:                 params.Incident.LargestLength,
+				Created:                       &booleanFalse,
+			})
+		}
+
+		payload := pg.CreateIncident(ctx, *params.Incident)
+		response := incident.NewCreateIncidentOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	// api.IncidentGetIncidentsHandler = incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
+	// 	return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
 	// })
 
-	// if api.IncidentGetIncidentsHandler == nil {
-	// 	api.IncidentGetIncidentsHandler = incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
-	// 		return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
-	// 	})
-	// }
+	api.IncidentUpdateIncidentsHandler = incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
+		ctx := context.Background()
 
-	// if api.IncidentUpdateIncidentsHandler == nil {
-	// 	api.IncidentUpdateIncidentsHandler = incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
-	// 		return middleware.NotImplemented("operation incident.UpdateIncidents has not yet been implemented")
-	// 	})
-	// }
+		tokenStr := params.Authorization
+
+		ok := fba.VerifyToken(ctx, tokenStr)
+
+		booleanFalse := false
+		if !ok {
+			return middleware.Error(400, models.UpdateIncidentIncidentIDNotFoundResponse{
+				ID:                            params.Incident.ID,
+				DateOfIncident:                params.Incident.DateOfIncident,
+				ApproximatePatientAge:         params.Incident.ApproximatePatientAge,
+				Gender:                        params.Incident.Gender,
+				LongTermPrognosis:             params.Incident.LongTermPrognosis,
+				IncidentDescription:           params.Incident.IncidentDescription,
+				Anterior:                      params.Incident.Anterior,
+				ObjectConsistency:             params.Incident.ObjectConsistency,
+				ObjectBasicShape:              params.Incident.ObjectBasicShape,
+				WhatMaterialIsTheObjectMadeOf: params.Incident.WhatMaterialIsTheObjectMadeOf,
+				TheObjectIs:                   params.Incident.TheObjectIs,
+				LargestLength:                 params.Incident.LargestLength,
+				Updated:                       &booleanFalse,
+			})
+		}
+
+		payload, ok := pg.UpdateIncident(ctx, *params.Incident)
+		if !ok {
+			return middleware.Error(404, models.UpdateIncidentIncidentIDNotFoundResponse{
+				ID:                            params.Incident.ID,
+				DateOfIncident:                params.Incident.DateOfIncident,
+				ApproximatePatientAge:         params.Incident.ApproximatePatientAge,
+				Gender:                        params.Incident.Gender,
+				LongTermPrognosis:             params.Incident.LongTermPrognosis,
+				IncidentDescription:           params.Incident.IncidentDescription,
+				Anterior:                      params.Incident.Anterior,
+				ObjectConsistency:             params.Incident.ObjectConsistency,
+				ObjectBasicShape:              params.Incident.ObjectBasicShape,
+				WhatMaterialIsTheObjectMadeOf: params.Incident.WhatMaterialIsTheObjectMadeOf,
+				TheObjectIs:                   params.Incident.TheObjectIs,
+				LargestLength:                 params.Incident.LargestLength,
+				Updated:                       &booleanFalse,
+			})
+		}
+		response := incident.NewUpdateIncidentsOK()
+		response.WithPayload(payload)
+		return response
+
+	})
+
+	api.IncidentDeleteIncidentsHandler = incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
+		ctx := context.Background()
+
+		tokenStr := params.Authorization
+
+		ok := fba.VerifyToken(ctx, tokenStr)
+
+		booleanFalse := false
+
+		if !ok {
+			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
+				Deleted:    &booleanFalse,
+				IncidentID: params.Incident.IncidentID,
+			})
+		}
+
+		payload, ok := pg.DeleteIncident(ctx, *params.Incident.IncidentID)
+		if !ok {
+			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
+				IncidentID: params.Incident.IncidentID,
+				Deleted:    &booleanFalse,
+			})
+		}
+
+		response := incident.NewDeleteIncidentsOK()
+		response.WithPayload(payload)
+		return response
+	})
 
 	api.PreServerShutdown = func() {}
 

@@ -19,6 +19,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
+	"github.com/somersbmatthews/gircapp2/restapi/operations/incident"
 	"github.com/somersbmatthews/gircapp2/restapi/operations/user"
 	"github.com/somersbmatthews/gircapp2/restapi/operations/verify"
 )
@@ -45,11 +46,23 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		IncidentCreateIncidentHandler: incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
+			return middleware.NotImplemented("operation incident.CreateIncident has not yet been implemented")
+		}),
 		UserCreateUserHandler: user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.CreateUser has not yet been implemented")
 		}),
+		IncidentDeleteIncidentsHandler: incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
+			return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
+		}),
+		IncidentGetIncidentsHandler: incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
+			return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
+		}),
 		UserGetUserHandler: user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.GetUser has not yet been implemented")
+		}),
+		IncidentUpdateIncidentsHandler: incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
+			return middleware.NotImplemented("operation incident.UpdateIncidents has not yet been implemented")
 		}),
 		UserUpdateUserHandler: user.UpdateUserHandlerFunc(func(params user.UpdateUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UpdateUser has not yet been implemented")
@@ -93,10 +106,18 @@ type GircAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// IncidentCreateIncidentHandler sets the operation handler for the create incident operation
+	IncidentCreateIncidentHandler incident.CreateIncidentHandler
 	// UserCreateUserHandler sets the operation handler for the create user operation
 	UserCreateUserHandler user.CreateUserHandler
+	// IncidentDeleteIncidentsHandler sets the operation handler for the delete incidents operation
+	IncidentDeleteIncidentsHandler incident.DeleteIncidentsHandler
+	// IncidentGetIncidentsHandler sets the operation handler for the get incidents operation
+	IncidentGetIncidentsHandler incident.GetIncidentsHandler
 	// UserGetUserHandler sets the operation handler for the get user operation
 	UserGetUserHandler user.GetUserHandler
+	// IncidentUpdateIncidentsHandler sets the operation handler for the update incidents operation
+	IncidentUpdateIncidentsHandler incident.UpdateIncidentsHandler
 	// UserUpdateUserHandler sets the operation handler for the update user operation
 	UserUpdateUserHandler user.UpdateUserHandler
 	// VerifyVerifyHandler sets the operation handler for the verify operation
@@ -178,11 +199,23 @@ func (o *GircAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.IncidentCreateIncidentHandler == nil {
+		unregistered = append(unregistered, "incident.CreateIncidentHandler")
+	}
 	if o.UserCreateUserHandler == nil {
 		unregistered = append(unregistered, "user.CreateUserHandler")
 	}
+	if o.IncidentDeleteIncidentsHandler == nil {
+		unregistered = append(unregistered, "incident.DeleteIncidentsHandler")
+	}
+	if o.IncidentGetIncidentsHandler == nil {
+		unregistered = append(unregistered, "incident.GetIncidentsHandler")
+	}
 	if o.UserGetUserHandler == nil {
 		unregistered = append(unregistered, "user.GetUserHandler")
+	}
+	if o.IncidentUpdateIncidentsHandler == nil {
+		unregistered = append(unregistered, "incident.UpdateIncidentsHandler")
 	}
 	if o.UserUpdateUserHandler == nil {
 		unregistered = append(unregistered, "user.UpdateUserHandler")
@@ -281,11 +314,27 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/v2/incidents"] = incident.NewCreateIncident(o.context, o.IncidentCreateIncidentHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/v2/user"] = user.NewCreateUser(o.context, o.UserCreateUserHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/v2/incidents"] = incident.NewDeleteIncidents(o.context, o.IncidentDeleteIncidentsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/v2/incidents"] = incident.NewGetIncidents(o.context, o.IncidentGetIncidentsHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/v2/user"] = user.NewGetUser(o.context, o.UserGetUserHandler)
+	if o.handlers["PATCH"] == nil {
+		o.handlers["PATCH"] = make(map[string]http.Handler)
+	}
+	o.handlers["PATCH"]["/v2/incidents"] = incident.NewUpdateIncidents(o.context, o.IncidentUpdateIncidentsHandler)
 	if o.handlers["PATCH"] == nil {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
