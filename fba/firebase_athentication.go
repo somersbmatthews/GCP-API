@@ -6,16 +6,12 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
 // type FirebaseAuth struct {
 // 	firebase             *firebase.App
 // 	defaultAuthenticator *auth.Client
 // }
-
-type claims = jwt.MapClaims
 
 func VerifyToken(ctx context.Context, tokenStr string) bool {
 	client := newAuth()

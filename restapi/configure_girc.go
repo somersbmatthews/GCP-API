@@ -54,7 +54,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			return middleware.Error(400, createUserBadResponse(params))
 		}
 		newUser := pg.User{
-			UserId:     *params.User.UserID,
+			UserID:     *params.User.UserID,
 			Email:      *params.User.Email,
 			Speciality: *params.User.Speciality,
 			Degree:     *params.User.Degree,
@@ -101,7 +101,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		}
 
 		updatedUser := pg.User{
-			UserId:     *params.User.UserID,
+			UserID:     *params.User.UserID,
 			Email:      params.User.Email,
 			Speciality: params.User.Speciality,
 			Degree:     params.User.Degree,
