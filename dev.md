@@ -12,3 +12,25 @@
 
 - log errors before panic or return err
 
+- explain to keith about data model and changing forms for veterinarian
+
+- test with updating empty fields
+
+- add logger to database
+
+- see if there are any registered users in old project backend
+
+- get settigs json from gcp for gircapp3@gmail.com/gircapp
+
+- make cloud function to send an id token to the package fba tests
+
+
+
+
+
+
+for future version of app
+
+- add email confirmation
+
+- add password reset email 

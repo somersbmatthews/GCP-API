@@ -8,11 +8,6 @@ import (
 	"firebase.google.com/go/auth"
 )
 
-// type FirebaseAuth struct {
-// 	firebase             *firebase.App
-// 	defaultAuthenticator *auth.Client
-// }
-
 func VerifyToken(ctx context.Context, tokenStr string) bool {
 	client := newAuth()
 

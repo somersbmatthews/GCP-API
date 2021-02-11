@@ -20,6 +20,10 @@ import (
 	"github.com/somersbmatthews/gircapp2/restapi/operations/verify"
 )
 
+// type DBControllerc struct {
+// 	DB *gorm.DB
+// }
+
 //go:generate swagger generate server --target ../../gircapp2 --name Girc --spec ../swagger.yaml --principal interface{}
 
 func configureFlags(api *operations.GircAPI) {
@@ -27,6 +31,19 @@ func configureFlags(api *operations.GircAPI) {
 }
 
 func configureAPI(api *operations.GircAPI) http.Handler {
+
+	// db := pg.Open()
+
+	// Admin := admin.New(&admin.AdminConfig{DB: db})
+
+	// // package admin imports "github.com/jinzhu/gorm"
+	// // package pg imports "gorm.io/gorm"
+	// // so I will change import in package pg to the one in package admin
+
+	// mux := http.NewServeMux()
+	// Admin.MountTo("/admin", mux)
+	// http.ListenAndServe(":9000", mux)
+
 	// configure the api here
 	api.ServeError = errors.ServeError
 

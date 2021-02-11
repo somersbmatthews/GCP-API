@@ -361,6 +361,7 @@ func (o *GircAPI) Serve(builder middleware.Builder) http.Handler {
 
 // Init allows you to just initialize the handler cache, you can then recompose the middleware as you see fit
 func (o *GircAPI) Init() {
+
 	if len(o.handlers) == 0 {
 		o.initHandlerCache()
 	}

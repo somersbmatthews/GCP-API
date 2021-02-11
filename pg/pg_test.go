@@ -100,6 +100,14 @@ func TestUpdateUser(t *testing.T) {
 		Speciality: "SpinDoctor",
 	}
 
+	updateWithEmptyFields := User{
+		UserID:     "1234567890",
+		Email:      "DrJimHWBobNewEmail@jimbobclinic.com",
+		Name:       "Jim HW. Bob",
+		Degree:     "",
+		Speciality: "",
+	}
+
 	payload, ok := UpdateUser(ctx, updateWithUser)
 	if !ok {
 		t.Errorf("postgres user update failed for user: %v \n with updatewithuser: %v", user, updateWithUser)
@@ -113,7 +121,7 @@ func TestUpdateUser(t *testing.T) {
 		t.Errorf("postgres update user failed, \n payload %v \n does not match updatewithuser \n %v", render.Render(payload), updateWithUser)
 	}
 
-	db := open()
+	db := Open()
 	// TODO: fix update
 	err := db.First(&User{}, "user_id = ?", badUser.UserID).Omit("user_id").Updates(badUser).Error
 	if err != gorm.ErrRecordNotFound {
@@ -121,12 +129,68 @@ func TestUpdateUser(t *testing.T) {
 		t.Errorf("expected postgres update user to have failed, \n by baduserID: %v", badUser.UserID)
 	}
 
+	_, ok = UpdateUser(ctx, updateWithEmptyFields)
+	if !ok {
+		t.Errorf("postgres user update with empty fields failed for user: %v \n with updateWithEmptyFields: %v", user, updateWithEmptyFields)
+	}
+	// TODO - check to see if empty fields were not updated
+
+	payloadAfterEmptyUpdates, ok := GetUser(ctx, updateWithUser.UserID)
+
+	if *payloadAfterEmptyUpdates.Degree != updateWithUser.Degree ||
+		*payloadAfterEmptyUpdates.Name != updateWithEmptyFields.Name ||
+		*payloadAfterEmptyUpdates.Email != updateWithEmptyFields.Email ||
+		*payloadAfterEmptyUpdates.UserID != updateWithEmptyFields.UserID ||
+		*payloadAfterEmptyUpdates.Speciality != updateWithUser.Speciality {
+		t.Errorf("postgres update user with empty fields failed, \n payload %v \n does not match updateWithEmptyFields \n %v", render.Render(payloadAfterEmptyUpdates), updateWithEmptyFields)
+	}
+
+}
+
+func TestVerifyUser(t *testing.T) {
+	ctx := context.Background()
+
+	userID := "1234567890"
+
+	// TODO finish this
+
+	booleanTrue := true
+
+	verify := models.Verify{
+		UserID:   &userID,
+		Verified: &booleanTrue,
+	}
+
+	_, ok := VerifyUser(ctx, verify)
+	if !ok {
+		t.Errorf("postgres verify user failed, verified with verify: %v", render.Render(verify))
+	}
+
+	payload := User{}
+
+	db := Open()
+
+	err := db.First(&payload, "user_id = ?", verify.UserID).Error
+	if err == gorm.ErrRecordNotFound {
+		t.Errorf("could not find user: %v after verifying", verify.UserID)
+	} else if err != nil {
+		t.Error(err)
+	}
+
+	if payload.Verified == false {
+		t.Errorf("postgres verify user failed, \n payload %v \n does not match updatewithincident \n %v", payload, render.Render(verify))
+	}
+
+	if payload.Verified != true {
+		t.Errorf("postgres verify user failed, \n payload %v \n does not match updatewithincident \n %v", payload, render.Render(verify))
+	}
+
 }
 
 func TestDeleteUser(t *testing.T) {
 	userID := "1234567890"
 
-	db := open()
+	db := Open()
 	// TODO: fix update
 	err := db.First(&User{}, "user_id = ?", userID).Delete(User{}).Error
 	if err == gorm.ErrRecordNotFound {
@@ -208,7 +272,7 @@ func TestUpdateIncident(t *testing.T) {
 		t.Errorf("postgres update incident failed, updated with incident: %v", updateWithIncident)
 	}
 
-	db := open()
+	db := Open()
 
 	payload := Incident{}
 	// TODO: fix update
@@ -274,7 +338,7 @@ func TestUpdateIncident(t *testing.T) {
 func TestDeleteIncident(t *testing.T) {
 	ctx := context.Background()
 
-	db := open()
+	db := Open()
 
 	incidentID := "12345678900"
 	badIncidentID := "12345677900"
