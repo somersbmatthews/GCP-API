@@ -6,7 +6,8 @@ import (
 	"testing"
 
 	"github.com/gdexlab/go-render/render"
-	"github.com/somersbmatthews/gircapp2/models"
+	"github.com/gircapp/api/models"
+
 	"gorm.io/gorm"
 )
 

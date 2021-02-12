@@ -7,7 +7,6 @@ require (
 	cloud.google.com/go/firestore v1.4.0 // indirect
 	cloud.google.com/go/storage v1.13.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.19.1 // indirect
 	github.com/gdexlab/go-render v1.0.1
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/loads v0.20.2
@@ -18,6 +17,7 @@ require (
 	github.com/go-openapi/validate v0.20.2
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jessevdk/go-flags v1.4.0
+	github.com/lib/pq v1.9.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/pkg/errors v0.9.1
 	go.opencensus.io v0.22.6 // indirect

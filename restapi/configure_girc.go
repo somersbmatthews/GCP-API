@@ -17,13 +17,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	// "github.com/somersbmatthews/gircapp2/fba"
-	// "github.com/somersbmatthews/gircapp2/models"
-	// "github.com/somersbmatthews/gircapp2/pg"
-	// "github.com/somersbmatthews/gircapp2/restapi/operations"
-	// "github.com/somersbmatthews/gircapp2/restapi/operations/incident"
-	// "github.com/somersbmatthews/gircapp2/restapi/operations/user"
-	// "github.com/somersbmatthews/gircapp2/restapi/operations/verify"
 )
 
 // type DBControllerc struct {

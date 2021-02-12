@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
-	"github.com/somersbmatthews/gircapp2/models"
+	"github.com/gircapp/api/models"
+
 	"golang.org/x/crypto/bcrypt"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"gorm.io/driver/postgres"
