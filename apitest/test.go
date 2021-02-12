@@ -265,8 +265,18 @@ func setBody(body body) (io.ReadCloser, error) {
 	return datacloser, nil
 }
 
-func getBody(req http.Response) map[string]interface{} {
+func getBody(req http.Response) body {
+	data, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		panic(err)
+	}
+	jsondata := body{}
+	err = json.Unmarshal(data, &jsondata)
+	if err != nil {
+		panic(err)
+	}
 
+	return jsondata
 }
 
 func newHeader() http.Header {
