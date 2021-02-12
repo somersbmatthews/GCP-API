@@ -307,6 +307,48 @@ func init() {
           }
         }
       },
+      "delete": {
+        "description": "deletes a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "unregisters a user, for testing only will be removed in production",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "description": "deletes user with the requested userID",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid userId supplied",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          },
+          "404": {
+            "description": "user with requested userid not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          }
+        }
+      },
       "patch": {
         "description": "Update a user's info",
         "produces": [
@@ -366,7 +408,7 @@ func init() {
         "tags": [
           "verify"
         ],
-        "summary": "used for testing, use this to verify or unverify a user",
+        "summary": "use this to verify or unverify a user, for testing only",
         "operationId": "verify",
         "parameters": [
           {
@@ -714,6 +756,48 @@ func init() {
           "default": true
         },
         "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserBadResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "example": false
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean"
+        },
+        "userId": {
           "type": "string"
         }
       }
@@ -1380,6 +1464,48 @@ func init() {
           }
         }
       },
+      "delete": {
+        "description": "deletes a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "unregisters a user, for testing only will be removed in production",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "description": "deletes user with the requested userID",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid userId supplied",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          },
+          "404": {
+            "description": "user with requested userid not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          }
+        }
+      },
       "patch": {
         "description": "Update a user's info",
         "produces": [
@@ -1439,7 +1565,7 @@ func init() {
         "tags": [
           "verify"
         ],
-        "summary": "used for testing, use this to verify or unverify a user",
+        "summary": "use this to verify or unverify a user, for testing only",
         "operationId": "verify",
         "parameters": [
           {
@@ -1787,6 +1913,48 @@ func init() {
           "default": true
         },
         "incidentId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserBadResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "example": false
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean"
+        },
+        "userId": {
           "type": "string"
         }
       }

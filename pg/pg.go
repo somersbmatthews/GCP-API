@@ -2,11 +2,15 @@ package pg
 
 import (
 	"context"
+	"fmt"
 
+	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"github.com/somersbmatthews/gircapp2/models"
 	"golang.org/x/crypto/bcrypt"
+	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	// 	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
 )
 
 type User struct {
@@ -34,6 +38,8 @@ type Incident struct {
 	TheObjectIs                   string
 }
 
+var postgrespassword string
+
 func init() {
 	db := Open()
 	_ = db.AutoMigrate(&User{}, &Incident{})
@@ -41,11 +47,47 @@ func init() {
 	// 	fmt.Println(err)
 	// 	panic(err)
 	// }
+	// password, err := accessPostgresPassword()
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// postgrespassword = password
+}
+
+func accessPostgresPassword() (string, error) {
+
+	name := "projects/gircapp/secrets/POSTGRESPASSWORD/versions/latest"
+
+	// Create the client.
+	ctx := context.Background()
+	client, err := secretmanager.NewClient(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to create secretmanager client: %v", err)
+	}
+
+	// Build the request.
+	req := &secretmanagerpb.AccessSecretVersionRequest{
+		Name: name,
+	}
+
+	// Call the API.
+	result, err := client.AccessSecretVersion(ctx, req)
+	if err != nil {
+		return "", fmt.Errorf("failed to access secret version: %v", err)
+	}
+
+	return string(result.Payload.Data), nil
 }
 
 func Open() *gorm.DB {
+
+	// DSN := "host=project:region:instance user=postgres dbname=postgres password=password sslmode=disable"
+	DSN := "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable"
+
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN: "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable",
+		// DriverName: "cloudsqlpostgres",
+		DSN: DSN,
 	}), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -248,6 +290,24 @@ func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse,
 		},
 		true
 
+}
+
+func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodResponse, bool) {
+	db := Open()
+	err := db.First(&User{}, "user_id = ?", userID).Delete(User{}).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	booleanTrue := true
+
+	return &models.DeleteUserGoodResponse{
+			Deleted: &booleanTrue,
+			UserID:  &userID,
+		},
+		true
 }
 
 func VerifyUser(ctx context.Context, verify models.Verify) (*models.UpdateUserGoodResponse, bool) {

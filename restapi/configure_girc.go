@@ -135,6 +135,26 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		return response
 	})
 
+	api.UserDeleteUserHandler = user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
+		ctx := context.Background()
+
+		DeleteUserID := params.User.UserID
+
+		booleanFalse := false
+
+		payload, ok := pg.DeleteUser(ctx, *DeleteUserID)
+		if !ok {
+			return middleware.Error(404, models.DeleteUserBadResponse{
+				UserID:  DeleteUserID,
+				Deleted: &booleanFalse,
+			})
+		}
+
+		response := user.NewDeleteUserOK()
+		response.WithPayload(payload)
+		return response
+	})
+
 	api.VerifyVerifyHandler = verify.VerifyHandlerFunc(func(params verify.VerifyParams) middleware.Responder {
 		ctx := context.Background()
 

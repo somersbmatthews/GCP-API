@@ -22,11 +22,11 @@
 
 - get settigs json from gcp for gircapp3@gmail.com/gircapp
 
-- make cloud function to send an id token to the package fba tests
+- TODO: change imports from github.com/somersbmatthews/gircapp2 to github.com/gircapp/gircapp
 
 
 
-
+swagger generate server -f swagger2.yaml -A girc 
 
 
 for future version of app

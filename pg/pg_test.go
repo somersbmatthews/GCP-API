@@ -13,17 +13,6 @@ import (
 func TestCreateUser(t *testing.T) {
 	ctx := context.Background()
 
-	// type User struct {
-	// 	UserID     string
-	// 	Email      string
-	// 	Name       string
-	// 	Speciality string
-	// 	Degree     string
-	// 	Verified   bool
-	// }
-
-	// TODO fix these structs to match above model declaration
-
 	user := User{
 		UserID:     "1234567890",
 		Email:      "DrJimBob@jimbobclinic.com",
@@ -147,6 +136,8 @@ func TestUpdateUser(t *testing.T) {
 
 }
 
+// TODO: write test for delete user
+
 func TestVerifyUser(t *testing.T) {
 	ctx := context.Background()
 
@@ -189,18 +180,15 @@ func TestVerifyUser(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	userID := "1234567890"
-
-	db := Open()
-	// TODO: fix update
-	err := db.First(&User{}, "user_id = ?", userID).Delete(User{}).Error
-	if err == gorm.ErrRecordNotFound {
-		t.Errorf("postgres delete user failed, \n by userID: %v", userID)
+	ctx := context.Background()
+	_, ok := DeleteUser(ctx, userID)
+	if !ok {
+		t.Error("error deleted user")
 	}
-	// TODO: fix update
-	err = db.First(&User{}, "user_id = ?", "a;lsdkjfa;sdlkfj").Delete(User{}).Error
-	if err != gorm.ErrRecordNotFound {
-		fmt.Println(err)
-		t.Errorf("expected postgres delete user to have failed, \n by baduserID: %v", userID)
+
+	_, ok = GetUser(ctx, userID)
+	if ok {
+		t.Error("expected get deleted user to have failed, but it succeeded")
 	}
 }
 

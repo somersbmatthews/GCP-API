@@ -55,6 +55,9 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		IncidentDeleteIncidentsHandler: incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
 		}),
+		UserDeleteUserHandler: user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
+			return middleware.NotImplemented("operation user.DeleteUser has not yet been implemented")
+		}),
 		IncidentGetIncidentsHandler: incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
 		}),
@@ -112,6 +115,8 @@ type GircAPI struct {
 	UserCreateUserHandler user.CreateUserHandler
 	// IncidentDeleteIncidentsHandler sets the operation handler for the delete incidents operation
 	IncidentDeleteIncidentsHandler incident.DeleteIncidentsHandler
+	// UserDeleteUserHandler sets the operation handler for the delete user operation
+	UserDeleteUserHandler user.DeleteUserHandler
 	// IncidentGetIncidentsHandler sets the operation handler for the get incidents operation
 	IncidentGetIncidentsHandler incident.GetIncidentsHandler
 	// UserGetUserHandler sets the operation handler for the get user operation
@@ -207,6 +212,9 @@ func (o *GircAPI) Validate() error {
 	}
 	if o.IncidentDeleteIncidentsHandler == nil {
 		unregistered = append(unregistered, "incident.DeleteIncidentsHandler")
+	}
+	if o.UserDeleteUserHandler == nil {
+		unregistered = append(unregistered, "user.DeleteUserHandler")
 	}
 	if o.IncidentGetIncidentsHandler == nil {
 		unregistered = append(unregistered, "incident.GetIncidentsHandler")
@@ -323,6 +331,10 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/v2/incidents"] = incident.NewDeleteIncidents(o.context, o.IncidentDeleteIncidentsHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/v2/user"] = user.NewDeleteUser(o.context, o.UserDeleteUserHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -361,7 +373,6 @@ func (o *GircAPI) Serve(builder middleware.Builder) http.Handler {
 
 // Init allows you to just initialize the handler cache, you can then recompose the middleware as you see fit
 func (o *GircAPI) Init() {
-
 	if len(o.handlers) == 0 {
 		o.initHandlerCache()
 	}
