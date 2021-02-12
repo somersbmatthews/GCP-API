@@ -15,7 +15,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/validate"
 
-	"github.com/somersbmatthews/gircapp2/models"
+	"github.com/gircapp/api/models"
 )
 
 // NewDeleteUserParams creates a new DeleteUserParams object

@@ -19,9 +19,9 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/somersbmatthews/gircapp2/restapi/operations/incident"
-	"github.com/somersbmatthews/gircapp2/restapi/operations/user"
-	"github.com/somersbmatthews/gircapp2/restapi/operations/verify"
+	"github.com/gircapp/api/restapi/operations/incident"
+	"github.com/gircapp/api/restapi/operations/user"
+	"github.com/gircapp/api/restapi/operations/verify"
 )
 
 // NewGircAPI creates a new Girc instance

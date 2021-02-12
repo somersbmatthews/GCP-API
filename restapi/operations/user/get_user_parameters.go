@@ -16,7 +16,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 
-	"github.com/somersbmatthews/gircapp2/models"
+	"github.com/gircapp/api/models"
 )
 
 // NewGetUserParams creates a new GetUserParams object

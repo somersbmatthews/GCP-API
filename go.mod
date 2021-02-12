@@ -1,4 +1,4 @@
-module github.com/somersbmatthews/gircapp2
+module github.com/gircapp/api
 
 go 1.15
 
@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/firestore v1.4.0 // indirect
 	cloud.google.com/go/storage v1.13.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/GoogleCloudPlatform/cloudsql-proxy v1.19.1
+	github.com/GoogleCloudPlatform/cloudsql-proxy v1.19.1 // indirect
 	github.com/gdexlab/go-render v1.0.1
 	github.com/go-openapi/errors v0.20.0
 	github.com/go-openapi/loads v0.20.2

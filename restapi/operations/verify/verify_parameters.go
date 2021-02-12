@@ -15,7 +15,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/validate"
 
-	"github.com/somersbmatthews/gircapp2/models"
+	"github.com/gircapp/api/models"
 )
 
 // NewVerifyParams creates a new VerifyParams object
