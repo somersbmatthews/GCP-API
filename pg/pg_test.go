@@ -346,7 +346,7 @@ func TestDeleteIncident(t *testing.T) {
 
 	booleanTrue := true
 
-	if *payload.IncidentID != incidentID ||
+	if *payload.ID != incidentID ||
 		*payload.Deleted != booleanTrue {
 		t.Errorf("postgres delete incident failed, deleted with incidentID: %v", incidentID)
 	}
