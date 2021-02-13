@@ -18,8 +18,9 @@ import (
 	"google.golang.org/api/iterator"
 )
 
-// const uid string = "1234567890"
-const uid string = "LdXjx5tA0zXj1FqaghkiAl9rkuL2"
+const uid string = "1234567890"
+
+// const uid string = "LdXjx5tA0zXj1FqaghkiAl9rkuL2"
 const baduid string = "1234567790"
 
 var goodToken string
@@ -131,11 +132,6 @@ func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
 	idTokenStr := idTokenInterface.(string)
 
 	return idTokenStr, nil
-
-	// curl 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=[API_KEY]' \
-	// -H 'Content-Type: application/json' \
-	// --data-binary '{"token":"[CUSTOM_TOKEN]","returnSecureToken":true}'
-
 }
 
 func createFirebaseUser(ctx context.Context, uid string) bool {

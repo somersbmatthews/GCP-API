@@ -11,6 +11,7 @@ import (
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	// TESTING: uncomment cloud-sql proxy postgres
 	// 	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
 )
 
@@ -43,11 +44,15 @@ var postgrespassword string
 
 func init() {
 	db := Open()
+
 	_ = db.AutoMigrate(&User{}, &Incident{})
 	// if err != nil {
 	// 	fmt.Println(err)
 	// 	panic(err)
 	// }
+
+	// TESTING: uncomment access postgres passsword
+
 	// password, err := accessPostgresPassword()
 	// if err != nil {
 	// 	panic(err)
@@ -83,9 +88,9 @@ func accessPostgresPassword() (string, error) {
 
 func Open() *gorm.DB {
 
-	// DSN := "host=project:region:instance user=postgres dbname=postgres password=password sslmode=disable"
+	// DSN := "host=project:region:instance user=postgres dbname=postgres password=%s sslmode=disable"
 	DSN := "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable"
-
+	// TESTING: uncomment driver name
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		// DriverName: "cloudsqlpostgres",
 		DSN: DSN,
@@ -162,6 +167,7 @@ func CreateUser(ctx context.Context, user User) (*models.CreateUserGoodResponse,
 
 // func GetIncidents(ctx context.Context, userId string) (*models.GetIncidentsGoodResponse, bool) {
 // 	db := Open()
+//
 
 // 	err := db.Model(Incident{}).Where("userId = ?", userId).Error
 
@@ -216,6 +222,7 @@ func UpdateIncident(ctx context.Context, incident models.UpdateIncident) (*model
 
 func DeleteIncident(ctx context.Context, incidentID string) (*models.DeleteIncidentGoodResponse, bool) {
 	db := Open()
+
 	err := db.First(&Incident{}, "id = ?", incidentID).Delete(Incident{}).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
@@ -295,6 +302,7 @@ func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse,
 
 func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodResponse, bool) {
 	db := Open()
+
 	err := db.First(&User{}, "user_id = ?", userID).Delete(User{}).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false

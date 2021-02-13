@@ -17,7 +17,27 @@
 - see if there are any registered users in old project backend
 
 
-swagger generate server -f swagger2.yaml -A girc 
+swagger generate server -f swagger4.yaml -A girc 
+
+swagger generate server -t gen -f ./swagger4.yml --exclude-main -A girc
+
+swagger generate server -f ./swagger4.yml --exclude-main -A girc
+
+steps to deploy for testing:
+
+- add signal server shutdown in main.go
+
+- change code in package pg for gcloud sql
+
+- add go-swagger rate limiting code with tollbooth
+
+- make sure main.go is setup for google cloud app engine 
+
+- make a load balancer with NEB for google app engine
+
+- run api tests
+
+- make sure swagger docs are deployed
 
 
 for future version of app
