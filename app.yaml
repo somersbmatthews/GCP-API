@@ -4,5 +4,5 @@ handlers:
 - url: /dashboard/templates
   static_dir: /dashboard/templates
 
-  - url: /.*
+- url: /.*
   script: auto
