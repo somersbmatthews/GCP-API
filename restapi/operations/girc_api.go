@@ -58,9 +58,6 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		UserDeleteUserHandler: user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.DeleteUser has not yet been implemented")
 		}),
-		IncidentGetIncidentsHandler: incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
-			return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
-		}),
 		UserGetUserHandler: user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.GetUser has not yet been implemented")
 		}),
@@ -117,8 +114,6 @@ type GircAPI struct {
 	IncidentDeleteIncidentsHandler incident.DeleteIncidentsHandler
 	// UserDeleteUserHandler sets the operation handler for the delete user operation
 	UserDeleteUserHandler user.DeleteUserHandler
-	// IncidentGetIncidentsHandler sets the operation handler for the get incidents operation
-	IncidentGetIncidentsHandler incident.GetIncidentsHandler
 	// UserGetUserHandler sets the operation handler for the get user operation
 	UserGetUserHandler user.GetUserHandler
 	// IncidentUpdateIncidentsHandler sets the operation handler for the update incidents operation
@@ -215,9 +210,6 @@ func (o *GircAPI) Validate() error {
 	}
 	if o.UserDeleteUserHandler == nil {
 		unregistered = append(unregistered, "user.DeleteUserHandler")
-	}
-	if o.IncidentGetIncidentsHandler == nil {
-		unregistered = append(unregistered, "incident.GetIncidentsHandler")
 	}
 	if o.UserGetUserHandler == nil {
 		unregistered = append(unregistered, "user.GetUserHandler")
@@ -322,7 +314,7 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/v2/incidents"] = incident.NewCreateIncident(o.context, o.IncidentCreateIncidentHandler)
+	o.handlers["POST"]["/v2/incident"] = incident.NewCreateIncident(o.context, o.IncidentCreateIncidentHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -330,7 +322,7 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/v2/incidents"] = incident.NewDeleteIncidents(o.context, o.IncidentDeleteIncidentsHandler)
+	o.handlers["DELETE"]["/v2/incident"] = incident.NewDeleteIncidents(o.context, o.IncidentDeleteIncidentsHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -338,15 +330,11 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/v2/incidents"] = incident.NewGetIncidents(o.context, o.IncidentGetIncidentsHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
 	o.handlers["GET"]["/v2/user"] = user.NewGetUser(o.context, o.UserGetUserHandler)
 	if o.handlers["PATCH"] == nil {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
-	o.handlers["PATCH"]["/v2/incidents"] = incident.NewUpdateIncidents(o.context, o.IncidentUpdateIncidentsHandler)
+	o.handlers["PATCH"]["/v2/incident"] = incident.NewUpdateIncidents(o.context, o.IncidentUpdateIncidentsHandler)
 	if o.handlers["PATCH"] == nil {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}

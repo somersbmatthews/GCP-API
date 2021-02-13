@@ -35,7 +35,7 @@ func (o *DeleteIncidentsURL) SetBasePath(bp string) {
 func (o *DeleteIncidentsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/v2/incidents"
+	var _path = "/v2/incident"
 
 	_basePath := o._basePath
 	if _basePath == "" {

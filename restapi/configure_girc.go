@@ -275,16 +275,16 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		if !ok {
 			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
-				Deleted:    &booleanFalse,
-				IncidentID: params.Incident.IncidentID,
+				Deleted: &booleanFalse,
+				ID:      params.Incident.ID,
 			})
 		}
 
-		payload, ok := pg.DeleteIncident(ctx, *params.Incident.IncidentID)
+		payload, ok := pg.DeleteIncident(ctx, *params.Incident.ID)
 		if !ok {
 			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
-				IncidentID: params.Incident.IncidentID,
-				Deleted:    &booleanFalse,
+				ID:      params.Incident.ID,
+				Deleted: &booleanFalse,
 			})
 		}
 

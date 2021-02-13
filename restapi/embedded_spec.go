@@ -30,50 +30,7 @@ func init() {
   "host": "TODO",
   "basePath": "/",
   "paths": {
-    "/v2/incidents": {
-      "get": {
-        "description": "Use this to get all incidents created by a user",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "incident"
-        ],
-        "summary": "Get incidents",
-        "operationId": "getIncidents",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains firebase ID token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "description": "returns the incidents for a userId",
-            "name": "incident",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/GetIncidents"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/GetIncidentsGoodResponse"
-            }
-          },
-          "404": {
-            "description": "userid not found",
-            "schema": {
-              "$ref": "#/definitions/GetIncidentsUserIdNotFoundResponse"
-            }
-          }
-        }
-      },
+    "/v2/incident": {
       "post": {
         "description": "use this to create an incident for a userId",
         "produces": [
@@ -469,7 +426,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -519,7 +476,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -570,7 +527,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -621,7 +578,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -722,10 +679,10 @@ func init() {
     "DeleteIncident": {
       "type": "object",
       "required": [
-        "incidentId"
+        "ID"
       ],
       "properties": {
-        "incidentId": {
+        "ID": {
           "type": "string"
         }
       }
@@ -733,14 +690,14 @@ func init() {
     "DeleteIncidentGoodResponse": {
       "type": "object",
       "required": [
-        "incidentId"
+        "ID"
       ],
       "properties": {
-        "deleted": {
+        "Deleted": {
           "type": "boolean",
           "default": true
         },
-        "incidentId": {
+        "ID": {
           "type": "string"
         }
       }
@@ -748,14 +705,14 @@ func init() {
     "DeleteIncidentIncidentIdNotFoundResponse": {
       "type": "object",
       "required": [
-        "incidentId"
+        "ID"
       ],
       "properties": {
-        "deleted": {
+        "Deleted": {
           "type": "boolean",
           "default": true
         },
-        "incidentId": {
+        "ID": {
           "type": "string"
         }
       }
@@ -917,7 +874,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -964,7 +921,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -976,12 +933,12 @@ func init() {
         "The_object_is": {
           "type": "string"
         },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
-        },
-        "updated": {
+        "Updated": {
           "type": "boolean",
           "default": true
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
         }
       }
     },
@@ -1015,7 +972,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -1027,12 +984,12 @@ func init() {
         "The_object_is": {
           "type": "string"
         },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
-        },
-        "updated": {
+        "Updated": {
           "type": "boolean",
           "default": false
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
         }
       }
     },
@@ -1187,50 +1144,7 @@ func init() {
   "host": "TODO",
   "basePath": "/",
   "paths": {
-    "/v2/incidents": {
-      "get": {
-        "description": "Use this to get all incidents created by a user",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "incident"
-        ],
-        "summary": "Get incidents",
-        "operationId": "getIncidents",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains firebase ID token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "description": "returns the incidents for a userId",
-            "name": "incident",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/GetIncidents"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/GetIncidentsGoodResponse"
-            }
-          },
-          "404": {
-            "description": "userid not found",
-            "schema": {
-              "$ref": "#/definitions/GetIncidentsUserIdNotFoundResponse"
-            }
-          }
-        }
-      },
+    "/v2/incident": {
       "post": {
         "description": "use this to create an incident for a userId",
         "produces": [
@@ -1626,7 +1540,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -1676,7 +1590,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -1727,7 +1641,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -1778,7 +1692,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -1879,10 +1793,10 @@ func init() {
     "DeleteIncident": {
       "type": "object",
       "required": [
-        "incidentId"
+        "ID"
       ],
       "properties": {
-        "incidentId": {
+        "ID": {
           "type": "string"
         }
       }
@@ -1890,14 +1804,14 @@ func init() {
     "DeleteIncidentGoodResponse": {
       "type": "object",
       "required": [
-        "incidentId"
+        "ID"
       ],
       "properties": {
-        "deleted": {
+        "Deleted": {
           "type": "boolean",
           "default": true
         },
-        "incidentId": {
+        "ID": {
           "type": "string"
         }
       }
@@ -1905,14 +1819,14 @@ func init() {
     "DeleteIncidentIncidentIdNotFoundResponse": {
       "type": "object",
       "required": [
-        "incidentId"
+        "ID"
       ],
       "properties": {
-        "deleted": {
+        "Deleted": {
           "type": "boolean",
           "default": true
         },
-        "incidentId": {
+        "ID": {
           "type": "string"
         }
       }
@@ -2074,7 +1988,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -2121,7 +2035,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -2133,12 +2047,12 @@ func init() {
         "The_object_is": {
           "type": "string"
         },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
-        },
-        "updated": {
+        "Updated": {
           "type": "boolean",
           "default": true
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
         }
       }
     },
@@ -2172,7 +2086,7 @@ func init() {
         "Location_of_object": {
           "type": "string"
         },
-        "Long-term prognosis": {
+        "Long-term_prognosis": {
           "type": "string"
         },
         "Object_Basic_Shape": {
@@ -2184,12 +2098,12 @@ func init() {
         "The_object_is": {
           "type": "string"
         },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
-        },
-        "updated": {
+        "Updated": {
           "type": "boolean",
           "default": false
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
         }
       }
     },

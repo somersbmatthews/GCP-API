@@ -29,7 +29,7 @@ func NewCreateIncident(ctx *middleware.Context, handler CreateIncidentHandler) *
 	return &CreateIncident{Context: ctx, Handler: handler}
 }
 
-/* CreateIncident swagger:route POST /v2/incidents incident createIncident
+/* CreateIncident swagger:route POST /v2/incident incident createIncident
 
 Create an incident
 

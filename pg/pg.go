@@ -11,8 +11,9 @@ import (
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
 	// TESTING: uncomment cloud-sql proxy postgres
-	// 	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
+	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
 )
 
 type User struct {
@@ -53,12 +54,12 @@ func init() {
 
 	// TESTING: uncomment access postgres passsword
 
-	// password, err := accessPostgresPassword()
-	// if err != nil {
-	// 	panic(err)
-	// }
+	password, err := accessPostgresPassword()
+	if err != nil {
+		panic(err)
+	}
 
-	// postgrespassword = password
+	postgrespassword = password
 }
 
 func accessPostgresPassword() (string, error) {
@@ -88,12 +89,12 @@ func accessPostgresPassword() (string, error) {
 
 func Open() *gorm.DB {
 
-	// DSN := "host=project:region:instance user=postgres dbname=postgres password=%s sslmode=disable"
-	DSN := "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable"
+	DSN := fmt.Sprintf("host=/cloudsql/gircapp:us-central1:gircapppostgres user=postgres dbname=postgres password=%s sslmode=disable", postgrespassword)
+	// DSN := "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable"
 	// TESTING: uncomment driver name
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		// DriverName: "cloudsqlpostgres",
-		DSN: DSN,
+		DriverName: "cloudsqlpostgres",
+		DSN:        DSN,
 	}), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -118,7 +119,6 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident) *models
 		WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
 		TheObjectIs:                   incident.TheObjectIs,
 		LargestLength:                 incident.LargestLength,
-		LocationOfObject:              incident.LocationOfObject,
 	}
 
 	err := db.Create(incidentModel).Error
@@ -233,8 +233,8 @@ func DeleteIncident(ctx context.Context, incidentID string) (*models.DeleteIncid
 	booleanTrue := true
 
 	return &models.DeleteIncidentGoodResponse{
-			Deleted:    &booleanTrue,
-			IncidentID: &incidentID,
+			Deleted: &booleanTrue,
+			ID:      &incidentID,
 		},
 		true
 }
@@ -253,12 +253,10 @@ func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, b
 		//	return nil, false
 	}
 
-	booleanTrue := true
-
 	return &models.GetUserGoodResponse{
 			Name:       &model.Name,
 			Degree:     &model.Degree,
-			Verified:   &booleanTrue,
+			Verified:   &model.Verified,
 			Email:      &model.Email,
 			Speciality: &model.Speciality,
 			UserID:     &model.UserID,
@@ -324,7 +322,7 @@ func VerifyUser(ctx context.Context, verify models.Verify) (*models.UpdateUserGo
 
 	model := User{}
 
-	err := db.First(&User{}, "user_id = ?", verify.UserID).Update("verified", verify.Verified).Error
+	err := db.First(&model, "user_id = ?", verify.UserID).Update("verified", verify.Verified).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -334,6 +332,7 @@ func VerifyUser(ctx context.Context, verify models.Verify) (*models.UpdateUserGo
 	booleanTrue := true
 
 	return &models.UpdateUserGoodResponse{
+			UserID:     &model.UserID,
 			Name:       &model.Name,
 			Email:      &model.Email,
 			Degree:     &model.Degree,

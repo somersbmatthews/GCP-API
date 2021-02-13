@@ -45,7 +45,7 @@ type UpdateIncidentGoodResponse struct {
 	LocationOfObject string `json:"Location_of_object,omitempty"`
 
 	// long term prognosis
-	LongTermPrognosis string `json:"Long-term prognosis,omitempty"`
+	LongTermPrognosis string `json:"Long-term_prognosis,omitempty"`
 
 	// object basic shape
 	ObjectBasicShape string `json:"Object_Basic_Shape,omitempty"`
@@ -56,11 +56,11 @@ type UpdateIncidentGoodResponse struct {
 	// the object is
 	TheObjectIs string `json:"The_object_is,omitempty"`
 
+	// updated
+	Updated *bool `json:"Updated,omitempty"`
+
 	// what material is the object made of
 	WhatMaterialIsTheObjectMadeOf string `json:"What_material_is_the_object_made_of,omitempty"`
-
-	// updated
-	Updated *bool `json:"updated,omitempty"`
 }
 
 // Validate validates this update incident good response

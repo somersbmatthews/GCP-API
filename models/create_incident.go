@@ -45,7 +45,7 @@ type CreateIncident struct {
 	LocationOfObject string `json:"Location_of_object,omitempty"`
 
 	// long term prognosis
-	LongTermPrognosis string `json:"Long-term prognosis,omitempty"`
+	LongTermPrognosis string `json:"Long-term_prognosis,omitempty"`
 
 	// object basic shape
 	ObjectBasicShape string `json:"Object_Basic_Shape,omitempty"`

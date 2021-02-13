@@ -20,18 +20,18 @@ import (
 type DeleteIncidentGoodResponse struct {
 
 	// deleted
-	Deleted *bool `json:"deleted,omitempty"`
+	Deleted *bool `json:"Deleted,omitempty"`
 
-	// incident Id
+	// ID
 	// Required: true
-	IncidentID *string `json:"incidentId"`
+	ID *string `json:"ID"`
 }
 
 // Validate validates this delete incident good response
 func (m *DeleteIncidentGoodResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateIncidentID(formats); err != nil {
+	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -41,9 +41,9 @@ func (m *DeleteIncidentGoodResponse) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *DeleteIncidentGoodResponse) validateIncidentID(formats strfmt.Registry) error {
+func (m *DeleteIncidentGoodResponse) validateID(formats strfmt.Registry) error {
 
-	if err := validate.Required("incidentId", "body", m.IncidentID); err != nil {
+	if err := validate.Required("ID", "body", m.ID); err != nil {
 		return err
 	}
 

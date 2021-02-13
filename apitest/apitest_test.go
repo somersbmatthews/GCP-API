@@ -39,7 +39,7 @@ func init() {
 func TestRegisterUser(t *testing.T) {
 
 	reqBody := body{
-		"userId":     "123456789022",
+		"userId":     "1234567890",
 		"name":       "Tee Bow",
 		"email":      "tbow@gmail.com",
 		"speciality": "otolaryngologist",
@@ -61,8 +61,6 @@ func TestRegisterUser(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 
-	t.Log("THIS CODE IS RUNNING")
-
 	client := newClient()
 	resp, err := client.Do(req)
 	if err != nil {
@@ -70,11 +68,9 @@ func TestRegisterUser(t *testing.T) {
 	}
 
 	json := getBody(*resp)
-	t.Log("THIS CODE IS RUNNING TOO")
-	t.Log(render.Render(json))
 
 	want := body{
-		"userId":     "123456789022",
+		"userId":     "1234567890",
 		"name":       "Tee Bow",
 		"email":      "tbow@gmail.com",
 		"speciality": "otolaryngologist",
@@ -87,200 +83,327 @@ func TestRegisterUser(t *testing.T) {
 	}
 }
 
-// func TestGetUser(t *testing.T) {
-// 	reqBody := body{
-// 		"userId": "1234567890",
-// 	}
-// 	req := newRequest()
-// 	reqBodyData, err := setBody(reqBody)
-// 	if err != nil {
-// 		t.Errorf("could not set json into readcloser %v", err)
-// 	}
-// 	req.Body = reqBodyData
-// 	req.Method = "GET"
-// 	req.URL, _ = url.Parse(urlstr)
-// 	client := newClient()
-// 	resp, err := client.Do(&req)
-// 	if err != nil {
-// 		t.Errorf("failed to register user, error: %v", err)
-// 	}
+func TestGetUser(t *testing.T) {
+	reqBody := body{
+		"userId": "1234567890",
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
 
-// 	json := getBody(*resp)
+	url := fmt.Sprintf("%v/user", urlstr)
 
-// 	want := body{
-// 		"userId":     "1234567890",
-// 		"name":       "Tee Bow",
-// 		"email":      "tbow@gmail.com",
-// 		"speciality": "otolaryngologist",
-// 		"degree":     "MD",
-// 		"verified":   false,
-// 	}
+	req, err := http.NewRequest("GET", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
 
-// 	if !reflect.DeepEqual(want, json) {
-// 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
-// 	}
-// }
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to get user, error: %v", err)
+	}
+
+	json := getBody(*resp)
+
+	want := body{
+		"userId":     "1234567890",
+		"name":       "Tee Bow",
+		"email":      "tbow@gmail.com",
+		"speciality": "otolaryngologist",
+		"degree":     "MD",
+		"verified":   false,
+	}
+
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+}
 
 // // TODO: fix update user
-// func TestUpdateUser(t *testing.T) {
+func TestUpdateUser(t *testing.T) {
+	reqBody := body{
+		"userId":     "1234567890",
+		"name":       "Tee H.W. Bow",
+		"email":      "tbowSD@gmail.com",
+		"speciality": "spin doctor",
+		"degree":     "SD",
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
 
-// 	reqBody := body{
-// 		"userId":     "1234567890",
-// 		"name":       "Tee Bow",
-// 		"email":      "tbow@gmail.com",
-// 		"speciality": "otolaryngologist",
-// 		"degree":     "MD",
-// 	}
-// 	req := newRequest()
-// 	reqBodyData, err := setBody(reqBody)
-// 	if err != nil {
-// 		t.Errorf("could not set json into readcloser %v", err)
-// 	}
-// 	req.Body = reqBodyData
-// 	req.Method = "POST"
-// 	req.URL, _ = url.Parse(urlstr)
-// 	client := newClient()
-// 	resp, err := client.Do(&req)
-// 	if err != nil {
-// 		t.Errorf("failed to register user, error: %v", err)
-// 	}
+	url := fmt.Sprintf("%v/user", urlstr)
 
-// 	json := getBody(*resp)
+	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
 
-// 	want := body{
-// 		"userId":     "1234567890",
-// 		"name":       "Tee Bow",
-// 		"email":      "tbow@gmail.com",
-// 		"speciality": "otolaryngologist",
-// 		"degree":     "MD",
-// 		"created":    true,
-// 	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
 
-// 	if !reflect.DeepEqual(want, json) {
-// 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
-// 	}
-// }
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to update user, error: %v", err)
+	}
 
-// func TestDeleteUser(t *testing.T) {
-// 	reqBody := body{
-// 		"userId": "1234567890",
-// 	}
-// 	req := newRequest()
-// 	reqBodyData, err := setBody(reqBody)
-// 	if err != nil {
-// 		t.Errorf("could not set json into readcloser %v", err)
-// 	}
-// 	req.Body = reqBodyData
-// 	req.Method = "DELETE"
-// 	req.URL, _ = url.Parse(urlstr)
-// 	client := newClient()
-// 	_, err = client.Do(&req)
-// 	if err != nil {
-// 		t.Errorf("failed to delete user, error: %v", err)
-// 	}
-// }
+	json := getBody(*resp)
+
+	want := body{
+		"userId":     "1234567890",
+		"name":       "Tee H.W. Bow",
+		"email":      "tbowSD@gmail.com",
+		"speciality": "spin doctor",
+		"degree":     "SD",
+		"verified":   false,
+		"updated":    true,
+	}
+
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+}
+
+func TestVerifyUser(t *testing.T) {
+
+	reqBody := body{
+		"userId":   "1234567890",
+		"verified": true,
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
+
+	url := fmt.Sprintf("%v/verify", urlstr)
+
+	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to verify user, error: %v", err)
+	}
+
+	json := getBody(*resp)
+
+	want := body{
+		"userId":     "1234567890",
+		"name":       "Tee H.W. Bow",
+		"email":      "tbowSD@gmail.com",
+		"speciality": "spin doctor",
+		"degree":     "SD",
+		"verified":   true,
+		"updated":    true,
+	}
+
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+
+}
+
+func TestDeleteUser(t *testing.T) {
+	reqBody := body{
+		"userId": "1234567890",
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
+
+	url := fmt.Sprintf("%v/user", urlstr)
+
+	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to delete user, error: %v", err)
+	}
+	json := getBody(*resp)
+
+	want := body{
+		"userId":  "1234567890",
+		"deleted": true,
+	}
+
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+}
 
 // // TODO: fix verify user
-// func TestVerifyUser(t *testing.T) {
 
-// 	reqBody := body{
-// 		"userId":   "1234567890",
-// 		"verified": true,
-// 	}
-// 	req := newRequest()
-// 	reqBodyData, err := setBody(reqBody)
-// 	if err != nil {
-// 		t.Errorf("could not set json into readcloser %v", err)
-// 	}
-// 	req.Body = reqBodyData
-// 	req.Method = "PATCH"
-// 	req.URL, _ = url.Parse(urlstr)
-// 	client := newClient()
-// 	resp, err := client.Do(&req)
-// 	if err != nil {
-// 		t.Errorf("failed to register user, error: %v", err)
-// 	}
+func TestCreateIncident(t *testing.T) {
+	reqBody := body{
+		"ID":                                  "1234567890",
+		"Date_of_Incident":                    "12/20/2020",
+		"Approximate_Patient_Age":             "34",
+		"Gender":                              "female",
+		"Long-term_prognosis":                 "dead",
+		"Incident_Description":                "choking",
+		"Anterior":                            "someurl@url.com",
+		"Object_Consistency":                  "rough",
+		"Object_Basic_Shape":                  "round",
+		"What_material_is_the_object_made_of": "plastic",
+		"The_object_is":                       "small",
+		"Largest_Length":                      "23",
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
 
-// 	json := getBody(*resp)
+	url := fmt.Sprintf("%v/incident", urlstr)
 
-// 	want := body{
-// 		"userId":     "1234567890",
-// 		"name":       "Tee Bow",
-// 		"email":      "tbow@gmail.com",
-// 		"speciality": "otolaryngologist",
-// 		"degree":     "MD",
-// 		"created":    true,
-// 	}
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
 
-// 	if !reflect.DeepEqual(want, json) {
-// 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
-// 	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to create incident, error: %v", err)
+	}
 
-// }
+	json := getBody(*resp)
 
-// func TestCreateIncident(t *testing.T) {
+	want := body{
+		"ID":                                  "1234567890",
+		"Date_of_Incident":                    "12/20/2020",
+		"Approximate_Patient_Age":             "34",
+		"Gender":                              "female",
+		"Long-term_prognosis":                 "dead",
+		"Incident_Description":                "choking",
+		"Anterior":                            "someurl@url.com",
+		"Object_Consistency":                  "rough",
+		"Object_Basic_Shape":                  "round",
+		"What_material_is_the_object_made_of": "plastic",
+		"The_object_is":                       "small",
+		"Largest_Length":                      "23",
+		"Created":                             true,
+	}
 
-// 	reqBody := body{
-// 		"ID":                            "1234567890",
-// 		"DateOfIncident":                "12/20/2020",
-// 		"ApproximatePatientAge":         "34",
-// 		"Gender":                        "female",
-// 		"LongTermPrognosis":             "dead",
-// 		"IncidentDescription":           "choking",
-// 		"Anterior":                      "someurl@url.com",
-// 		"ObjectConsistency":             "rough",
-// 		"ObjectBasicShape":              "round",
-// 		"WhatMaterialIsTheObjectMadeOf": "plastic",
-// 		"TheObjectIs":                   "small",
-// 		"LargestLength":                 "23",
-// 	}
-// 	req := newRequest()
-// 	reqBodyData, err := setBody(reqBody)
-// 	if err != nil {
-// 		t.Errorf("could not set json into readcloser %v", err)
-// 	}
-// 	req.Body = reqBodyData
-// 	req.Method = "POST"
-// 	req.URL, _ = url.Parse(urlstr)
-// 	client := newClient()
-// 	resp, err := client.Do(&req)
-// 	if err != nil {
-// 		t.Errorf("failed to register user, error: %v", err)
-// 	}
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+}
 
-// 	json := getBody(*resp)
+func TestUpdateIncident(t *testing.T) {
+	reqBody := body{
+		"ID":                                  "1234567890",
+		"Date_of_Incident":                    "12/20/2020",
+		"Approximate_Patient_Age":             "34",
+		"Gender":                              "female",
+		"Long-term_prognosis":                 "dead",
+		"Incident_Description":                "choking",
+		"Anterior":                            "someurl@url.com",
+		"Object_Consistency":                  "rough",
+		"Object_Basic_Shape":                  "round",
+		"What_material_is_the_object_made_of": "plastic",
+		"The_object_is":                       "small",
+		"Largest_Length":                      "23",
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
 
-// 	want := body{
-// 		"ID":                            "1234567890",
-// 		"DateOfIncident":                "12/20/2020",
-// 		"ApproximatePatientAge":         "34",
-// 		"Gender":                        "female",
-// 		"LongTermPrognosis":             "dead",
-// 		"IncidentDescription":           "choking",
-// 		"Anterior":                      "someurl@url.com",
-// 		"ObjectConsistency":             "rough",
-// 		"ObjectBasicShape":              "round",
-// 		"WhatMaterialIsTheObjectMadeOf": "plastic",
-// 		"TheObjectIs":                   "small",
-// 		"LargestLength":                 "23",
-// 		"Created":                       true,
-// 	}
+	url := fmt.Sprintf("%v/incident", urlstr)
 
-// 	if !reflect.DeepEqual(want, json) {
-// 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
-// 	}
-// }
+	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
 
-// func TestGetIncidents(t *testing.T) {// func TestUpdateIncident(t *testing.T) {
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to create incident, error: %v", err)
+	}
 
-// }
-// func TestUpdateIncident(t *testing.T) {
+	json := getBody(*resp)
 
-// }
+	want := body{
+		"ID":                                  "1234567890",
+		"Date_of_Incident":                    "12/20/2020",
+		"Approximate_Patient_Age":             "34",
+		"Gender":                              "female",
+		"Long-term_prognosis":                 "dead",
+		"Incident_Description":                "choking",
+		"Anterior":                            "someurl@url.com",
+		"Object_Consistency":                  "rough",
+		"Object_Basic_Shape":                  "round",
+		"What_material_is_the_object_made_of": "plastic",
+		"The_object_is":                       "small",
+		"Largest_Length":                      "23",
+		"Updated":                             true,
+	}
 
-// func TestDeleteIncident(t *testing.T) {
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+}
 
-// }
+func TestDeleteIncident(t *testing.T) {
+	reqBody := body{
+		"ID": "1234567890",
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
+
+	url := fmt.Sprintf("%v/incident", urlstr)
+
+	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to create incident, error: %v", err)
+	}
+
+	json := getBody(*resp)
+
+	want := body{
+		"ID":      "1234567890",
+		"Deleted": true,
+	}
+
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+}
 
 func setBody(body body) ([]byte, error) {
 

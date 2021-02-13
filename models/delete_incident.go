@@ -19,16 +19,16 @@ import (
 // swagger:model DeleteIncident
 type DeleteIncident struct {
 
-	// incident Id
+	// ID
 	// Required: true
-	IncidentID *string `json:"incidentId"`
+	ID *string `json:"ID"`
 }
 
 // Validate validates this delete incident
 func (m *DeleteIncident) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateIncidentID(formats); err != nil {
+	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -38,9 +38,9 @@ func (m *DeleteIncident) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *DeleteIncident) validateIncidentID(formats strfmt.Registry) error {
+func (m *DeleteIncident) validateID(formats strfmt.Registry) error {
 
-	if err := validate.Required("incidentId", "body", m.IncidentID); err != nil {
+	if err := validate.Required("ID", "body", m.ID); err != nil {
 		return err
 	}
 

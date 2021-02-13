@@ -59,7 +59,7 @@ func TestGetUser(t *testing.T) {
 		*payload.Email != user.Email ||
 		*payload.UserID != user.UserID ||
 		*payload.Speciality != user.Speciality {
-		t.Errorf("postgres create user failed, \n payload %v \n does not match user \n %v", payload, user)
+		t.Errorf("postgres get user failed, \n payload %v \n does not match user \n %v", render.Render(payload), render.Render(user))
 	}
 }
 
