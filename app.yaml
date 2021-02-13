@@ -1,2 +1,8 @@
 runtime: go115
 
+handlers:
+- url: /dashboard/templates
+  static_dir: /dashboard/templates
+
+  - url: /.*
+  script: auto
