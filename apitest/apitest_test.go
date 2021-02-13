@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strconv"
 	"testing"
+	"time"
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
@@ -23,7 +24,9 @@ type body map[string]interface{}
 
 const uid string = "1234567890"
 
-const urlstr string = "http://127.0.0.1:8080/v2"
+// const urlstr string = "http://127.0.0.1:8080/v2"
+
+const urlstr string = "https://34.107.147.241:443/v2"
 
 var token string
 
@@ -31,13 +34,16 @@ func init() {
 	ctx := context.Background()
 	tokenStr, err := getIDTokenForUser(ctx, uid)
 	if err != nil {
+		fmt.Println("THIS IS RUNNING")
+		fmt.Println("THIS IS TOKEN")
+		fmt.Println(err)
 		panic(err)
 	}
 	token = tokenStr
 }
 
 func TestRegisterUser(t *testing.T) {
-
+	fmt.Println("THIS IS RUNNING")
 	reqBody := body{
 		"userId":     "1234567890",
 		"name":       "Tee Bow",
@@ -45,30 +51,30 @@ func TestRegisterUser(t *testing.T) {
 		"speciality": "otolaryngologist",
 		"degree":     "MD",
 	}
-
+	fmt.Println("THIS IS RUNNING 2")
 	data, err := setBody(reqBody)
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
+	fmt.Println("THIS IS RUNNING 3")
 	url := fmt.Sprintf("%v/user", urlstr)
-
+	fmt.Println("THIS IS RUNNING 4")
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
+	fmt.Println("THIS IS RUNNING 5")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
-
+	fmt.Println("THIS IS RUNNING 6")
 	client := newClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Errorf("failed to register user, error: %v", err)
 	}
-
+	fmt.Println("THIS IS RUNNING 7")
 	json := getBody(*resp)
-
+	fmt.Println("THIS IS RUNNING 8")
 	want := body{
 		"userId":     "1234567890",
 		"name":       "Tee Bow",
@@ -441,8 +447,14 @@ func newRequest() http.Request {
 	return http.Request{}
 }
 
-func newClient() http.Client {
-	return http.Client{}
+func newClient() *http.Client {
+	tr := &http.Transport{
+		MaxIdleConns:       10,
+		IdleConnTimeout:    30 * time.Second,
+		DisableCompression: true,
+	}
+	client := &http.Client{Transport: tr}
+	return client
 }
 
 func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
@@ -456,7 +468,7 @@ func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
 
 	apiKey, ok := os.LookupEnv("FIREBASEAPIKEY")
 	if !ok {
-		return "", errors.New("can't find api key env var")
+		return "", errors.Errorf("can't find api key env var, error: %v", err)
 	}
 
 	booleanTrue := true
@@ -468,14 +480,14 @@ func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
 		"returnSecureToken": trueStr,
 	})
 	if err != nil {
-		return "", errors.New("could not marshal json")
+		return "", errors.Errorf("could not marshal json, error: %v", err)
 	}
 
 	urlStr := fmt.Sprintf("https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=%s", apiKey)
 
 	resp, err := http.Post(urlStr, "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
-		return "", errors.New("cannot post request")
+		return "", errors.Errorf("cannot post request, error: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -483,7 +495,7 @@ func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", errors.New("read resp.Body as a slice of byte")
+		return "", errors.Errorf("read resp.Body as a slice of byte, error: %v", err)
 	}
 
 	err = json.Unmarshal(body, &response)
@@ -493,7 +505,7 @@ func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
 
 	idTokenInterface := response["idToken"]
 	if idTokenInterface == nil {
-		return "", errors.New("cannot read idToken field from json")
+		return "", errors.Errorf("cannot read idToken field from json, error: %v", err)
 	}
 
 	idTokenStr := idTokenInterface.(string)

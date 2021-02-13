@@ -89,7 +89,7 @@ func accessPostgresPassword() (string, error) {
 
 func Open() *gorm.DB {
 
-	DSN := fmt.Sprintf("host=/cloudsql/gircapp:us-central1:gircapppostgres user=postgres dbname=postgres password=%s sslmode=disable", postgrespassword)
+	DSN := fmt.Sprintf("host=gircapp:us-central1:gircapppostgres user=postgres dbname=postgres password=%s sslmode=disable", postgrespassword)
 	// DSN := "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable"
 	// TESTING: uncomment driver name
 	db, err := gorm.Open(postgres.New(postgres.Config{
