@@ -26,7 +26,9 @@ const uid string = "1234567890"
 
 // const urlstr string = "http://127.0.0.1:8080/v2"
 
-const urlstr string = "https://34.107.147.241:443/v2"
+// const urlstr string = "https://35.208.147.207/v2"
+
+const urlstr string = "https://www.girc.app/v2"
 
 var token string
 
@@ -34,8 +36,7 @@ func init() {
 	ctx := context.Background()
 	tokenStr, err := getIDTokenForUser(ctx, uid)
 	if err != nil {
-		fmt.Println("THIS IS RUNNING")
-		fmt.Println("THIS IS TOKEN")
+
 		fmt.Println(err)
 		panic(err)
 	}
@@ -43,7 +44,7 @@ func init() {
 }
 
 func TestRegisterUser(t *testing.T) {
-	fmt.Println("THIS IS RUNNING")
+
 	reqBody := body{
 		"userId":     "1234567890",
 		"name":       "Tee Bow",
@@ -51,30 +52,30 @@ func TestRegisterUser(t *testing.T) {
 		"speciality": "otolaryngologist",
 		"degree":     "MD",
 	}
-	fmt.Println("THIS IS RUNNING 2")
+
 	data, err := setBody(reqBody)
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-	fmt.Println("THIS IS RUNNING 3")
+
 	url := fmt.Sprintf("%v/user", urlstr)
-	fmt.Println("THIS IS RUNNING 4")
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-	fmt.Println("THIS IS RUNNING 5")
+
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
-	fmt.Println("THIS IS RUNNING 6")
+
 	client := newClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Errorf("failed to register user, error: %v", err)
 	}
-	fmt.Println("THIS IS RUNNING 7")
+
 	json := getBody(*resp)
-	fmt.Println("THIS IS RUNNING 8")
+
 	want := body{
 		"userId":     "1234567890",
 		"name":       "Tee Bow",

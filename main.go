@@ -9,15 +9,13 @@ import (
 	"github.com/gircapp/api/restapi/operations"
 	"github.com/go-openapi/loads"
 	"github.com/gorilla/mux"
-
-	_ "github.com/GoAdminGroup/go-admin/adapter/gorilla"             // Import the adapter, it must be imported. If it is not imported, you need to define it yourself.
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/postgres" // Import the sql driver
-	_ "github.com/GoAdminGroup/go-admin/modules/service"             // Import the theme
-
-	// _ "github.com/GoAdminGroup/go-admin/plugins/admin"
-
-	_ "github.com/GoAdminGroup/themes/adminlte"
 )
+
+// _ "github.com/GoAdminGroup/go-admin/adapter/gorilla"             // Import the adapter, it must be imported. If it is not imported, you need to define it yourself.
+// _ "github.com/GoAdminGroup/go-admin/modules/db/drivers/postgres" // Import the sql driver
+// _ "github.com/GoAdminGroup/go-admin/modules/service"             // Import the theme
+// _ "github.com/GoAdminGroup/go-admin/plugins/admin"
+// _ "github.com/GoAdminGroup/themes/adminlte"
 
 // type qorHandler func(writer http.ResponseWriter, request *http.Request)
 
@@ -87,16 +85,21 @@ func main() {
 
 	http.Handle("/", r)
 
-	r.Schemes("https")
+	r.Schemes("http")
 
 	srv := &http.Server{
 		Handler: r,
-		Addr:    "127.0.0.1:8080",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 
+	// cert, key, err := accessTLSCertAndKey()
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// log.Fatal(srv.ListenAndServeTLS(cert, key))
 	log.Fatal(srv.ListenAndServe())
 
 	// mux := http.NewServeMux()
@@ -143,4 +146,44 @@ func main() {
 
 // func (f qorHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 // 	f(writer, request)
+// }
+
+// func accessTLSCertAndKey() (string, string, error) {
+
+// 	keyName := "projects/gircapp/secrets/key/versions/latest"
+// 	certName := "projects/gircapp/secrets/key/versions/latest"
+
+// 	// Create the client.
+// 	ctx := context.Background()
+// 	client, err := secretmanager.NewClient(ctx)
+// 	if err != nil {
+// 		return "", "", fmt.Errorf("failed to create secretmanager client: %v", err)
+// 	}
+
+// 	// Build the request.
+// 	req := &secretmanagerpb.AccessSecretVersionRequest{
+// 		Name: keyName,
+// 	}
+
+// 	// Call the API.
+// 	result, err := client.AccessSecretVersion(ctx, req)
+// 	if err != nil {
+// 		return "", "", fmt.Errorf("failed to access secret version: %v", err)
+// 	}
+
+// 	key := string(result.Payload.Data)
+
+// 	req = &secretmanagerpb.AccessSecretVersionRequest{
+// 		Name: certName,
+// 	}
+
+// 	// Call the API.
+// 	result, err = client.AccessSecretVersion(ctx, req)
+// 	if err != nil {
+// 		return "", "", fmt.Errorf("failed to access secret version: %v", err)
+// 	}
+
+// 	cert := string(result.Payload.Data)
+
+// 	return cert, key, nil
 // }

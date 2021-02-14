@@ -1,5 +1,5 @@
 package dashboard
 
-func newDashboard() {
+// func newDashboard() {
 
-}
+// }
