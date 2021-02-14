@@ -27,7 +27,6 @@ func init() {
     "title": "GIRC App API",
     "version": "2.0.0"
   },
-  "host": "TODO",
   "basePath": "/",
   "paths": {
     "/v2/incident": {
@@ -1141,7 +1140,6 @@ func init() {
     "title": "GIRC App API",
     "version": "2.0.0"
   },
-  "host": "TODO",
   "basePath": "/",
   "paths": {
     "/v2/incident": {

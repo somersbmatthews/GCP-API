@@ -17,7 +17,6 @@ require (
 	github.com/go-openapi/validate v0.20.2
 	github.com/gorilla/mux v1.8.0
 	github.com/jessevdk/go-flags v1.4.0
-	github.com/jinzhu/gorm v1.9.16
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/pkg/errors v0.9.1
@@ -27,5 +26,6 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210210192628-66670185b0cd // indirect
 	google.golang.org/api v0.40.0
 	google.golang.org/genproto v0.0.0-20210212180131-e7f2df4ecc2d
+	gorm.io/driver/postgres v1.0.8
 	gorm.io/gorm v1.20.12
 )

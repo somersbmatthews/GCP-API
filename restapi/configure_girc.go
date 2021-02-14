@@ -52,6 +52,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	// Example:
 	// api.Logger = log.Printf
 
+	// swagger generate server -f swagger5.yaml --exclude-main -A girc
+
 	api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line
 	// api.UseRedoc()

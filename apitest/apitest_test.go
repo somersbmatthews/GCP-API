@@ -28,7 +28,7 @@ const uid string = "1234567890"
 
 // const urlstr string = "https://35.208.147.207/v2"
 
-const urlstr string = "https://www.girc.app/v2"
+const urlstr string = "https://girc.app/v2"
 
 var token string
 
@@ -44,7 +44,8 @@ func init() {
 }
 
 func TestRegisterUser(t *testing.T) {
-
+	t.Logf("this is token: %v", token)
+	t.Logf("this is running")
 	reqBody := body{
 		"userId":     "1234567890",
 		"name":       "Tee Bow",
@@ -52,19 +53,19 @@ func TestRegisterUser(t *testing.T) {
 		"speciality": "otolaryngologist",
 		"degree":     "MD",
 	}
-
+	t.Logf("this is running 2")
 	data, err := setBody(reqBody)
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
+	t.Logf("this is running 3")
 	url := fmt.Sprintf("%v/user", urlstr)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
+	t.Logf("this is running 4")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 
@@ -73,7 +74,7 @@ func TestRegisterUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to register user, error: %v", err)
 	}
-
+	t.Logf("this is running 5")
 	json := getBody(*resp)
 
 	want := body{
@@ -84,7 +85,7 @@ func TestRegisterUser(t *testing.T) {
 		"degree":     "MD",
 		"created":    true,
 	}
-
+	t.Logf("this is running 6")
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}

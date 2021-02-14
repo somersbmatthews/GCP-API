@@ -10,14 +10,17 @@ import (
 	"github.com/gdexlab/go-render/render"
 	"github.com/gircapp/api/models"
 
-	"github.com/jinzhu/gorm"
+	// "github.com/jinzhu/gorm"
 
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	// _ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
+
 	// TESTING: uncomment cloud-sql proxy postgres
 	// _ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
 	// _ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -58,9 +61,10 @@ func init() {
 	// var pgdriver postgres.Hstore
 	// fmt.Println(pgdriver)
 
-	db := Open()
+	// db := Open()
 
-	_ = db.AutoMigrate(&User{}, &Incident{})
+	// _ = db.AutoMigrate(&User{}, &Incident{})
+
 	// if err != nil {
 	// 	fmt.Println(err)
 	// 	panic(err)
@@ -100,8 +104,8 @@ func accessPostgresPassword() (string, error) {
 func initSocketConnectionPool() (*sql.DB, error) {
 	// [START cloud_sql_postgres_databasesql_create_socket]
 	var (
-		dbUser                 = "gorm"                                // e.g. 'my-db-user'
-		dbPwd                  = postgrespassword                      // e.g. 'my-db-password'
+		dbUser = "gorm" // e.g. 'my-db-user'
+		// dbPwd                  = postgrespassword                      // e.g. 'my-db-password'
 		instanceConnectionName = "gircapp:us-central1:gircapppostgres" // e.g. 'project:region:instance'
 		dbName                 = "postgres"                            // e.g. 'my-database'
 	)
@@ -112,7 +116,7 @@ func initSocketConnectionPool() (*sql.DB, error) {
 	}
 
 	var dbURI string
-	dbURI = fmt.Sprintf("user=%s password=%s database=%s host=%s/%s", dbUser, dbPwd, dbName, socketDir, instanceConnectionName)
+	dbURI = fmt.Sprintf("user=%s password=%s database=%s host=%s/%s", dbUser, postgrespassword, dbName, socketDir, instanceConnectionName)
 
 	// dbPool is the pool of database connections.
 	dbPool, err := sql.Open("pgx", dbURI)
@@ -180,7 +184,7 @@ func configureConnectionPool(dbPool *sql.DB) {
 func Open() *gorm.DB {
 
 	var (
-		dbUser = "gorm" // e.g. 'my-db-user'
+		dbUser = "postgres" // e.g. 'my-db-user'
 		// dbPwd     = postgrespassword // e.g. 'my-db-password'
 		dbTcpHost = "10.88.176.3" // e.g. '127.0.0.1' ('172.17.0.1' if deployed to GAE Flex)
 		dbPort    = "5432"        // e.g. '5432'
@@ -197,17 +201,17 @@ func Open() *gorm.DB {
 	// 	Conn: sqlDB,
 	// }), &gorm.Config{})
 
-	// dbURI := fmt.Sprintf("host=%s user=%s password=%s port=%s database=%s", dbTcpHost, dbUser, postgrespassword, dbPort, dbName)
+	dbURI := fmt.Sprintf("host=%s user=%s password=%s port=%s database=%s", dbTcpHost, dbUser, postgrespassword, dbPort, dbName)
 	// dbPool, err := sql.Open("pgx", dbURI)
 
 	// DSN := fmt.Sprintf("host=10.88.176.3 user=postgres password=%s dbname=postgres port:5432 sslmode=disable", postgrespassword)
 	// DSN := "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable"
-	// db, err := gorm.Open(postgres.New(postgres.Config{
-	// 	Conn: dbPool,
-	// 	// PreferSimpleProtocol: true, // disables implicit prepared statement usage
-	// }), &gorm.Config{})
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: dbURI,
+		// PreferSimpleProtocol: true, // disables implicit prepared statement usage
+	}), &gorm.Config{})
 
-	db, err := gorm.Open("postgres", "host=%s port=%s user=%s dbname=%s password=%s", dbTcpHost, dbPort, dbUser, dbName, postgrespassword)
+	// db, err := gorm.Open("postgres", "host=%s port=%s user=%s dbname=%s password=%s", dbTcpHost, dbPort, dbUser, dbName, postgrespassword)
 
 	if err != nil {
 		errMsg := fmt.Sprintf("%v,::: %v", err, render.Render(db))
