@@ -1,4 +1,4 @@
-GIRC App Backend API
+# GIRC App Backend API
 
 See swagger docs here:
 
