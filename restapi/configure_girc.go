@@ -19,40 +19,20 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-// type DBControllerc struct {
-// 	DB *gorm.DB
-// }
-
 //go:generate swagger generate server --target ../../gircapp2 --name Girc --spec ../swagger.yaml --principal interface{}
-
+// swagger generate server -f swagger5.yaml --exclude-main -A girc
 func configureFlags(api *operations.GircAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
 func configureAPI(api *operations.GircAPI) http.Handler {
-
-	// db := pg.Open()
-
-	// Admin := admin.New(&admin.AdminConfig{DB: db})
-
-	// // package admin imports "github.com/jinzhu/gorm"
-	// // package pg imports "gorm.io/gorm"
-	// // so I will change import in package pg to the one in package admin
-
-	// mux := http.NewServeMux()
-	// Admin.MountTo("/admin", mux)
-	// http.ListenAndServe(":9000", mux)
-
 	// configure the api here
 	api.ServeError = errors.ServeError
 
 	// Set your custom logger if needed. Default one is log.Printf
-	// Expected interface func(string, ...interface{})
-	//
+
 	// Example:
 	// api.Logger = log.Printf
-
-	// swagger generate server -f swagger5.yaml --exclude-main -A girc
 
 	api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line
@@ -69,7 +49,17 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			return middleware.Error(400, createUserBadResponse(params))
+			response := user.NewCreateUserBadRequest()
+			booleanFalse := false
+			createUserBadResponse := models.CreateUserBadResponse{
+				Created:    &booleanFalse,
+				Email:      params.User.Email,
+				Degree:     params.User.Degree,
+				Speciality: params.User.Speciality,
+				Name:       params.User.Name,
+			}
+			response.WithPayload(&createUserBadResponse)
+			return response
 		}
 		newUser := pg.User{
 			UserID:     *params.User.UserID,
@@ -81,27 +71,43 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		}
 		payload, ok := pg.CreateUser(ctx, newUser)
 		if !ok {
-			return middleware.Error(400, createUserBadResponse(params))
+			response := user.NewCreateUserBadRequest()
+			booleanFalse := false
+			createUserBadResponse := models.CreateUserBadResponse{
+				Created:    &booleanFalse,
+				Email:      params.User.Email,
+				Degree:     params.User.Degree,
+				Speciality: params.User.Speciality,
+				Name:       params.User.Name,
+			}
+			response.WithPayload(&createUserBadResponse)
+			return response
 		}
 		response := user.NewCreateUserOK()
 		response.WithPayload(payload)
 		return response
-
 	})
 
 	api.UserGetUserHandler = user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
 		ctx := context.Background()
-
 		tokenStr := params.Authorization
-
 		ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			return middleware.Error(400, nil)
+			response := user.NewGetUserBadRequest()
+			getUserBadResponse := models.GetUserBadResponse{
+				UserID: &params.UserID,
+			}
+			response.WithPayload(&getUserBadResponse)
+			return response
 		}
-
-		payload, ok := pg.GetUser(ctx, *params.User.UserID)
+		payload, ok := pg.GetUser(ctx, params.UserID)
 		if !ok {
-			return middleware.Error(404, nil)
+			response := user.NewGetUserNotFound()
+			getUserBadResponse := models.GetUserBadResponse{
+				UserID: &params.UserID,
+			}
+			response.WithPayload(&getUserBadResponse)
+			return response
 		}
 		response := user.NewGetUserOK()
 		response.WithPayload(payload)
@@ -110,14 +116,11 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.UserUpdateUserHandler = user.UpdateUserHandlerFunc(func(params user.UpdateUserParams) middleware.Responder {
 		ctx := context.Background()
-
 		tokenStr := params.Authorization
-
 		ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
 			return middleware.Error(400, updateUserInvalidResponse(params))
 		}
-
 		updatedUser := pg.User{
 			UserID:     *params.User.UserID,
 			Email:      params.User.Email,
@@ -125,12 +128,10 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			Degree:     params.User.Degree,
 			Name:       params.User.Name,
 		}
-
 		payload, ok := pg.UpdateUser(ctx, updatedUser)
 		if !ok {
 			return middleware.Error(404, updateUserNotFoundResponse(params))
 		}
-
 		response := user.NewUpdateUserOK()
 		response.WithPayload(payload)
 		return response
@@ -138,11 +139,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.UserDeleteUserHandler = user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 		ctx := context.Background()
-
 		DeleteUserID := params.User.UserID
-
 		booleanFalse := false
-
 		payload, ok := pg.DeleteUser(ctx, *DeleteUserID)
 		if !ok {
 			return middleware.Error(404, models.DeleteUserBadResponse{
@@ -150,7 +148,6 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 				Deleted: &booleanFalse,
 			})
 		}
-
 		response := user.NewDeleteUserOK()
 		response.WithPayload(payload)
 		return response
@@ -158,19 +155,10 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.VerifyVerifyHandler = verify.VerifyHandlerFunc(func(params verify.VerifyParams) middleware.Responder {
 		ctx := context.Background()
-
-		// tokenStr := params.Authorization
-
-		// ok := fba.VerifyToken(ctx, tokenStr)
-		// if !ok {
-		// 	return middleware.Error(404, updateUserInvalidResponse(params))
-		// }
-
 		verifiedUser := models.Verify{
 			UserID:   params.Verified.UserID,
 			Verified: params.Verified.Verified,
 		}
-
 		payload, ok := pg.VerifyUser(ctx, verifiedUser)
 		if !ok {
 			return middleware.Error(404, verifyUserNotFoundResponse(params))
@@ -182,11 +170,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.IncidentCreateIncidentHandler = incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
 		ctx := context.Background()
-
 		tokenStr := params.Authorization
-
 		ok := fba.VerifyToken(ctx, tokenStr)
-
 		booleanFalse := false
 		if !ok {
 			return middleware.Error(400, models.CreateIncidentInvalidIncidentResponse{
@@ -205,7 +190,6 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 				Created:                       &booleanFalse,
 			})
 		}
-
 		payload := pg.CreateIncident(ctx, *params.Incident)
 		response := incident.NewCreateIncidentOK()
 		response.WithPayload(payload)
@@ -218,11 +202,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.IncidentUpdateIncidentsHandler = incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
 		ctx := context.Background()
-
 		tokenStr := params.Authorization
-
 		ok := fba.VerifyToken(ctx, tokenStr)
-
 		booleanFalse := false
 		if !ok {
 			return middleware.Error(400, models.UpdateIncidentIncidentIDNotFoundResponse{
@@ -241,7 +222,6 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 				Updated:                       &booleanFalse,
 			})
 		}
-
 		payload, ok := pg.UpdateIncident(ctx, *params.Incident)
 		if !ok {
 			return middleware.Error(404, models.UpdateIncidentIncidentIDNotFoundResponse{
@@ -263,25 +243,19 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		response := incident.NewUpdateIncidentsOK()
 		response.WithPayload(payload)
 		return response
-
 	})
 
 	api.IncidentDeleteIncidentsHandler = incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
 		ctx := context.Background()
-
 		tokenStr := params.Authorization
-
 		ok := fba.VerifyToken(ctx, tokenStr)
-
 		booleanFalse := false
-
 		if !ok {
 			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
 				Deleted: &booleanFalse,
 				ID:      params.Incident.ID,
 			})
 		}
-
 		payload, ok := pg.DeleteIncident(ctx, *params.Incident.ID)
 		if !ok {
 			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
@@ -289,16 +263,12 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 				Deleted: &booleanFalse,
 			})
 		}
-
 		response := incident.NewDeleteIncidentsOK()
 		response.WithPayload(payload)
 		return response
 	})
-
 	api.PreServerShutdown = func() {}
-
 	api.ServerShutdown = func() {}
-
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }
 

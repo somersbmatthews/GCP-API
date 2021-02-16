@@ -36,16 +36,11 @@ func init() {
 	ctx := context.Background()
 	tokenStr, err := getIDTokenForUser(ctx, uid)
 	if err != nil {
-
-		fmt.Println(err)
 		panic(err)
 	}
 	token = tokenStr
 }
-
 func TestRegisterUser(t *testing.T) {
-	t.Logf("this is token: %v", token)
-	t.Logf("this is running")
 	reqBody := body{
 		"userId":     "1234567890",
 		"name":       "Tee Bow",
@@ -53,19 +48,16 @@ func TestRegisterUser(t *testing.T) {
 		"speciality": "otolaryngologist",
 		"degree":     "MD",
 	}
-	t.Logf("this is running 2")
 	data, err := setBody(reqBody)
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-	t.Logf("this is running 3")
 	url := fmt.Sprintf("%v/user", urlstr)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-	t.Logf("this is running 4")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 
@@ -74,7 +66,6 @@ func TestRegisterUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to register user, error: %v", err)
 	}
-	t.Logf("this is running 5")
 	json := getBody(*resp)
 
 	want := body{
@@ -92,32 +83,20 @@ func TestRegisterUser(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-	reqBody := body{
-		"userId": "1234567890",
-	}
-	data, err := setBody(reqBody)
-	if err != nil {
-		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
-	}
-
 	url := fmt.Sprintf("%v/user", urlstr)
-
-	req, err := http.NewRequest("GET", url, bytes.NewBuffer(data))
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
-
+	req.Header.Set("userId", "1234567890")
 	client := newClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Errorf("failed to get user, error: %v", err)
 	}
-
 	json := getBody(*resp)
-
 	want := body{
 		"userId":     "1234567890",
 		"name":       "Tee Bow",
@@ -126,13 +105,10 @@ func TestGetUser(t *testing.T) {
 		"degree":     "MD",
 		"verified":   false,
 	}
-
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
 }
-
-// // TODO: fix update user
 func TestUpdateUser(t *testing.T) {
 	reqBody := body{
 		"userId":     "1234567890",
@@ -145,25 +121,19 @@ func TestUpdateUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
 	url := fmt.Sprintf("%v/user", urlstr)
-
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
-
 	client := newClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Errorf("failed to update user, error: %v", err)
 	}
-
 	json := getBody(*resp)
-
 	want := body{
 		"userId":     "1234567890",
 		"name":       "Tee H.W. Bow",
@@ -173,14 +143,12 @@ func TestUpdateUser(t *testing.T) {
 		"verified":   false,
 		"updated":    true,
 	}
-
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
 }
 
 func TestVerifyUser(t *testing.T) {
-
 	reqBody := body{
 		"userId":   "1234567890",
 		"verified": true,
@@ -189,14 +157,11 @@ func TestVerifyUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
 	url := fmt.Sprintf("%v/verify", urlstr)
-
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 	client := newClient()
@@ -204,9 +169,7 @@ func TestVerifyUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to verify user, error: %v", err)
 	}
-
 	json := getBody(*resp)
-
 	want := body{
 		"userId":     "1234567890",
 		"name":       "Tee H.W. Bow",
@@ -216,11 +179,9 @@ func TestVerifyUser(t *testing.T) {
 		"verified":   true,
 		"updated":    true,
 	}
-
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
-
 }
 
 func TestDeleteUser(t *testing.T) {
@@ -231,29 +192,23 @@ func TestDeleteUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
 	url := fmt.Sprintf("%v/user", urlstr)
-
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
-
 	client := newClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Errorf("failed to delete user, error: %v", err)
 	}
 	json := getBody(*resp)
-
 	want := body{
 		"userId":  "1234567890",
 		"deleted": true,
 	}
-
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
@@ -280,14 +235,11 @@ func TestCreateIncident(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
 	url := fmt.Sprintf("%v/incident", urlstr)
-
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 	client := newClient()
@@ -295,9 +247,7 @@ func TestCreateIncident(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to create incident, error: %v", err)
 	}
-
 	json := getBody(*resp)
-
 	want := body{
 		"ID":                                  "1234567890",
 		"Date_of_Incident":                    "12/20/2020",
@@ -313,7 +263,6 @@ func TestCreateIncident(t *testing.T) {
 		"Largest_Length":                      "23",
 		"Created":                             true,
 	}
-
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
@@ -338,14 +287,11 @@ func TestUpdateIncident(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
 	url := fmt.Sprintf("%v/incident", urlstr)
-
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 	client := newClient()
@@ -353,9 +299,7 @@ func TestUpdateIncident(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to create incident, error: %v", err)
 	}
-
 	json := getBody(*resp)
-
 	want := body{
 		"ID":                                  "1234567890",
 		"Date_of_Incident":                    "12/20/2020",
@@ -371,7 +315,6 @@ func TestUpdateIncident(t *testing.T) {
 		"Largest_Length":                      "23",
 		"Updated":                             true,
 	}
-
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
@@ -385,14 +328,11 @@ func TestDeleteIncident(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
-
 	url := fmt.Sprintf("%v/incident", urlstr)
-
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 	client := newClient()
@@ -400,14 +340,11 @@ func TestDeleteIncident(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to create incident, error: %v", err)
 	}
-
 	json := getBody(*resp)
-
 	want := body{
 		"ID":      "1234567890",
 		"Deleted": true,
 	}
-
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
@@ -420,24 +357,20 @@ func setBody(body body) ([]byte, error) {
 		return nil, err
 	}
 
-	// datareader := bytes.NewBuffer(data)
-
-	// datacloser := ioutil.NopCloser(datareader)
-
 	return data, nil
 }
 
-func getBody(req http.Response) body {
-	data, err := ioutil.ReadAll(req.Body)
+func getBody(res http.Response) body {
+	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		panic(err)
 	}
 	jsondata := body{}
 	err = json.Unmarshal(data, &jsondata)
 	if err != nil {
-		panic(err)
+		errMsg := errors.Errorf("json not unmarshalling, wtf, error: %v", err)
+		panic(errMsg)
 	}
-
 	return jsondata
 }
 
@@ -460,23 +393,17 @@ func newClient() *http.Client {
 }
 
 func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
-
 	client := newAuth()
-
 	customToken, err := client.CustomToken(ctx, uid)
 	if err != nil {
 		log.Fatalf("error minting custom token: %v\n", err)
 	}
-
 	apiKey, ok := os.LookupEnv("FIREBASEAPIKEY")
 	if !ok {
 		return "", errors.Errorf("can't find api key env var, error: %v", err)
 	}
-
 	booleanTrue := true
-
 	trueStr := strconv.FormatBool(booleanTrue)
-
 	reqBody, err := json.Marshal(map[string]string{
 		"token":             customToken,
 		"returnSecureToken": trueStr,
@@ -484,34 +411,26 @@ func getIDTokenForUser(ctx context.Context, uid string) (string, error) {
 	if err != nil {
 		return "", errors.Errorf("could not marshal json, error: %v", err)
 	}
-
 	urlStr := fmt.Sprintf("https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=%s", apiKey)
-
 	resp, err := http.Post(urlStr, "application/json", bytes.NewBuffer(reqBody))
 	if err != nil {
 		return "", errors.Errorf("cannot post request, error: %v", err)
 	}
 	defer resp.Body.Close()
-
 	response := make(map[string]interface{})
-
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", errors.Errorf("read resp.Body as a slice of byte, error: %v", err)
 	}
-
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return "", errors.Errorf("cannot unmarshal json, error: %v", err)
 	}
-
 	idTokenInterface := response["idToken"]
 	if idTokenInterface == nil {
 		return "", errors.Errorf("cannot read idToken field from json, error: %v", err)
 	}
-
 	idTokenStr := idTokenInterface.(string)
-
 	return idTokenStr, nil
 }
 

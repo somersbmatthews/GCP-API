@@ -27,11 +27,15 @@ func init() {
     "title": "GIRC App API",
     "version": "2.0.0"
   },
-  "basePath": "/",
+  "host": "girc.app",
+  "basePath": "/v2",
   "paths": {
-    "/v2/incident": {
+    "/incident": {
       "post": {
         "description": "use this to create an incident for a userId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -87,6 +91,9 @@ func init() {
       },
       "delete": {
         "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -129,6 +136,9 @@ func init() {
       },
       "patch": {
         "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -176,9 +186,12 @@ func init() {
         }
       }
     },
-    "/v2/user": {
+    "/user": {
       "get": {
         "description": "Get a user's information.",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -196,13 +209,11 @@ func init() {
             "required": true
           },
           {
-            "description": "object that contains userId of user you want to get",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/GetUser"
-            }
+            "type": "string",
+            "description": "header that contains userId of user you want to get",
+            "name": "userId",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -210,6 +221,12 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/GetUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid user supplied",
+            "schema": {
+              "$ref": "#/definitions/GetUserBadResponse"
             }
           },
           "404": {
@@ -222,6 +239,9 @@ func init() {
       },
       "post": {
         "description": "register a user with his information",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -265,6 +285,9 @@ func init() {
       },
       "delete": {
         "description": "deletes a user",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -307,6 +330,9 @@ func init() {
       },
       "patch": {
         "description": "Update a user's info",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -355,9 +381,12 @@ func init() {
         }
       }
     },
-    "/v2/verify": {
+    "/verify": {
       "patch": {
         "description": "verified field is true to verify, false to unverify",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -809,7 +838,15 @@ func init() {
       }
     },
     "GetUserBadResponse": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
     },
     "GetUserGoodResponse": {
       "type": "object",
@@ -1140,11 +1177,15 @@ func init() {
     "title": "GIRC App API",
     "version": "2.0.0"
   },
-  "basePath": "/",
+  "host": "girc.app",
+  "basePath": "/v2",
   "paths": {
-    "/v2/incident": {
+    "/incident": {
       "post": {
         "description": "use this to create an incident for a userId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1200,6 +1241,9 @@ func init() {
       },
       "delete": {
         "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1242,6 +1286,9 @@ func init() {
       },
       "patch": {
         "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1289,9 +1336,12 @@ func init() {
         }
       }
     },
-    "/v2/user": {
+    "/user": {
       "get": {
         "description": "Get a user's information.",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1309,13 +1359,11 @@ func init() {
             "required": true
           },
           {
-            "description": "object that contains userId of user you want to get",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/GetUser"
-            }
+            "type": "string",
+            "description": "header that contains userId of user you want to get",
+            "name": "userId",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -1323,6 +1371,12 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/GetUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid user supplied",
+            "schema": {
+              "$ref": "#/definitions/GetUserBadResponse"
             }
           },
           "404": {
@@ -1335,6 +1389,9 @@ func init() {
       },
       "post": {
         "description": "register a user with his information",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1378,6 +1435,9 @@ func init() {
       },
       "delete": {
         "description": "deletes a user",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1420,6 +1480,9 @@ func init() {
       },
       "patch": {
         "description": "Update a user's info",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1468,9 +1531,12 @@ func init() {
         }
       }
     },
-    "/v2/verify": {
+    "/verify": {
       "patch": {
         "description": "verified field is true to verify, false to unverify",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1922,7 +1988,15 @@ func init() {
       }
     },
     "GetUserBadResponse": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
     },
     "GetUserGoodResponse": {
       "type": "object",

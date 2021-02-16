@@ -5,8 +5,8 @@
 //  This is test server for GIRC app
 //  Schemes:
 //    https
-//  Host: localhost
-//  BasePath: /
+//  Host: girc.app
+//  BasePath: /v2
 //  Version: 2.0.0
 //
 //  Consumes:

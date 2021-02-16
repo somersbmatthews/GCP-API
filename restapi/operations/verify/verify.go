@@ -29,7 +29,7 @@ func NewVerify(ctx *middleware.Context, handler VerifyHandler) *Verify {
 	return &Verify{Context: ctx, Handler: handler}
 }
 
-/* Verify swagger:route PATCH /v2/verify verify verify
+/* Verify swagger:route PATCH /verify verify verify
 
 use this to verify or unverify a user, for testing only
 

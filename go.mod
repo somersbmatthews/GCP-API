@@ -15,7 +15,7 @@ require (
 	github.com/go-openapi/strfmt v0.20.0
 	github.com/go-openapi/swag v0.19.14
 	github.com/go-openapi/validate v0.20.2
-	github.com/gorilla/mux v1.8.0
+	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

@@ -3,12 +3,11 @@ package main
 import (
 	"log"
 	"net/http"
-	"time"
+	"os"
 
 	"github.com/gircapp/api/restapi"
 	"github.com/gircapp/api/restapi/operations"
 	"github.com/go-openapi/loads"
-	"github.com/gorilla/mux"
 )
 
 // _ "github.com/GoAdminGroup/go-admin/adapter/gorilla"             // Import the adapter, it must be imported. If it is not imported, you need to define it yourself.
@@ -28,19 +27,38 @@ import (
 func main() {
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 	api := operations.NewGircAPI(swaggerSpec)
 	server := restapi.NewServer(api)
 
-	defer server.Shutdown()
-
-	server.ConfigureAPI()
-
 	// server.Port = 8080
 
-	r := mux.NewRouter()
+	defer server.Shutdown()
+	server.ConfigureFlags()
+	server.ConfigureAPI()
+
+	http.Handle("/", server.GetHandler())
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+
+	log.Printf("Listening on port %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal(err)
+	}
+
+	// http.ListenAndServe(":8000", api.Serve(nil))
+
+	// if err := server.Serve(); err != nil {
+	// 	panic(err)
+	// }
+
+	// r := mux.NewRouter()
 
 	// eng := engine.Default()
 
@@ -81,18 +99,19 @@ func main() {
 
 	// _ = r.Run(":9033")
 
-	r.PathPrefix("/").Handler(api.Serve(nil))
+	// r.PathPrefix("/").Handler(api.Serve(nil))
 
-	http.Handle("/", r)
+	// http.Handle("/", r)
 
-	r.Schemes("http")
+	// r.Schemes("http")
 
-	srv := &http.Server{
-		Handler: r,
-		// Good practice: enforce timeouts for servers you create!
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
+	// srv := &http.Server{
+	// 	// Addr:         "127.0.0.1:8000",
+	// 	Handler: r,
+	// 	// Good practice: enforce timeouts for servers you create!
+	// 	WriteTimeout: 15 * time.Second,
+	// 	ReadTimeout:  15 * time.Second,
+	// }
 
 	// cert, key, err := accessTLSCertAndKey()
 	// if err != nil {
@@ -100,13 +119,13 @@ func main() {
 	// }
 
 	// log.Fatal(srv.ListenAndServeTLS(cert, key))
-	log.Fatal(srv.ListenAndServe())
+	// log.Fatal(srv.ListenAndServe())
 
 	// mux := http.NewServeMux()
 	// // Admin.MountTo("/admin", mux)
 	// mux.Handle("/", api.Serve(nil))
 
-	// http.ListenAndServe(":8080", mux)
+	// err = http.ListenAndServe(":8080", api.Serve(nil)
 	// if err != nil {
 	// 	panic(err)
 	// }

@@ -29,7 +29,7 @@ func NewDeleteIncidents(ctx *middleware.Context, handler DeleteIncidentsHandler)
 	return &DeleteIncidents{Context: ctx, Handler: handler}
 }
 
-/* DeleteIncidents swagger:route DELETE /v2/incident incident deleteIncidents
+/* DeleteIncidents swagger:route DELETE /incident incident deleteIncidents
 
 Delete incident
 

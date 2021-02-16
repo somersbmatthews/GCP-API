@@ -16,6 +16,8 @@
 
 - see if there are any registered users in old project backend
 
+- change database error handling in package pg to return the error and return and error http status code response
+
 
 swagger generate server -f swagger4.yaml -A girc 
 

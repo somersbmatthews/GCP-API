@@ -1,0 +1,856 @@
+swagger: "2.0"
+info:
+  description: "This is test server for GIRC app"
+  version: "2.0.0"
+  title: "GIRC App API"
+  # termsOfService: "http://swagger.io/terms/"
+ # contact:
+   # email: "apiteam@swagger.io"
+#  license:
+  #  name: "Apache 2.0"
+  #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: girc.app
+basePath: "/v2"
+tags:
+- name: "incident"
+  description: "to create, update, and delete incidents"
+- name: "user"
+  description: "for user registration and authentication"
+- name: verify
+  description: only used for testing and will be removed in production
+#  externalDocs:
+ #   description: "Find out more about our store"
+ #   url: "http://swagger.io"
+schemes:
+- "https"
+paths:
+  /verify:
+    patch:
+      tags:
+        - "verify"
+      summary:  use this to verify or unverify a user, for testing only
+      description: "verified field is true to verify, false to unverify"
+      operationId: verify
+      produces:
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: verified
+        in: body
+        description: "verified field is true to verify, false to unverify"
+        required: true
+        schema:
+          $ref: "#/definitions/Verify"
+      responses:
+          200:
+            description: successful operation
+            schema:
+              $ref: "#/definitions/UpdateUserGoodResponse"
+          404:
+            description: userid not found
+            schema: 
+              $ref: "#/definitions/UpdateUserNotFoundResponse"
+  /user:
+    get:
+      tags:
+      - "user"
+      summary: "Get user's information."
+      description: "Get a user's information."
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - name: "userId"
+        in: header
+        required: true
+        description: header that contains userId of user you want to get
+        type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetUserGoodResponse"
+        400:
+          description: "invalid user supplied"
+          schema: 
+            $ref: "#/definitions/GetUserBadResponse"
+        "404":
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/GetUserBadResponse"
+
+    post:
+      tags:
+      - "user"
+      summary: "register a user"
+      description: "register a user with his information"
+      operationId: "createUser"
+      produces: 
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: header
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - name: "user"
+        in: "body"
+        required: true
+        description: "a user's information"
+        schema:
+          $ref: "#/definitions/CreateUser"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreateUserGoodResponse"
+        "400":
+          description: "user not created"
+          schema:
+            $ref: "#/definitions/CreateUserBadResponse"
+      
+
+          
+    patch:
+      tags:
+      - "user"
+      summary: "Update user"
+      description: "Update a user's info"
+      operationId: "updateUser"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - name: "user"
+        in: "body"
+        description: "Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateUser"
+      responses:
+        "200":
+          description: "successful operation"
+          schema: 
+            $ref: "#/definitions/UpdateUserGoodResponse"
+        "400":
+          description: "Invalid user supplied"
+          schema:
+            $ref: "#/definitions/UpdateUserInvalidResponse"
+        "404":
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/UpdateUserNotFoundResponse"
+    delete:
+      tags:
+      - user
+      summary: unregisters a user, for testing only will be removed in production
+      description: deletes a user
+      operationId: deleteUser
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "user"
+        in: body
+        description: "deletes user with the requested userID"
+        required: true
+        schema:
+          $ref: '#/definitions/DeleteUser'
+      responses:
+        200: 
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/DeleteUserGoodResponse'
+        400:
+          description: "invalid userId supplied"
+          schema:
+            $ref: '#/definitions/DeleteUserBadResponse'
+        404:
+          description: 'user with requested userid not found'
+          schema:
+            $ref: '#/definitions/DeleteUserBadResponse'
+          
+  /incident:
+    post:
+      tags:
+      - "incident"
+      summary: "Create an incident"
+      description: "use this to create an incident for a userId"
+      operationId: "createIncident"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - in: "body"
+        name: "incident"
+        description: "Creates an incident and returns the created incident"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIncident"
+      responses:
+        "200":
+          description: "successful operation, only returns token if not using OAuth"
+          schema:
+            $ref: "#/definitions/CreateIncidentGoodResponse"
+          headers:
+            Authentication:
+              description: "token"
+              type: "string"
+        400:
+          description: "invalid incident data"
+          schema:
+            $ref: "#/definitions/CreateIncidentInvalidIncidentResponse"
+        "404":
+          description: "userId for this incident is not found"
+          schema:
+            $ref: "#/definitions/CreateIncidentUserIdNotFoundResponse"
+   # get:
+     # tags:
+    #  - "incident"
+    #  summary: "Get incidents"
+    #  description: "Use this to get all incidents created by a user"
+   #   operationId: "getIncidents"
+   #   produces:
+   #   - "application/json"
+    #  parameters:
+  #    - in: "header"
+    #    name: Authorization
+    #    description: "authorization header contains firebase ID token"
+   #     type: string
+    #    required: true
+  #    - in: "body"
+   #     name: "incident"
+  #      description: "returns the incidents for a userId"
+   #     required: true
+  #      schema:
+  #        $ref: "#/definitions/GetIncidents"
+   #   responses:
+  #      "200":
+  #        description: "successful operation"
+   #       schema:
+   #         $ref: "#/definitions/GetIncidentsGoodResponse"
+   #     404:
+   #       description: "userid not found"
+   #       schema:
+    #        $ref:  "#/definitions/GetIncidentsUserIdNotFoundResponse"
+    patch:
+      tags:
+      - "incident"
+      summary: "Update incident"
+      description: "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string"
+      operationId: "updateIncidents"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/UpdateIncidentGoodResponse"
+        400:
+          description: invalid incident data
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            
+    delete:
+      tags:
+      - "incident"
+      summary: "Delete incident"
+      description: "Use this to delete an incident by incidentId"
+      operationId: "deleteIncidents"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains firebase ID token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+      
+definitions:
+
+  CreateIncident:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+      
+  CreateIncidentGoodResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string" 
+      Created:
+        type: boolean
+      
+          
+        
+     
+    
+  
+  CreateIncidentInvalidIncidentResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+      Created:
+          type: boolean
+          default: false
+  
+  CreateIncidentUserIdNotFoundResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string" 
+      Created:
+        type: boolean
+        default: false
+  
+  GetIncidents:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+  
+  
+  GetIncidentsUserIdNotFoundResponse:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+        
+  GetIncidentsGoodResponse:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+      incidents:
+        type: array
+        items: 
+          $ref: "#/definitions/CreateIncident"
+          
+  
+  UpdateIncident:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+  
+  
+
+
+  UpdateIncidentGoodResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+      Updated:
+          type: boolean
+          default: true         
+  
+  
+  UpdateIncidentIncidentIdNotFoundResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: "string"
+        Long-term_prognosis:
+          type: "string"
+        What_material_is_the_object_made_of:
+          type: "string"
+        Anterior: 
+          type: "string"
+        Date_of_Incident:
+          type: "string"
+        Object_Consistency:
+          type: "string"
+        Gender: 
+          type: "string"
+        Approximate_Patient_Age:
+          type: "string"
+        Location_of_object:
+          type: "string"
+        Incident_Description:
+          type: "string"
+        Largest_Length:
+          type: "string"
+        Object_Basic_Shape:
+          type: "string"
+        The_object_is:
+          type: "string"
+        Updated:
+          type: boolean
+          default: false
+          
+  
+  
+  
+  DeleteIncident:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+          
+  DeleteIncidentIncidentIdNotFoundResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+        Deleted:
+          type: boolean
+          default: true
+  
+  DeleteIncidentGoodResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+        Deleted:
+          type: boolean
+          default: true
+            
+  CreateUser:
+    type: object
+    required:
+      - userId
+      - name
+      - email
+      - degree
+      - speciality
+    properties:
+      userId:
+        type: string
+      name:
+        type: string
+      email: 
+        type: string
+      degree:
+        type: string
+      speciality:
+        type: string
+      
+  CreateUserGoodResponse:
+    type: object
+    required:
+      - created
+    properties:
+      userId:
+        type: string
+      name:
+        type: string
+      email: 
+        type: string
+      degree:
+        type: string
+      speciality:
+        type: string
+      created:
+        type: boolean
+  
+  
+  CreateUserBadResponse:
+    type: object
+    required:
+      - created
+      - name
+      - email
+      - speciality
+      - degree
+    properties:
+      name:
+        type: string
+      email: 
+        type: string
+      degree:
+        type: string
+      speciality:
+        type: string
+      created:
+        type: boolean
+        example: false
+  
+  
+  UpdateUserGoodResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - updated
+      - email
+      - speciality
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        default: false
+      updated:
+        type: "boolean"
+        
+  UpdateUser:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+
+  UpdateUserInvalidResponse:
+    type: "object"
+    required: 
+      - verified
+      - name
+      - degree
+      - speciality
+      - updated
+      - email
+    properties:
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        example: false
+      updated:
+        type: "boolean"
+        example: false
+  UpdateUserNotFoundResponse:
+    type: "object"
+    required: 
+      - userId
+    properties:
+      userId:
+        type: "string"
+      updated:
+        type: "boolean"
+        default: false
+  GetUser:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+  GetUserGoodResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - speciality
+      - email
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      speciality:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        example: false
+  GetUserBadResponse:
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+  
+  Verify:
+    type: "object"
+    required:
+      - userId
+      - verified
+    properties:
+      userId:
+        type: string
+      verified:
+        type: "boolean"
+  
+  DeleteUser:
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+  
+  DeleteUserGoodResponse:
+    type: object
+    required:
+    - userId
+    - deleted
+    properties:
+      userId:
+        type: string
+      deleted:
+        type: boolean
+        
+  DeleteUserBadResponse:
+    type: object
+    required:
+    - userId
+    - deleted
+    properties:
+      userId:
+        type: string
+      deleted:
+        type: boolean
+        example: false
+        
+        
+        

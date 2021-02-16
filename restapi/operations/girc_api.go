@@ -314,35 +314,35 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/v2/incident"] = incident.NewCreateIncident(o.context, o.IncidentCreateIncidentHandler)
+	o.handlers["POST"]["/incident"] = incident.NewCreateIncident(o.context, o.IncidentCreateIncidentHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/v2/user"] = user.NewCreateUser(o.context, o.UserCreateUserHandler)
+	o.handlers["POST"]["/user"] = user.NewCreateUser(o.context, o.UserCreateUserHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/v2/incident"] = incident.NewDeleteIncidents(o.context, o.IncidentDeleteIncidentsHandler)
+	o.handlers["DELETE"]["/incident"] = incident.NewDeleteIncidents(o.context, o.IncidentDeleteIncidentsHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/v2/user"] = user.NewDeleteUser(o.context, o.UserDeleteUserHandler)
+	o.handlers["DELETE"]["/user"] = user.NewDeleteUser(o.context, o.UserDeleteUserHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/v2/user"] = user.NewGetUser(o.context, o.UserGetUserHandler)
+	o.handlers["GET"]["/user"] = user.NewGetUser(o.context, o.UserGetUserHandler)
 	if o.handlers["PATCH"] == nil {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
-	o.handlers["PATCH"]["/v2/incident"] = incident.NewUpdateIncidents(o.context, o.IncidentUpdateIncidentsHandler)
+	o.handlers["PATCH"]["/incident"] = incident.NewUpdateIncidents(o.context, o.IncidentUpdateIncidentsHandler)
 	if o.handlers["PATCH"] == nil {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
-	o.handlers["PATCH"]["/v2/user"] = user.NewUpdateUser(o.context, o.UserUpdateUserHandler)
+	o.handlers["PATCH"]["/user"] = user.NewUpdateUser(o.context, o.UserUpdateUserHandler)
 	if o.handlers["PATCH"] == nil {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
-	o.handlers["PATCH"]["/v2/verify"] = verify.NewVerify(o.context, o.VerifyVerifyHandler)
+	o.handlers["PATCH"]["/verify"] = verify.NewVerify(o.context, o.VerifyVerifyHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP
