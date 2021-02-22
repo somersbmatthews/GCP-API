@@ -553,6 +553,9 @@ func init() {
         "The_object_is": {
           "type": "string"
         },
+        "UserID": {
+          "type": "string"
+        },
         "What_material_is_the_object_made_of": {
           "type": "string"
         }
@@ -1699,6 +1702,9 @@ func init() {
           "type": "string"
         },
         "The_object_is": {
+          "type": "string"
+        },
+        "UserID": {
           "type": "string"
         },
         "What_material_is_the_object_made_of": {

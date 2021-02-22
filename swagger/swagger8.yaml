@@ -386,6 +386,8 @@ definitions:
         type: "string" 
       Created:
         type: boolean
+      UserID: 
+        type: string
       
           
         

@@ -59,6 +59,9 @@ type CreateIncidentGoodResponse struct {
 	// the object is
 	TheObjectIs string `json:"The_object_is,omitempty"`
 
+	// user ID
+	UserID string `json:"UserID,omitempty"`
+
 	// what material is the object made of
 	WhatMaterialIsTheObjectMadeOf string `json:"What_material_is_the_object_made_of,omitempty"`
 }
