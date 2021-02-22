@@ -56,7 +56,6 @@ func createBearerToken() (string, bool) {
 }
 func TestRegisterUser(t *testing.T) {
 	reqBody := body{
-		"userId":     "1234567890",
 		"name":       "Tee Bow",
 		"email":      "tbow@gmail.com",
 		"speciality": "otolaryngologist",
@@ -104,7 +103,6 @@ func TestGetUser(t *testing.T) {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
-	req.Header.Set("userId", "1234567890")
 	client := newClient()
 	resp, err := client.Do(req)
 	if err != nil {
@@ -125,7 +123,6 @@ func TestGetUser(t *testing.T) {
 }
 func TestUpdateUser(t *testing.T) {
 	reqBody := body{
-		"userId":     "1234567890",
 		"name":       "Tee H.W. Bow",
 		"email":      "tbowSD@gmail.com",
 		"speciality": "spin doctor",
@@ -164,7 +161,7 @@ func TestUpdateUser(t *testing.T) {
 
 func TestVerifyUser(t *testing.T) {
 	reqBody := body{
-		"userId":   "1234567890",
+		// "userId":   "1234567890",
 		"verified": true,
 	}
 	data, err := setBody(reqBody)
@@ -200,7 +197,7 @@ func TestVerifyUser(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	reqBody := body{
-		"userId": "1234567890",
+		// "userId": "1234567890",
 	}
 	data, err := setBody(reqBody)
 	if err != nil {
@@ -227,8 +224,6 @@ func TestDeleteUser(t *testing.T) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
 }
-
-// // TODO: fix verify user
 
 func TestCreateIncident(t *testing.T) {
 	reqBody := body{
@@ -276,6 +271,97 @@ func TestCreateIncident(t *testing.T) {
 		"The_object_is":                       "small",
 		"Largest_Length":                      "23",
 		"Created":                             true,
+		"UserID":                              true,
+	}
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+}
+
+func TestGetIncidents(t *testing.T) {
+	// TODO change data for second incident created for this user
+	reqBody := body{
+		"ID":                                  "1234567790",
+		"Date_of_Incident":                    "12/20/2020",
+		"Approximate_Patient_Age":             "42",
+		"Gender":                              "male",
+		"Long-term_prognosis":                 "alive",
+		"Incident_Description":                "injested",
+		"Anterior":                            "someurl2@url.com",
+		"Object_Consistency":                  "smooth",
+		"Object_Basic_Shape":                  "straight",
+		"What_material_is_the_object_made_of": "wood",
+		"The_object_is":                       "large",
+		"Largest_Length":                      "37",
+	}
+	data, err := setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
+	url := fmt.Sprintf("%v/incident", urlstr)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+	client := newClient()
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("failed to create incident, error: %v", err)
+	}
+
+	reqBody = body{}
+	data, err = setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
+	url = fmt.Sprintf("%v/incident", urlstr)
+	req, err = http.NewRequest("GET", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+	resp, err = client.Do(req)
+	if err != nil {
+		t.Errorf("failed to create incident, error: %v", err)
+	}
+	json := getBody(*resp)
+	want := body{
+		"UserID": uid,
+		"Incidents": []body{{
+			"ID":                                  "1234567890",
+			"Date_of_Incident":                    "12/20/2020",
+			"Approximate_Patient_Age":             "34",
+			"Gender":                              "female",
+			"Long-term_prognosis":                 "dead",
+			"Incident_Description":                "choking",
+			"Anterior":                            "someurl@url.com",
+			"Object_Consistency":                  "rough",
+			"Object_Basic_Shape":                  "round",
+			"What_material_is_the_object_made_of": "plastic",
+			"The_object_is":                       "small",
+			"Largest_Length":                      "23",
+		},
+			{
+				"ID":                                  "1234567790",
+				"Date_of_Incident":                    "12/20/2020",
+				"Approximate_Patient_Age":             "42",
+				"Gender":                              "male",
+				"Long-term_prognosis":                 "alive",
+				"Incident_Description":                "injested",
+				"Anterior":                            "someurl2@url.com",
+				"Object_Consistency":                  "smooth",
+				"Object_Basic_Shape":                  "straight",
+				"What_material_is_the_object_made_of": "wood",
+				"The_object_is":                       "large",
+				"Largest_Length":                      "37",
+			},
+		},
 	}
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
@@ -334,7 +420,7 @@ func TestUpdateIncident(t *testing.T) {
 	}
 }
 
-func TestDeleteIncident(t *testing.T) {
+func TestDeleteIncidents(t *testing.T) {
 	reqBody := body{
 		"ID": "1234567890",
 	}
@@ -357,6 +443,34 @@ func TestDeleteIncident(t *testing.T) {
 	json := getBody(*resp)
 	want := body{
 		"ID":      "1234567890",
+		"Deleted": true,
+	}
+	if !reflect.DeepEqual(want, json) {
+		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+	}
+
+	reqBody = body{
+		"ID": "1234567790",
+	}
+	data, err = setBody(reqBody)
+	if err != nil {
+		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
+	}
+	url = fmt.Sprintf("%v/incident", urlstr)
+	req, err = http.NewRequest("DELETE", url, bytes.NewBuffer(data))
+	if err != nil {
+		t.Errorf("could not make new request %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", token)
+	client = newClient()
+	resp, err = client.Do(req)
+	if err != nil {
+		t.Errorf("failed to create incident, error: %v", err)
+	}
+	json = getBody(*resp)
+	want = body{
+		"ID":      "1234567790",
 		"Deleted": true,
 	}
 	if !reflect.DeepEqual(want, json) {
@@ -454,7 +568,6 @@ func newAuth() *auth.Client {
 	if err != nil {
 		panic(err)
 	}
-	// Create a new authenticator for the app.
 	client, err := app.Auth(ctx)
 	if err != nil {
 		log.Printf("app.Auth: %v", err)

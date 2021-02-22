@@ -484,11 +484,11 @@ definitions:
   GetIncidentsGoodResponse:
     type: "object"
     required:
-      - userId
+      - UserId
     properties:
-      userId:
+      UserId:
         type: string
-      incidents:
+      Incidents:
         type: array
         items: 
           $ref: "#/definitions/CreateIncident"

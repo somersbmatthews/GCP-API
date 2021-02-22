@@ -823,16 +823,16 @@ func init() {
     "GetIncidentsGoodResponse": {
       "type": "object",
       "required": [
-        "userId"
+        "UserId"
       ],
       "properties": {
-        "incidents": {
+        "Incidents": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/CreateIncident"
           }
         },
-        "userId": {
+        "UserId": {
           "type": "string"
         }
       }
@@ -1974,16 +1974,16 @@ func init() {
     "GetIncidentsGoodResponse": {
       "type": "object",
       "required": [
-        "userId"
+        "UserId"
       ],
       "properties": {
-        "incidents": {
+        "Incidents": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/CreateIncident"
           }
         },
-        "userId": {
+        "UserId": {
           "type": "string"
         }
       }

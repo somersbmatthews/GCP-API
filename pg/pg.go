@@ -187,6 +187,7 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 		TheObjectIs:                   incident.TheObjectIs,
 		LargestLength:                 incident.LargestLength,
 		Created:                       true,
+		UserID:                        userID,
 	}
 	return &response
 }

@@ -21,11 +21,11 @@ import (
 type GetIncidentsGoodResponse struct {
 
 	// incidents
-	Incidents []*CreateIncident `json:"incidents"`
+	Incidents []*CreateIncident `json:"Incidents"`
 
 	// user Id
 	// Required: true
-	UserID *string `json:"userId"`
+	UserID *string `json:"UserId"`
 }
 
 // Validate validates this get incidents good response
@@ -59,7 +59,7 @@ func (m *GetIncidentsGoodResponse) validateIncidents(formats strfmt.Registry) er
 		if m.Incidents[i] != nil {
 			if err := m.Incidents[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("incidents" + "." + strconv.Itoa(i))
+					return ve.ValidateName("Incidents" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -72,7 +72,7 @@ func (m *GetIncidentsGoodResponse) validateIncidents(formats strfmt.Registry) er
 
 func (m *GetIncidentsGoodResponse) validateUserID(formats strfmt.Registry) error {
 
-	if err := validate.Required("userId", "body", m.UserID); err != nil {
+	if err := validate.Required("UserId", "body", m.UserID); err != nil {
 		return err
 	}
 
@@ -100,7 +100,7 @@ func (m *GetIncidentsGoodResponse) contextValidateIncidents(ctx context.Context,
 		if m.Incidents[i] != nil {
 			if err := m.Incidents[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("incidents" + "." + strconv.Itoa(i))
+					return ve.ValidateName("Incidents" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
