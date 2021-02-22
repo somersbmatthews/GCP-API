@@ -34,10 +34,9 @@ const urlstr string = "https://girc.app/v2"
 var token string
 
 func init() {
-	ctx := context.Background()
-	tokenStr, err := getIDTokenForUser(ctx, uid)
-	if err != nil {
-		panic(err)
+	tokenStr, ok := createBearerToken()
+	if !ok {
+		panic("cannot create bearer token")
 	}
 	token = tokenStr
 }
@@ -48,12 +47,11 @@ func createBearerToken() (string, bool) {
 	if err != nil {
 		return "", false
 	}
-	// TODO write code to make bearertoken
 
-	bearerToken := fmt.Sprintf("%s%s", "Bearer ", idToken)
+	tokenStr := fmt.Sprintf("%s%s", "Bearer ", idToken)
 
-	idTokenBytes := []byte(bearerToken)
-	return base64.StdEncoding.EncodeToString(idTokenBytes), true
+	tokenBytes := []byte(tokenStr)
+	return base64.StdEncoding.EncodeToString(tokenBytes), true
 
 }
 func TestRegisterUser(t *testing.T) {

@@ -112,7 +112,6 @@ func TestUpdateUser(t *testing.T) {
 	}
 
 	db := Open()
-	// TODO: fix update
 	err := db.First(&User{}, "user_id = ?", badUser.UserID).Omit("user_id").Updates(badUser).Error
 	if err != gorm.ErrRecordNotFound {
 		fmt.Println(err)
@@ -137,14 +136,10 @@ func TestUpdateUser(t *testing.T) {
 
 }
 
-// TODO: write test for delete user
-
 func TestVerifyUser(t *testing.T) {
 	ctx := context.Background()
 
 	userID := "1234567890"
-
-	// TODO finish this
 
 	booleanTrue := true
 
