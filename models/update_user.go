@@ -8,10 +8,8 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // UpdateUser update user
@@ -30,32 +28,10 @@ type UpdateUser struct {
 
 	// speciality
 	Speciality string `json:"speciality,omitempty"`
-
-	// user Id
-	// Required: true
-	UserID *string `json:"userId"`
 }
 
 // Validate validates this update user
 func (m *UpdateUser) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateUserID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *UpdateUser) validateUserID(formats strfmt.Registry) error {
-
-	if err := validate.Required("userId", "body", m.UserID); err != nil {
-		return err
-	}
-
 	return nil
 }
 

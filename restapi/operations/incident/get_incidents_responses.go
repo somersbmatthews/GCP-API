@@ -57,6 +57,50 @@ func (o *GetIncidentsOK) WriteResponse(rw http.ResponseWriter, producer runtime.
 	}
 }
 
+// GetIncidentsBadRequestCode is the HTTP code returned for type GetIncidentsBadRequest
+const GetIncidentsBadRequestCode int = 400
+
+/*GetIncidentsBadRequest bad request
+
+swagger:response getIncidentsBadRequest
+*/
+type GetIncidentsBadRequest struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.GetIncidentsBadRequestResponse `json:"body,omitempty"`
+}
+
+// NewGetIncidentsBadRequest creates GetIncidentsBadRequest with default headers values
+func NewGetIncidentsBadRequest() *GetIncidentsBadRequest {
+
+	return &GetIncidentsBadRequest{}
+}
+
+// WithPayload adds the payload to the get incidents bad request response
+func (o *GetIncidentsBadRequest) WithPayload(payload *models.GetIncidentsBadRequestResponse) *GetIncidentsBadRequest {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get incidents bad request response
+func (o *GetIncidentsBadRequest) SetPayload(payload *models.GetIncidentsBadRequestResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetIncidentsBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(400)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // GetIncidentsNotFoundCode is the HTTP code returned for type GetIncidentsNotFound
 const GetIncidentsNotFoundCode int = 404
 

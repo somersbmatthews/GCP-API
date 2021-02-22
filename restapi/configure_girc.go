@@ -47,7 +47,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		tokenStr := params.Authorization
 
-		ok := fba.VerifyToken(ctx, tokenStr)
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
 			response := user.NewCreateUserBadRequest()
 			booleanFalse := false
@@ -62,7 +62,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			return response
 		}
 		newUser := pg.User{
-			UserID:     *params.User.UserID,
+			UserID:     userID,
 			Email:      *params.User.Email,
 			Speciality: *params.User.Speciality,
 			Degree:     *params.User.Degree,
@@ -91,20 +91,20 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.UserGetUserHandler = user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		ok := fba.VerifyToken(ctx, tokenStr)
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
 			response := user.NewGetUserBadRequest()
 			getUserBadResponse := models.GetUserBadResponse{
-				UserID: &params.UserID,
+				UserID: &userID,
 			}
 			response.WithPayload(&getUserBadResponse)
 			return response
 		}
-		payload, ok := pg.GetUser(ctx, params.UserID)
+		payload, ok := pg.GetUser(ctx, userID)
 		if !ok {
 			response := user.NewGetUserNotFound()
 			getUserBadResponse := models.GetUserBadResponse{
-				UserID: &params.UserID,
+				UserID: &userID,
 			}
 			response.WithPayload(&getUserBadResponse)
 			return response
@@ -117,12 +117,12 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.UserUpdateUserHandler = user.UpdateUserHandlerFunc(func(params user.UpdateUserParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		ok := fba.VerifyToken(ctx, tokenStr)
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
 			return middleware.Error(400, updateUserInvalidResponse(params))
 		}
 		updatedUser := pg.User{
-			UserID:     *params.User.UserID,
+			UserID:     userID,
 			Email:      params.User.Email,
 			Speciality: params.User.Speciality,
 			Degree:     params.User.Degree,
@@ -130,7 +130,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		}
 		payload, ok := pg.UpdateUser(ctx, updatedUser)
 		if !ok {
-			return middleware.Error(404, updateUserNotFoundResponse(params))
+			return middleware.Error(404, updateUserNotFoundResponse(params, userID))
 		}
 		response := user.NewUpdateUserOK()
 		response.WithPayload(payload)
@@ -139,12 +139,20 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.UserDeleteUserHandler = user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 		ctx := context.Background()
-		DeleteUserID := params.User.UserID
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
-		payload, ok := pg.DeleteUser(ctx, *DeleteUserID)
+		if !ok {
+			return middleware.Error(400, models.DeleteUserBadResponse{
+				Deleted: &booleanFalse,
+				UserID:  &userID,
+			})
+		}
+
+		payload, ok := pg.DeleteUser(ctx, userID)
 		if !ok {
 			return middleware.Error(404, models.DeleteUserBadResponse{
-				UserID:  DeleteUserID,
+				UserID:  &userID,
 				Deleted: &booleanFalse,
 			})
 		}
@@ -155,13 +163,14 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 	api.VerifyVerifyHandler = verify.VerifyHandlerFunc(func(params verify.VerifyParams) middleware.Responder {
 		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		verifiedUser := models.Verify{
-			UserID:   params.Verified.UserID,
 			Verified: params.Verified.Verified,
 		}
-		payload, ok := pg.VerifyUser(ctx, verifiedUser)
+		payload, ok := pg.VerifyUser(ctx, verifiedUser, userID)
 		if !ok {
-			return middleware.Error(404, verifyUserNotFoundResponse(params))
+			return middleware.Error(404, verifyUserNotFoundResponse(params, userID))
 		}
 		response := verify.NewVerifyOK()
 		response.WithPayload(payload)
@@ -171,7 +180,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.IncidentCreateIncidentHandler = incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		ok := fba.VerifyToken(ctx, tokenStr)
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
 			return middleware.Error(400, models.CreateIncidentInvalidIncidentResponse{
@@ -190,7 +199,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 				Created:                       &booleanFalse,
 			})
 		}
-		payload := pg.CreateIncident(ctx, *params.Incident)
+		payload := pg.CreateIncident(ctx, *params.Incident, userID)
 		response := incident.NewCreateIncidentOK()
 		response.WithPayload(payload)
 		return response
@@ -203,7 +212,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.IncidentUpdateIncidentsHandler = incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		ok := fba.VerifyToken(ctx, tokenStr)
+		_, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
 			return middleware.Error(400, models.UpdateIncidentIncidentIDNotFoundResponse{
@@ -248,7 +257,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.IncidentDeleteIncidentsHandler = incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		ok := fba.VerifyToken(ctx, tokenStr)
+		_, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
 			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
@@ -320,19 +329,19 @@ func updateUserInvalidResponse(params user.UpdateUserParams) models.UpdateUserIn
 	return updateUserInvalidResponse
 }
 
-func updateUserNotFoundResponse(params user.UpdateUserParams) models.UpdateUserNotFoundResponse {
+func updateUserNotFoundResponse(params user.UpdateUserParams, userID string) models.UpdateUserNotFoundResponse {
 	booleanFalse := false
 	updateUserNotFoundResponse := models.UpdateUserNotFoundResponse{
-		UserID:  params.User.UserID,
+		UserID:  &userID,
 		Updated: &booleanFalse,
 	}
 	return updateUserNotFoundResponse
 }
 
-func verifyUserNotFoundResponse(params verify.VerifyParams) models.UpdateUserNotFoundResponse {
+func verifyUserNotFoundResponse(params verify.VerifyParams, userID string) models.UpdateUserNotFoundResponse {
 	booleanFalse := false
 	updateUserNotFoundResponse := models.UpdateUserNotFoundResponse{
-		UserID:  params.Verified.UserID,
+		UserID:  &userID,
 		Updated: &booleanFalse,
 	}
 	return updateUserNotFoundResponse

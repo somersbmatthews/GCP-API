@@ -3,6 +3,7 @@ package fba
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -23,9 +24,9 @@ const uid string = "1234567890"
 // const uid string = "LdXjx5tA0zXj1FqaghkiAl9rkuL2"
 const baduid string = "1234567790"
 
-var goodToken string
-
 const badToken string = "alkdjfalksjfa87wet235"
+
+var bearerToken string
 
 func TestCreateFirebaseUser(t *testing.T) {
 	ctx := context.Background()
@@ -36,17 +37,43 @@ func TestCreateFirebaseUser(t *testing.T) {
 	}
 }
 
+func TestCreateBearerToken(t *testing.T) {
+
+	token, ok := createBearerToken()
+	if !ok {
+		t.Error("create firebase user failed.")
+	}
+
+	bearerToken = token
+}
+
+func createBearerToken() (string, bool) {
+	ctx := context.Background()
+	idToken, err := getIDTokenForUser(ctx, uid)
+	if err != nil {
+		return "", false
+	}
+	// TODO write code to make bearertoken
+
+	bearerToken := fmt.Sprintf("%s%s", "Bearer ", idToken)
+
+	idTokenBytes := []byte(bearerToken)
+	return base64.StdEncoding.EncodeToString(idTokenBytes), true
+
+}
+
 func TestAuthenticateFirebaseUser(t *testing.T) {
 	ctx := context.Background()
 
-	goodToken, err := getIDTokenForUser(ctx, uid)
+	client := newAuth()
+
+	token, err := client.VerifyIDToken(ctx, bearerToken)
 	if err != nil {
-		t.Errorf("could not get token: %v", err)
+		t.Error("verify firebase user failed.")
 	}
 
-	ok := VerifyToken(ctx, goodToken)
-	if !ok {
-		t.Error("verify firebase user failed.")
+	if token.UID == uid {
+		t.Errorf("token.UID %v does not equal uid %v", token.UID, uid)
 	}
 
 	// ok = VerifyToken(ctx, badToken)

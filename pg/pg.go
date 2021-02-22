@@ -42,6 +42,7 @@ type Incident struct {
 	LargestLength                 string
 	ObjectBasicShape              string
 	TheObjectIs                   string
+	UserID                        string
 }
 
 var postgrespassword string
@@ -151,7 +152,7 @@ func Open() *gorm.DB {
 	return db
 }
 
-func CreateIncident(ctx context.Context, incident models.CreateIncident) *models.CreateIncidentGoodResponse {
+func CreateIncident(ctx context.Context, incident models.CreateIncident, userID string) *models.CreateIncidentGoodResponse {
 	db := Open()
 	incidentModel := Incident{
 		ID:                            *incident.ID,
@@ -166,6 +167,7 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident) *models
 		WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
 		TheObjectIs:                   incident.TheObjectIs,
 		LargestLength:                 incident.LargestLength,
+		UserID:                        userID,
 	}
 	err := db.Create(incidentModel).Error
 	if err != nil {
@@ -197,7 +199,6 @@ func CreateUser(ctx context.Context, user User) (*models.CreateUserGoodResponse,
 	}
 	booleanTrue := true
 	return &models.CreateUserGoodResponse{
-		UserID:     user.UserID,
 		Email:      user.Email,
 		Speciality: user.Speciality,
 		Degree:     user.Degree,
@@ -206,13 +207,44 @@ func CreateUser(ctx context.Context, user User) (*models.CreateUserGoodResponse,
 	}, true
 }
 
-// func GetIncidents(ctx context.Context, userId string) (*models.GetIncidentsGoodResponse, bool) {
-// 	db := Open()
-//
+func GetIncidents(ctx context.Context, userId string) (*models.GetIncidentsGoodResponse, bool) {
+	db := Open()
 
-// 	err := db.Model(Incident{}).Where("userId = ?", userId).Error
+	incidents := []Incident{}
 
-// }
+	err := db.Where(Incident{}, "user_id <> ?", userId).Find(&incidents).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	incidentResponses := []*models.CreateIncident{}
+
+	for _, incident := range incidents {
+		incidentResponses = append(incidentResponses, &models.CreateIncident{
+			ID:                            &incident.ID,
+			DateOfIncident:                incident.DateOfIncident,
+			ApproximatePatientAge:         incident.ApproximatePatientAge,
+			Gender:                        incident.Gender,
+			LongTermPrognosis:             incident.LongTermPrognosis,
+			IncidentDescription:           incident.IncidentDescription,
+			Anterior:                      incident.Anterior,
+			ObjectConsistency:             incident.ObjectConsistency,
+			ObjectBasicShape:              incident.ObjectBasicShape,
+			WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
+			TheObjectIs:                   incident.TheObjectIs,
+			LargestLength:                 incident.LargestLength,
+			LocationOfObject:              incident.LocationOfObject,
+		})
+	}
+
+	return &models.GetIncidentsGoodResponse{
+			Incidents: incidentResponses,
+			UserID:    &userId,
+		},
+		true
+}
 
 func UpdateIncident(ctx context.Context, incident models.UpdateIncident) (*models.UpdateIncidentGoodResponse, bool) {
 	db := Open()
@@ -304,7 +336,6 @@ func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse,
 	}
 	booleanTrue := true
 	return &models.UpdateUserGoodResponse{
-			UserID:     &model.UserID,
 			Name:       &model.Name,
 			Email:      &model.Email,
 			Degree:     &model.Degree,
@@ -328,15 +359,14 @@ func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodRespo
 
 	return &models.DeleteUserGoodResponse{
 			Deleted: &booleanTrue,
-			UserID:  &userID,
 		},
 		true
 }
 
-func VerifyUser(ctx context.Context, verify models.Verify) (*models.UpdateUserGoodResponse, bool) {
+func VerifyUser(ctx context.Context, verify models.Verify, userID string) (*models.UpdateUserGoodResponse, bool) {
 	db := Open()
 	model := User{}
-	err := db.First(&model, "user_id = ?", verify.UserID).Update("verified", verify.Verified).Error
+	err := db.First(&model, "user_id = ?", userID).Update("verified", verify.Verified).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -344,7 +374,6 @@ func VerifyUser(ctx context.Context, verify models.Verify) (*models.UpdateUserGo
 	}
 	booleanTrue := true
 	return &models.UpdateUserGoodResponse{
-			UserID:     &model.UserID,
 			Name:       &model.Name,
 			Email:      &model.Email,
 			Degree:     &model.Degree,

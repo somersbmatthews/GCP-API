@@ -29,7 +29,7 @@ func NewGetIncidents(ctx *middleware.Context, handler GetIncidentsHandler) *GetI
 	return &GetIncidents{Context: ctx, Handler: handler}
 }
 
-/* GetIncidents swagger:route GET /v2/incidents incident getIncidents
+/* GetIncidents swagger:route GET /incident incident getIncidents
 
 Get incidents
 

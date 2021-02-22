@@ -22,10 +22,6 @@ type DeleteUserGoodResponse struct {
 	// deleted
 	// Required: true
 	Deleted *bool `json:"deleted"`
-
-	// user Id
-	// Required: true
-	UserID *string `json:"userId"`
 }
 
 // Validate validates this delete user good response
@@ -33,10 +29,6 @@ func (m *DeleteUserGoodResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDeleted(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -49,15 +41,6 @@ func (m *DeleteUserGoodResponse) Validate(formats strfmt.Registry) error {
 func (m *DeleteUserGoodResponse) validateDeleted(formats strfmt.Registry) error {
 
 	if err := validate.Required("deleted", "body", m.Deleted); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *DeleteUserGoodResponse) validateUserID(formats strfmt.Registry) error {
-
-	if err := validate.Required("userId", "body", m.UserID); err != nil {
 		return err
 	}
 

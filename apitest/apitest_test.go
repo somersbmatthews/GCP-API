@@ -3,6 +3,7 @@ package test
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -39,6 +40,21 @@ func init() {
 		panic(err)
 	}
 	token = tokenStr
+}
+
+func createBearerToken() (string, bool) {
+	ctx := context.Background()
+	idToken, err := getIDTokenForUser(ctx, uid)
+	if err != nil {
+		return "", false
+	}
+	// TODO write code to make bearertoken
+
+	bearerToken := fmt.Sprintf("%s%s", "Bearer ", idToken)
+
+	idTokenBytes := []byte(bearerToken)
+	return base64.StdEncoding.EncodeToString(idTokenBytes), true
+
 }
 func TestRegisterUser(t *testing.T) {
 	reqBody := body{

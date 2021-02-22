@@ -31,6 +31,46 @@ func init() {
   "basePath": "/v2",
   "paths": {
     "/incident": {
+      "get": {
+        "description": "Use this to get all incidents created by a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Get incidents",
+        "operationId": "getIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsGoodResponse"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsBadRequestResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
       "post": {
         "description": "use this to create an incident for a userId",
         "consumes": [
@@ -47,13 +87,12 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "Creates an incident and returns the created incident",
             "name": "incident",
             "in": "body",
             "required": true,
@@ -105,7 +144,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -150,7 +189,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -203,15 +242,8 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "header that contains userId of user you want to get",
-            "name": "userId",
             "in": "header",
             "required": true
           }
@@ -253,7 +285,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -298,13 +330,11 @@ func init() {
         "operationId": "deleteUser",
         "parameters": [
           {
-            "description": "deletes user with the requested userID",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteUser"
-            }
+            "type": "string",
+            "description": "authorization token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -344,7 +374,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -396,6 +426,13 @@ func init() {
         "summary": "use this to verify or unverify a user, for testing only",
         "operationId": "verify",
         "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
           {
             "description": "verified field is true to verify, false to unverify",
             "name": "verified",
@@ -626,7 +663,6 @@ func init() {
     "CreateUser": {
       "type": "object",
       "required": [
-        "userId",
         "name",
         "email",
         "degree",
@@ -643,9 +679,6 @@ func init() {
           "type": "string"
         },
         "speciality": {
-          "type": "string"
-        },
-        "userId": {
           "type": "string"
         }
       }
@@ -681,6 +714,7 @@ func init() {
     "CreateUserGoodResponse": {
       "type": "object",
       "required": [
+        "userId",
         "created"
       ],
       "properties": {
@@ -745,17 +779,6 @@ func init() {
         }
       }
     },
-    "DeleteUser": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "userId": {
-          "type": "string"
-        }
-      }
-    },
     "DeleteUserBadResponse": {
       "type": "object",
       "required": [
@@ -775,19 +798,15 @@ func init() {
     "DeleteUserGoodResponse": {
       "type": "object",
       "required": [
-        "userId",
         "deleted"
       ],
       "properties": {
         "deleted": {
           "type": "boolean"
-        },
-        "userId": {
-          "type": "string"
         }
       }
     },
-    "GetIncidents": {
+    "GetIncidentsBadRequestResponse": {
       "type": "object",
       "required": [
         "userId"
@@ -816,17 +835,6 @@ func init() {
       }
     },
     "GetIncidentsUserIdNotFoundResponse": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "userId": {
-          "type": "string"
-        }
-      }
-    },
-    "GetUser": {
       "type": "object",
       "required": [
         "userId"
@@ -1031,9 +1039,6 @@ func init() {
     },
     "UpdateUser": {
       "type": "object",
-      "required": [
-        "userId"
-      ],
       "properties": {
         "degree": {
           "type": "string"
@@ -1045,9 +1050,6 @@ func init() {
           "type": "string"
         },
         "speciality": {
-          "type": "string"
-        },
-        "userId": {
           "type": "string"
         }
       }
@@ -1139,13 +1141,9 @@ func init() {
     "Verify": {
       "type": "object",
       "required": [
-        "userId",
         "verified"
       ],
       "properties": {
-        "userId": {
-          "type": "string"
-        },
         "verified": {
           "type": "boolean"
         }
@@ -1181,6 +1179,46 @@ func init() {
   "basePath": "/v2",
   "paths": {
     "/incident": {
+      "get": {
+        "description": "Use this to get all incidents created by a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Get incidents",
+        "operationId": "getIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsGoodResponse"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsBadRequestResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
       "post": {
         "description": "use this to create an incident for a userId",
         "consumes": [
@@ -1197,13 +1235,12 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "Creates an incident and returns the created incident",
             "name": "incident",
             "in": "body",
             "required": true,
@@ -1255,7 +1292,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1300,7 +1337,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1353,15 +1390,8 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "header that contains userId of user you want to get",
-            "name": "userId",
             "in": "header",
             "required": true
           }
@@ -1403,7 +1433,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1448,13 +1478,11 @@ func init() {
         "operationId": "deleteUser",
         "parameters": [
           {
-            "description": "deletes user with the requested userID",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteUser"
-            }
+            "type": "string",
+            "description": "authorization token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -1494,7 +1522,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1546,6 +1574,13 @@ func init() {
         "summary": "use this to verify or unverify a user, for testing only",
         "operationId": "verify",
         "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
           {
             "description": "verified field is true to verify, false to unverify",
             "name": "verified",
@@ -1776,7 +1811,6 @@ func init() {
     "CreateUser": {
       "type": "object",
       "required": [
-        "userId",
         "name",
         "email",
         "degree",
@@ -1793,9 +1827,6 @@ func init() {
           "type": "string"
         },
         "speciality": {
-          "type": "string"
-        },
-        "userId": {
           "type": "string"
         }
       }
@@ -1831,6 +1862,7 @@ func init() {
     "CreateUserGoodResponse": {
       "type": "object",
       "required": [
+        "userId",
         "created"
       ],
       "properties": {
@@ -1895,17 +1927,6 @@ func init() {
         }
       }
     },
-    "DeleteUser": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "userId": {
-          "type": "string"
-        }
-      }
-    },
     "DeleteUserBadResponse": {
       "type": "object",
       "required": [
@@ -1925,19 +1946,15 @@ func init() {
     "DeleteUserGoodResponse": {
       "type": "object",
       "required": [
-        "userId",
         "deleted"
       ],
       "properties": {
         "deleted": {
           "type": "boolean"
-        },
-        "userId": {
-          "type": "string"
         }
       }
     },
-    "GetIncidents": {
+    "GetIncidentsBadRequestResponse": {
       "type": "object",
       "required": [
         "userId"
@@ -1966,17 +1983,6 @@ func init() {
       }
     },
     "GetIncidentsUserIdNotFoundResponse": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "userId": {
-          "type": "string"
-        }
-      }
-    },
-    "GetUser": {
       "type": "object",
       "required": [
         "userId"
@@ -2181,9 +2187,6 @@ func init() {
     },
     "UpdateUser": {
       "type": "object",
-      "required": [
-        "userId"
-      ],
       "properties": {
         "degree": {
           "type": "string"
@@ -2195,9 +2198,6 @@ func init() {
           "type": "string"
         },
         "speciality": {
-          "type": "string"
-        },
-        "userId": {
           "type": "string"
         }
       }
@@ -2289,13 +2289,9 @@ func init() {
     "Verify": {
       "type": "object",
       "required": [
-        "userId",
         "verified"
       ],
       "properties": {
-        "userId": {
-          "type": "string"
-        },
         "verified": {
           "type": "boolean"
         }

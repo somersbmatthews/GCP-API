@@ -30,7 +30,7 @@ func TestCreateUser(t *testing.T) {
 	if payload.Degree != user.Degree ||
 		payload.Name != user.Name ||
 		payload.Email != user.Email ||
-		payload.UserID != user.UserID ||
+		payload.UserID != &user.UserID ||
 		payload.Speciality != user.Speciality {
 		t.Errorf("postgres create user failed, \n payload %v \n does not match user \n %v", payload, user)
 	}
@@ -149,11 +149,10 @@ func TestVerifyUser(t *testing.T) {
 	booleanTrue := true
 
 	verify := models.Verify{
-		UserID:   &userID,
 		Verified: &booleanTrue,
 	}
 
-	_, ok := VerifyUser(ctx, verify)
+	_, ok := VerifyUser(ctx, verify, userID)
 	if !ok {
 		t.Errorf("postgres verify user failed, verified with verify: %v", render.Render(verify))
 	}
@@ -162,9 +161,9 @@ func TestVerifyUser(t *testing.T) {
 
 	db := Open()
 
-	err := db.First(&payload, "user_id = ?", verify.UserID).Error
+	err := db.First(&payload, "user_id = ?", userID).Error
 	if err == gorm.ErrRecordNotFound {
-		t.Errorf("could not find user: %v after verifying", verify.UserID)
+		t.Errorf("could not find user: %v after verifying", userID)
 	} else if err != nil {
 		t.Error(err)
 	}
@@ -197,6 +196,7 @@ func TestCreateIncident(t *testing.T) {
 	ctx := context.Background()
 
 	ID := "12345678900"
+	uid := "1234567890"
 
 	incident := models.CreateIncident{
 		ID:                            &ID,
@@ -214,8 +214,12 @@ func TestCreateIncident(t *testing.T) {
 		LocationOfObject:              "throat",
 	}
 
-	_ = CreateIncident(ctx, incident)
+	_ = CreateIncident(ctx, incident, uid)
 
+}
+
+func TestGetIncidents(t *testing.T) {
+	// TODO: finish get incidents test
 }
 
 func TestUpdateIncident(t *testing.T) {
@@ -264,7 +268,6 @@ func TestUpdateIncident(t *testing.T) {
 	db := Open()
 
 	payload := Incident{}
-	// TODO: fix update
 	err := db.First(&payload, "id = ?", updateWithIncident.ID).Error
 	if err == gorm.ErrRecordNotFound {
 		t.Errorf("could not find incident: %v after updating", updateWithIncident)

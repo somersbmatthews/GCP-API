@@ -36,7 +36,7 @@ type DeleteIncidentsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*authorization header contains firebase ID token
+	/*authorization header contains bearer token
 	  Required: true
 	  In: header
 	*/
