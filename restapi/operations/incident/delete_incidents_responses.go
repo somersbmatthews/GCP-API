@@ -57,6 +57,50 @@ func (o *DeleteIncidentsOK) WriteResponse(rw http.ResponseWriter, producer runti
 	}
 }
 
+// DeleteIncidentsUnauthorizedCode is the HTTP code returned for type DeleteIncidentsUnauthorized
+const DeleteIncidentsUnauthorizedCode int = 401
+
+/*DeleteIncidentsUnauthorized bad authorization token
+
+swagger:response deleteIncidentsUnauthorized
+*/
+type DeleteIncidentsUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+}
+
+// NewDeleteIncidentsUnauthorized creates DeleteIncidentsUnauthorized with default headers values
+func NewDeleteIncidentsUnauthorized() *DeleteIncidentsUnauthorized {
+
+	return &DeleteIncidentsUnauthorized{}
+}
+
+// WithPayload adds the payload to the delete incidents unauthorized response
+func (o *DeleteIncidentsUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *DeleteIncidentsUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete incidents unauthorized response
+func (o *DeleteIncidentsUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteIncidentsUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // DeleteIncidentsNotFoundCode is the HTTP code returned for type DeleteIncidentsNotFound
 const DeleteIncidentsNotFoundCode int = 404
 

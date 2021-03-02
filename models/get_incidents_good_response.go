@@ -21,11 +21,11 @@ import (
 type GetIncidentsGoodResponse struct {
 
 	// incidents
-	Incidents []*CreateIncident `json:"Incidents"`
+	Incidents []*GetIncidentsIncident `json:"Incidents"`
 
-	// user Id
+	// user ID
 	// Required: true
-	UserID *string `json:"UserId"`
+	UserID *string `json:"UserID"`
 }
 
 // Validate validates this get incidents good response
@@ -72,7 +72,7 @@ func (m *GetIncidentsGoodResponse) validateIncidents(formats strfmt.Registry) er
 
 func (m *GetIncidentsGoodResponse) validateUserID(formats strfmt.Registry) error {
 
-	if err := validate.Required("UserId", "body", m.UserID); err != nil {
+	if err := validate.Required("UserID", "body", m.UserID); err != nil {
 		return err
 	}
 

@@ -33,7 +33,7 @@ func NewGetIncidents(ctx *middleware.Context, handler GetIncidentsHandler) *GetI
 
 Get incidents
 
-Use this to get all incidents created by a user
+Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created
 
 */
 type GetIncidents struct {

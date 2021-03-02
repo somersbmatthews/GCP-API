@@ -3,8 +3,10 @@ package pg
 import (
 	"context"
 	"database/sql"
+	"encoding/hex"
 	"fmt"
 	"os"
+	"time"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"github.com/gdexlab/go-render/render"
@@ -29,7 +31,9 @@ type User struct {
 }
 
 type Incident struct {
+	CreatedAt                     int64
 	ID                            string `gorm: "unique"`
+	EncryptedUserID               string `gorm:"type:bytea"`
 	LongTermPrognosis             string
 	WhatMaterialIsTheObjectMadeOf string
 	Anterior                      string
@@ -42,8 +46,23 @@ type Incident struct {
 	LargestLength                 string
 	ObjectBasicShape              string
 	TheObjectIs                   string
-	UserID                        string
 }
+
+// type IncidentQuery struct {
+// 	ID                            string `gorm: "unique"`
+// 	LongTermPrognosis             string
+// 	WhatMaterialIsTheObjectMadeOf string
+// 	Anterior                      string
+// 	DateOfIncident                string
+// 	ObjectConsistency             string
+// 	Gender                        string
+// 	ApproximatePatientAge         string
+// 	LocationOfObject              string
+// 	IncidentDescription           string
+// 	LargestLength                 string
+// 	ObjectBasicShape              string
+// 	TheObjectIs                   string
+// }
 
 var postgrespassword string
 
@@ -141,10 +160,12 @@ func Open() *gorm.DB {
 
 	// DSN := "host=localhost user=gorm password=gorm database=postgres port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		// DSN: dbURI,
+		// DSN: DSN,
 		Conn: sqlDB,
 		// PreferSimpleProtocol: true, // disables implicit prepared statement usage
-	}), &gorm.Config{})
+	}), &gorm.Config{
+		// QueryFields: true,
+	})
 	if err != nil {
 		errMsg := fmt.Sprintf("%v,::: %v", err, render.Render(db))
 		panic(errMsg)
@@ -154,8 +175,24 @@ func Open() *gorm.DB {
 
 func CreateIncident(ctx context.Context, incident models.CreateIncident, userID string) *models.CreateIncidentGoodResponse {
 	db := Open()
+	// conn, err := db.DB()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer conn.Close()
+	encryptedUserID, err := encryptUserID(userID)
+	if err != nil {
+		panic(err)
+	}
+
+	// bytea := stringToBin(encryptedUserID)
+
+	bytea := getByteaFromString(encryptedUserID)
+
 	incidentModel := Incident{
+		CreatedAt:                     time.Now().UnixNano(),
 		ID:                            *incident.ID,
+		EncryptedUserID:               bytea,
 		DateOfIncident:                incident.DateOfIncident,
 		ApproximatePatientAge:         incident.ApproximatePatientAge,
 		Gender:                        incident.Gender,
@@ -167,13 +204,13 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 		WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
 		TheObjectIs:                   incident.TheObjectIs,
 		LargestLength:                 incident.LargestLength,
-		UserID:                        userID,
 	}
-	err := db.Create(incidentModel).Error
+	err = db.Create(incidentModel).Error
 	if err != nil {
 		panic(err)
 	}
 	response := models.CreateIncidentGoodResponse{
+		UserID:                        userID,
 		ID:                            incident.ID,
 		DateOfIncident:                incident.DateOfIncident,
 		ApproximatePatientAge:         incident.ApproximatePatientAge,
@@ -187,19 +224,20 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 		TheObjectIs:                   incident.TheObjectIs,
 		LargestLength:                 incident.LargestLength,
 		Created:                       true,
-		UserID:                        userID,
 	}
 	return &response
 }
 
-func CreateUser(ctx context.Context, user User) (*models.CreateUserGoodResponse, bool) {
+func CreateUser(ctx context.Context, user User, userID string) (*models.CreateUserGoodResponse, bool) {
 	db := Open()
+	user.UserID = userID
 	err := db.Create(user).Error
 	if err != nil {
-		panic(err)
+		return nil, false
 	}
 	booleanTrue := true
 	return &models.CreateUserGoodResponse{
+		UserID:     &userID,
 		Email:      user.Email,
 		Speciality: user.Speciality,
 		Degree:     user.Degree,
@@ -208,23 +246,41 @@ func CreateUser(ctx context.Context, user User) (*models.CreateUserGoodResponse,
 	}, true
 }
 
-func GetIncidents(ctx context.Context, userId string) (*models.GetIncidentsGoodResponse, bool) {
+func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodResponse, bool) {
 	db := Open()
+
+	encryptedUserID, err := encryptUserID(userID)
+	if err != nil {
+		panic(err)
+	}
+
+	sql := "SELECT * FROM incidents WHERE encrypted_user_id = ? ORDER BY created_at DESC"
+
+	// bytea := stringToBin(encryptedUserID)
+
+	bytea := getByteaFromString(encryptedUserID)
 
 	incidents := []Incident{}
 
-	err := db.Where(Incident{}, "user_id <> ?", userId).Find(&incidents).Error
+	// fields := []string{"id", "long_term_prognosis", "what_material_is_the_object_made_of", "anterior", "date_of_incident", "object_consistency", "gender", "approximate_patient_age", "location_of_object", "incident_description", "largest_length", "object_basic_shape", "the_object_is"}
+
+	// TODO: make a sql query as per website with function for making the bytea to text
+	// OR: TODO find out what that big fucking space is in my gorm query or replace with raw sql
+	// FIRST: make sql query in psql to convert the bytea value to text so you can see what it is
+	err = db.Raw(sql, bytea).Scan(&incidents).Error
+
+	// err = db.Where(Incident{}, "encrypted_user_id = ?", bytea).Find(&incidents).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
 		panic(err)
 	}
 
-	incidentResponses := []*models.CreateIncident{}
+	incidentResponses := []*models.GetIncidentsIncident{}
 
 	for _, incident := range incidents {
-		incidentResponses = append(incidentResponses, &models.CreateIncident{
-			ID:                            &incident.ID,
+		incidentResponses = append(incidentResponses, &models.GetIncidentsIncident{
+			ID:                            incident.ID,
 			DateOfIncident:                incident.DateOfIncident,
 			ApproximatePatientAge:         incident.ApproximatePatientAge,
 			Gender:                        incident.Gender,
@@ -240,11 +296,14 @@ func GetIncidents(ctx context.Context, userId string) (*models.GetIncidentsGoodR
 		})
 	}
 
-	return &models.GetIncidentsGoodResponse{
-			Incidents: incidentResponses,
-			UserID:    &userId,
-		},
-		true
+	response := &models.GetIncidentsGoodResponse{
+		Incidents: incidentResponses,
+		UserID:    &userID,
+	}
+
+	// log.Printf(render.Render(response))
+
+	return response, true
 }
 
 func UpdateIncident(ctx context.Context, incident models.UpdateIncident) (*models.UpdateIncidentGoodResponse, bool) {
@@ -326,10 +385,10 @@ func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, b
 		true
 }
 
-func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
+func UpdateUser(ctx context.Context, user User, userID string) (*models.UpdateUserGoodResponse, bool) {
 	db := Open()
 	model := user
-	err := db.First(&User{}, "user_id = ?", user.UserID).Omit("user_id").Updates(user).Error
+	err := db.First(&User{}, "user_id = ?", userID).Omit("user_id").Updates(user).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -337,6 +396,7 @@ func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse,
 	}
 	booleanTrue := true
 	return &models.UpdateUserGoodResponse{
+			UserID:     &userID,
 			Name:       &model.Name,
 			Email:      &model.Email,
 			Degree:     &model.Degree,
@@ -359,6 +419,7 @@ func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodRespo
 	booleanTrue := true
 
 	return &models.DeleteUserGoodResponse{
+			UserID:  userID,
 			Deleted: &booleanTrue,
 		},
 		true
@@ -375,6 +436,7 @@ func VerifyUser(ctx context.Context, verify models.Verify, userID string) (*mode
 	}
 	booleanTrue := true
 	return &models.UpdateUserGoodResponse{
+			UserID:     &userID,
 			Name:       &model.Name,
 			Email:      &model.Email,
 			Degree:     &model.Degree,
@@ -401,4 +463,37 @@ func comparePasswords(hashedPassword string, plainPassword string) bool {
 		panic(err)
 	}
 	return true
+}
+
+// func stringToBin(s string) (binString string) {
+// 	for _, c := range s {
+// 		binString = fmt.Sprintf("%s%b", binString, c)
+// 	}
+// 	return
+// }
+
+func getByteaFromString(encryptedUserID string) string {
+
+	bytes := []byte(encryptedUserID)
+
+	hexStr := hex.EncodeToString(bytes)
+
+	hexStrWithBackslash := "\\x" + hexStr
+
+	return hexStrWithBackslash
+
+}
+
+func getStringFromBytea(bytea string) string {
+
+	// hexStr = strings.TrimPrefix(bytea, "\\x")
+
+	bytes, err := hex.DecodeString(bytea)
+	if err != nil {
+		panic(err)
+	}
+
+	str := string(bytes[:])
+
+	return str
 }

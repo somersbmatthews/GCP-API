@@ -57,14 +57,14 @@ func (o *UpdateIncidentsOK) WriteResponse(rw http.ResponseWriter, producer runti
 	}
 }
 
-// UpdateIncidentsBadRequestCode is the HTTP code returned for type UpdateIncidentsBadRequest
-const UpdateIncidentsBadRequestCode int = 400
+// UpdateIncidentsUnauthorizedCode is the HTTP code returned for type UpdateIncidentsUnauthorized
+const UpdateIncidentsUnauthorizedCode int = 401
 
-/*UpdateIncidentsBadRequest invalid incident data
+/*UpdateIncidentsUnauthorized bad authorization token
 
-swagger:response updateIncidentsBadRequest
+swagger:response updateIncidentsUnauthorized
 */
-type UpdateIncidentsBadRequest struct {
+type UpdateIncidentsUnauthorized struct {
 
 	/*
 	  In: Body
@@ -72,27 +72,27 @@ type UpdateIncidentsBadRequest struct {
 	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
 }
 
-// NewUpdateIncidentsBadRequest creates UpdateIncidentsBadRequest with default headers values
-func NewUpdateIncidentsBadRequest() *UpdateIncidentsBadRequest {
+// NewUpdateIncidentsUnauthorized creates UpdateIncidentsUnauthorized with default headers values
+func NewUpdateIncidentsUnauthorized() *UpdateIncidentsUnauthorized {
 
-	return &UpdateIncidentsBadRequest{}
+	return &UpdateIncidentsUnauthorized{}
 }
 
-// WithPayload adds the payload to the update incidents bad request response
-func (o *UpdateIncidentsBadRequest) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *UpdateIncidentsBadRequest {
+// WithPayload adds the payload to the update incidents unauthorized response
+func (o *UpdateIncidentsUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *UpdateIncidentsUnauthorized {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the update incidents bad request response
-func (o *UpdateIncidentsBadRequest) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+// SetPayload sets the payload to the update incidents unauthorized response
+func (o *UpdateIncidentsUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *UpdateIncidentsBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *UpdateIncidentsUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(400)
+	rw.WriteHeader(401)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

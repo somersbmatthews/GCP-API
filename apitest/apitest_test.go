@@ -3,7 +3,6 @@ package test
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -34,26 +33,27 @@ const urlstr string = "https://girc.app/v2"
 var token string
 
 func init() {
-	tokenStr, ok := createBearerToken()
-	if !ok {
+	ctx := context.Background()
+	tokenStr, err := getIDTokenForUser(ctx, uid)
+	if err != nil {
 		panic("cannot create bearer token")
 	}
 	token = tokenStr
 }
 
-func createBearerToken() (string, bool) {
-	ctx := context.Background()
-	idToken, err := getIDTokenForUser(ctx, uid)
-	if err != nil {
-		return "", false
-	}
+// func createBearerToken() (string, bool) {
+// 	ctx := context.Background()
+// 	idToken, err := getIDTokenForUser(ctx, uid)
+// 	if err != nil {
+// 		return "", false
+// 	}
 
-	tokenStr := fmt.Sprintf("%s%s", "Bearer ", idToken)
+// 	tokenStr := fmt.Sprintf("%s%s", "Bearer ", idToken)
 
-	tokenBytes := []byte(tokenStr)
-	return base64.StdEncoding.EncodeToString(tokenBytes), true
+// 	tokenBytes := []byte(tokenStr)
+// 	return base64.StdEncoding.EncodeToString(tokenBytes), true
 
-}
+// }
 func TestRegisterUser(t *testing.T) {
 	reqBody := body{
 		"name":       "Tee Bow",
@@ -89,7 +89,7 @@ func TestRegisterUser(t *testing.T) {
 		"degree":     "MD",
 		"created":    true,
 	}
-	t.Logf("this is running 6")
+	// t.Logf("this is running 6")
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
 	}
@@ -271,7 +271,7 @@ func TestCreateIncident(t *testing.T) {
 		"The_object_is":                       "small",
 		"Largest_Length":                      "23",
 		"Created":                             true,
-		"UserID":                              true,
+		"UserID":                              uid,
 	}
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
@@ -279,7 +279,6 @@ func TestCreateIncident(t *testing.T) {
 }
 
 func TestGetIncidents(t *testing.T) {
-	// TODO change data for second incident created for this user
 	reqBody := body{
 		"ID":                                  "1234567790",
 		"Date_of_Incident":                    "12/20/2020",
@@ -312,6 +311,7 @@ func TestGetIncidents(t *testing.T) {
 	}
 
 	reqBody = body{}
+
 	data, err = setBody(reqBody)
 	if err != nil {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
@@ -320,34 +320,21 @@ func TestGetIncidents(t *testing.T) {
 		t.Errorf("could not convert reqBody map[string]interface to []byte, error: %v", err)
 	}
 	url = fmt.Sprintf("%v/incident", urlstr)
-	req, err = http.NewRequest("GET", url, bytes.NewBuffer(data))
+	req, err = http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Errorf("could not make new request %v", err)
 	}
-	req.Header.Set("Content-Type", "application/json")
+	// req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 	resp, err = client.Do(req)
 	if err != nil {
-		t.Errorf("failed to create incident, error: %v", err)
+		t.Errorf("failed to get incidents, error: %v", err)
 	}
-	json := getBody(*resp)
-	want := body{
+	json := printBody(*resp)
+	var want = body{
 		"UserID": uid,
-		"Incidents": []body{{
-			"ID":                                  "1234567890",
-			"Date_of_Incident":                    "12/20/2020",
-			"Approximate_Patient_Age":             "34",
-			"Gender":                              "female",
-			"Long-term_prognosis":                 "dead",
-			"Incident_Description":                "choking",
-			"Anterior":                            "someurl@url.com",
-			"Object_Consistency":                  "rough",
-			"Object_Basic_Shape":                  "round",
-			"What_material_is_the_object_made_of": "plastic",
-			"The_object_is":                       "small",
-			"Largest_Length":                      "23",
-		},
-			{
+		"Incidents": []interface{}{
+			map[string]interface{}{
 				"ID":                                  "1234567790",
 				"Date_of_Incident":                    "12/20/2020",
 				"Approximate_Patient_Age":             "42",
@@ -361,10 +348,24 @@ func TestGetIncidents(t *testing.T) {
 				"The_object_is":                       "large",
 				"Largest_Length":                      "37",
 			},
+			map[string]interface{}{
+				"ID":                                  "1234567890",
+				"Date_of_Incident":                    "12/20/2020",
+				"Approximate_Patient_Age":             "34",
+				"Gender":                              "female",
+				"Long-term_prognosis":                 "dead",
+				"Incident_Description":                "choking",
+				"Anterior":                            "someurl@url.com",
+				"Object_Consistency":                  "rough",
+				"Object_Basic_Shape":                  "round",
+				"What_material_is_the_object_made_of": "plastic",
+				"The_object_is":                       "small",
+				"Largest_Length":                      "23",
+			},
 		},
 	}
 	if !reflect.DeepEqual(want, json) {
-		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
+		t.Errorf("response json: \n %v \n does not equal json that we want: \n %v \n.", render.Render(json), render.Render(want))
 	}
 }
 
@@ -501,6 +502,29 @@ func getBody(res http.Response) body {
 	}
 	return jsondata
 }
+
+func printBody(res http.Response) body {
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("THIS IS BODY")
+	fmt.Println(string(data[:]))
+	jsondata := body{}
+	err = json.Unmarshal(data, &jsondata)
+	if err != nil {
+		errMsg := errors.Errorf("json not unmarshalling, wtf, error: %v", err)
+		panic(errMsg)
+	}
+	return jsondata
+}
+
+// func getBodyFromArray(res http.Response) body {
+// 	data, err := ioutil.ReadAll(res.Body)
+
+// 	data.
+
+// }
 
 func newHeader() http.Header {
 	return http.Header{}

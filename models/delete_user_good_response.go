@@ -22,6 +22,9 @@ type DeleteUserGoodResponse struct {
 	// deleted
 	// Required: true
 	Deleted *bool `json:"deleted"`
+
+	// user Id
+	UserID string `json:"userId,omitempty"`
 }
 
 // Validate validates this delete user good response

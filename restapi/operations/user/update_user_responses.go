@@ -57,14 +57,14 @@ func (o *UpdateUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 	}
 }
 
-// UpdateUserBadRequestCode is the HTTP code returned for type UpdateUserBadRequest
-const UpdateUserBadRequestCode int = 400
+// UpdateUserUnauthorizedCode is the HTTP code returned for type UpdateUserUnauthorized
+const UpdateUserUnauthorizedCode int = 401
 
-/*UpdateUserBadRequest Invalid user supplied
+/*UpdateUserUnauthorized bad authorization token
 
-swagger:response updateUserBadRequest
+swagger:response updateUserUnauthorized
 */
-type UpdateUserBadRequest struct {
+type UpdateUserUnauthorized struct {
 
 	/*
 	  In: Body
@@ -72,27 +72,27 @@ type UpdateUserBadRequest struct {
 	Payload *models.UpdateUserInvalidResponse `json:"body,omitempty"`
 }
 
-// NewUpdateUserBadRequest creates UpdateUserBadRequest with default headers values
-func NewUpdateUserBadRequest() *UpdateUserBadRequest {
+// NewUpdateUserUnauthorized creates UpdateUserUnauthorized with default headers values
+func NewUpdateUserUnauthorized() *UpdateUserUnauthorized {
 
-	return &UpdateUserBadRequest{}
+	return &UpdateUserUnauthorized{}
 }
 
-// WithPayload adds the payload to the update user bad request response
-func (o *UpdateUserBadRequest) WithPayload(payload *models.UpdateUserInvalidResponse) *UpdateUserBadRequest {
+// WithPayload adds the payload to the update user unauthorized response
+func (o *UpdateUserUnauthorized) WithPayload(payload *models.UpdateUserInvalidResponse) *UpdateUserUnauthorized {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the update user bad request response
-func (o *UpdateUserBadRequest) SetPayload(payload *models.UpdateUserInvalidResponse) {
+// SetPayload sets the payload to the update user unauthorized response
+func (o *UpdateUserUnauthorized) SetPayload(payload *models.UpdateUserInvalidResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *UpdateUserBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *UpdateUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(400)
+	rw.WriteHeader(401)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

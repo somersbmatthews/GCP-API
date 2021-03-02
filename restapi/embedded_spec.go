@@ -32,7 +32,7 @@ func init() {
   "paths": {
     "/incident": {
       "get": {
-        "description": "Use this to get all incidents created by a user",
+        "description": "Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created",
         "produces": [
           "application/json"
         ],
@@ -57,8 +57,8 @@ func init() {
               "$ref": "#/definitions/GetIncidentsGoodResponse"
             }
           },
-          "400": {
-            "description": "bad request",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/GetIncidentsBadRequestResponse"
             }
@@ -114,8 +114,8 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
             }
@@ -165,6 +165,12 @@ func init() {
               "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          },
           "404": {
             "description": "incident not found",
             "schema": {
@@ -210,8 +216,8 @@ func init() {
               "$ref": "#/definitions/UpdateIncidentGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
             }
@@ -255,8 +261,8 @@ func init() {
               "$ref": "#/definitions/GetUserGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid user supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/GetUserBadResponse"
             }
@@ -308,7 +314,13 @@ func init() {
             }
           },
           "400": {
-            "description": "user not created",
+            "description": "database error while creating user",
+            "schema": {
+              "$ref": "#/definitions/CreateUserBadResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/CreateUserBadResponse"
             }
@@ -344,8 +356,8 @@ func init() {
               "$ref": "#/definitions/DeleteUserGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid userId supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/DeleteUserBadResponse"
             }
@@ -396,8 +408,8 @@ func init() {
               "$ref": "#/definitions/UpdateUserGoodResponse"
             }
           },
-          "400": {
-            "description": "Invalid user supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/UpdateUserInvalidResponse"
             }
@@ -448,6 +460,12 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/UpdateUserGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNotFoundResponse"
             }
           },
           "404": {
@@ -806,6 +824,9 @@ func init() {
       "properties": {
         "deleted": {
           "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
         }
       }
     },
@@ -823,16 +844,60 @@ func init() {
     "GetIncidentsGoodResponse": {
       "type": "object",
       "required": [
-        "UserId"
+        "UserID"
       ],
       "properties": {
         "Incidents": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CreateIncident"
+            "$ref": "#/definitions/GetIncidentsIncident"
           }
         },
-        "UserId": {
+        "UserID": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsIncident": {
+      "type": "object",
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
           "type": "string"
         }
       }
@@ -1183,7 +1248,7 @@ func init() {
   "paths": {
     "/incident": {
       "get": {
-        "description": "Use this to get all incidents created by a user",
+        "description": "Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created",
         "produces": [
           "application/json"
         ],
@@ -1208,8 +1273,8 @@ func init() {
               "$ref": "#/definitions/GetIncidentsGoodResponse"
             }
           },
-          "400": {
-            "description": "bad request",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/GetIncidentsBadRequestResponse"
             }
@@ -1265,8 +1330,8 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
             }
@@ -1316,6 +1381,12 @@ func init() {
               "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          },
           "404": {
             "description": "incident not found",
             "schema": {
@@ -1361,8 +1432,8 @@ func init() {
               "$ref": "#/definitions/UpdateIncidentGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
             }
@@ -1406,8 +1477,8 @@ func init() {
               "$ref": "#/definitions/GetUserGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid user supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/GetUserBadResponse"
             }
@@ -1459,7 +1530,13 @@ func init() {
             }
           },
           "400": {
-            "description": "user not created",
+            "description": "database error while creating user",
+            "schema": {
+              "$ref": "#/definitions/CreateUserBadResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/CreateUserBadResponse"
             }
@@ -1495,8 +1572,8 @@ func init() {
               "$ref": "#/definitions/DeleteUserGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid userId supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/DeleteUserBadResponse"
             }
@@ -1547,8 +1624,8 @@ func init() {
               "$ref": "#/definitions/UpdateUserGoodResponse"
             }
           },
-          "400": {
-            "description": "Invalid user supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/UpdateUserInvalidResponse"
             }
@@ -1599,6 +1676,12 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/UpdateUserGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNotFoundResponse"
             }
           },
           "404": {
@@ -1957,6 +2040,9 @@ func init() {
       "properties": {
         "deleted": {
           "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
         }
       }
     },
@@ -1974,16 +2060,60 @@ func init() {
     "GetIncidentsGoodResponse": {
       "type": "object",
       "required": [
-        "UserId"
+        "UserID"
       ],
       "properties": {
         "Incidents": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CreateIncident"
+            "$ref": "#/definitions/GetIncidentsIncident"
           }
         },
-        "UserId": {
+        "UserID": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsIncident": {
+      "type": "object",
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
           "type": "string"
         }
       }

@@ -49,7 +49,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			response := user.NewCreateUserBadRequest()
+			response := user.NewCreateUserUnauthorized()
 			booleanFalse := false
 			createUserBadResponse := models.CreateUserBadResponse{
 				Created:    &booleanFalse,
@@ -69,7 +69,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			Name:       *params.User.Name,
 			Verified:   false,
 		}
-		payload, ok := pg.CreateUser(ctx, newUser)
+		payload, ok := pg.CreateUser(ctx, newUser, userID)
 		if !ok {
 			response := user.NewCreateUserBadRequest()
 			booleanFalse := false
@@ -93,7 +93,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			response := user.NewGetUserBadRequest()
+			response := user.NewGetUserUnauthorized()
 			getUserBadResponse := models.GetUserBadResponse{
 				UserID: &userID,
 			}
@@ -119,7 +119,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			return middleware.Error(400, updateUserInvalidResponse(params))
+			return middleware.Error(401, updateUserInvalidResponse(params))
 		}
 		updatedUser := pg.User{
 			UserID:     userID,
@@ -128,7 +128,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			Degree:     params.User.Degree,
 			Name:       params.User.Name,
 		}
-		payload, ok := pg.UpdateUser(ctx, updatedUser)
+		payload, ok := pg.UpdateUser(ctx, updatedUser, userID)
 		if !ok {
 			return middleware.Error(404, updateUserNotFoundResponse(params, userID))
 		}
@@ -143,7 +143,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
-			return middleware.Error(400, models.DeleteUserBadResponse{
+			return middleware.Error(401, models.DeleteUserBadResponse{
 				Deleted: &booleanFalse,
 				UserID:  &userID,
 			})
@@ -165,6 +165,9 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		ctx := context.Background()
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return middleware.Error(401, verifyUserNotFoundResponse(params, userID))
+		}
 		verifiedUser := models.Verify{
 			Verified: params.Verified.Verified,
 		}
@@ -183,7 +186,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
-			return middleware.Error(400, models.CreateIncidentInvalidIncidentResponse{
+			return middleware.Error(401, models.CreateIncidentInvalidIncidentResponse{
 				ID:                            params.Incident.ID,
 				DateOfIncident:                params.Incident.DateOfIncident,
 				ApproximatePatientAge:         params.Incident.ApproximatePatientAge,
@@ -205,9 +208,31 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		return response
 	})
 
-	// api.IncidentGetIncidentsHandler = incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
-	// 	return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
-	// })
+	api.IncidentGetIncidentsHandler = incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			response := incident.NewGetIncidentsUnauthorized()
+			getIncidentsResponse := models.GetIncidentsBadRequestResponse{
+				UserID: &userID,
+			}
+			response.WithPayload(&getIncidentsResponse)
+			return response
+		}
+		payload, ok := pg.GetIncidents(ctx, userID)
+		if !ok {
+			response := incident.NewGetIncidentsNotFound()
+			getIncidentsResponse := models.GetIncidentsUserIDNotFoundResponse{
+				UserID: &userID,
+			}
+			response.WithPayload(&getIncidentsResponse)
+			return response
+		}
+		response := incident.NewGetIncidentsOK()
+		response.WithPayload(payload)
+		return response
+	})
 
 	api.IncidentUpdateIncidentsHandler = incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
 		ctx := context.Background()
@@ -215,7 +240,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		_, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
-			return middleware.Error(400, models.UpdateIncidentIncidentIDNotFoundResponse{
+			return middleware.Error(401, models.UpdateIncidentIncidentIDNotFoundResponse{
 				ID:                            params.Incident.ID,
 				DateOfIncident:                params.Incident.DateOfIncident,
 				ApproximatePatientAge:         params.Incident.ApproximatePatientAge,
@@ -260,7 +285,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		_, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
-			return middleware.Error(404, models.DeleteIncidentIncidentIDNotFoundResponse{
+			return middleware.Error(401, models.DeleteIncidentIncidentIDNotFoundResponse{
 				Deleted: &booleanFalse,
 				ID:      params.Incident.ID,
 			})
