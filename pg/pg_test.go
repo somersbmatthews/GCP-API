@@ -34,14 +34,14 @@ func TestCreateUser(t *testing.T) {
 	ctx := context.Background()
 
 	user := User{
-		UserID:     "",
-		Email:      "DrJimBob@jimbobclinic.com",
-		Name:       "Jim Bob",
-		Speciality: "Otolaryngologist",
-		Degree:     "MD",
-		Verified:   false,
+		UserID:    testUserID,
+		Email:     "DrJimBob@jimbobclinic.com",
+		Name:      "Jim Bob",
+		Specialty: "Otolaryngologist",
+		Degree:    "MD",
+		Verified:  false,
 	}
-	payload, ok := CreateUser(ctx, user, testUserID)
+	payload, ok := CreateUser(ctx, user)
 	if !ok {
 		t.Errorf("postgres create user \n %v \n failed", user)
 	}
@@ -50,7 +50,7 @@ func TestCreateUser(t *testing.T) {
 		payload.Name != user.Name ||
 		payload.Email != user.Email ||
 		*payload.UserID != testUserID ||
-		payload.Speciality != user.Speciality {
+		payload.Specialty != user.Specialty {
 		t.Errorf("postgres create user failed, \n payload %v \n does not match user \n %v", render.Render(payload), render.Render(user))
 	}
 }
@@ -58,12 +58,12 @@ func TestCreateUser(t *testing.T) {
 func TestGetUser(t *testing.T) {
 
 	user := User{
-		UserID:     "",
-		Email:      "DrJimBob@jimbobclinic.com",
-		Name:       "Jim Bob",
-		Speciality: "Otolaryngologist",
-		Degree:     "MD",
-		Verified:   false,
+		UserID:    "",
+		Email:     "DrJimBob@jimbobclinic.com",
+		Name:      "Jim Bob",
+		Specialty: "Otolaryngologist",
+		Degree:    "MD",
+		Verified:  false,
 	}
 
 	ctx := context.Background()
@@ -77,7 +77,7 @@ func TestGetUser(t *testing.T) {
 		*payload.Name != user.Name ||
 		*payload.Email != user.Email ||
 		*payload.UserID != testUserID ||
-		*payload.Speciality != user.Speciality {
+		*payload.Specialty != user.Specialty {
 		t.Errorf("postgres get user failed, \n payload %v \n does not match user \n %v", render.Render(payload), render.Render(user))
 	}
 }
@@ -86,38 +86,38 @@ func TestUpdateUser(t *testing.T) {
 	ctx := context.Background()
 
 	user := User{
-
-		Email:      "DrJimBob@jimbobclinic.com",
-		Name:       "Jim Bob",
-		Degree:     "MD",
-		Speciality: "Otolaryngologist",
+		UserID:    testUserID,
+		Email:     "DrJimBob@jimbobclinic.com",
+		Name:      "Jim Bob",
+		Degree:    "MD",
+		Specialty: "Otolaryngologist",
 	}
 
 	updateWithUser := User{
-
-		Email:      "DrJimBobNewEmail@jimbobclinic.com",
-		Name:       "Jim W. Bob",
-		Degree:     "DO",
-		Speciality: "Otolaryngologist",
+		UserID:    testUserID,
+		Email:     "DrJimBobNewEmail@jimbobclinic.com",
+		Name:      "Jim W. Bob",
+		Degree:    "DO",
+		Specialty: "Otolaryngologist",
 	}
 
 	badUser := User{
-
-		Email:      "DrJimBobNewEmail@jimbobclinic.com",
-		Name:       "Jim W. Bob",
-		Degree:     "DO",
-		Speciality: "SpinDoctor",
+		UserID:    badUserID,
+		Email:     "DrJimBobNewEmail@jimbobclinic.com",
+		Name:      "Jim W. Bob",
+		Degree:    "DO",
+		Specialty: "SpinDoctor",
 	}
 
 	updateWithEmptyFields := User{
-
-		Email:      "DrJimHWBobNewEmail@jimbobclinic.com",
-		Name:       "Jim HW. Bob",
-		Degree:     "",
-		Speciality: "",
+		UserID:    testUserID,
+		Email:     "DrJimHWBobNewEmail@jimbobclinic.com",
+		Name:      "Jim HW. Bob",
+		Degree:    "",
+		Specialty: "",
 	}
 
-	payload, ok := UpdateUser(ctx, updateWithUser, testUserID)
+	payload, ok := UpdateUser(ctx, updateWithUser)
 	if !ok {
 		t.Errorf("postgres user update failed for user: %v \n with updatewithuser: %v", user, updateWithUser)
 	}
@@ -126,18 +126,19 @@ func TestUpdateUser(t *testing.T) {
 		*payload.Name != updateWithUser.Name ||
 		*payload.Email != updateWithUser.Email ||
 		*payload.UserID != testUserID ||
-		*payload.Speciality != updateWithUser.Speciality {
+		*payload.Specialty != updateWithUser.Specialty {
 		t.Errorf("postgres update user failed, \n payload %v \n does not match updatewithuser \n %v", render.Render(payload), updateWithUser)
 	}
 
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 	err := db.First(&User{}, "user_id = ?", badUserID).Omit("user_id").Updates(badUser).Error
 	if err != gorm.ErrRecordNotFound {
 		fmt.Println(err)
 		t.Errorf("expected postgres update user to have failed, \n by baduserID: %v", badUser.UserID)
 	}
 
-	_, ok = UpdateUser(ctx, updateWithEmptyFields, testUserID)
+	_, ok = UpdateUser(ctx, updateWithEmptyFields)
 	if !ok {
 		t.Errorf("postgres user update with empty fields failed for user: %v \n with updateWithEmptyFields: %v", user, updateWithEmptyFields)
 	}
@@ -148,7 +149,7 @@ func TestUpdateUser(t *testing.T) {
 		*payloadAfterEmptyUpdates.Name != updateWithEmptyFields.Name ||
 		*payloadAfterEmptyUpdates.Email != updateWithEmptyFields.Email ||
 		*payloadAfterEmptyUpdates.UserID != testUserID ||
-		*payloadAfterEmptyUpdates.Speciality != updateWithUser.Speciality {
+		*payloadAfterEmptyUpdates.Specialty != updateWithUser.Specialty {
 		t.Errorf("postgres update user with empty fields failed, \n payload %v \n does not match updateWithEmptyFields \n %v", render.Render(payloadAfterEmptyUpdates), updateWithEmptyFields)
 	}
 
@@ -170,7 +171,8 @@ func TestVerifyUser(t *testing.T) {
 
 	payload := User{}
 
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 
 	err := db.First(&payload, "user_id = ?", testUserID).Error
 	if err == gorm.ErrRecordNotFound {
@@ -248,7 +250,8 @@ func TestCreateIncidents(t *testing.T) {
 }
 
 func TestGetBytea(t *testing.T) {
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 
 	encryptedUserID, err := encryptUserID(testUserID)
 	if err != nil {
@@ -377,7 +380,8 @@ func TestUpdateIncident(t *testing.T) {
 		t.Errorf("postgres update incident failed, updated with incident: %v", updateWithIncident)
 	}
 
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 
 	payload := Incident{}
 	err := db.First(&payload, "id = ?", updateWithIncident.ID).Error
@@ -421,7 +425,8 @@ func TestUpdateIncident(t *testing.T) {
 func TestDeleteIncident(t *testing.T) {
 	ctx := context.Background()
 
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 
 	incidentID := "1234567890"
 	incidentID2 := "1234567790"

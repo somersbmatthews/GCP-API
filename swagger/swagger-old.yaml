@@ -555,7 +555,7 @@ definitions:
       - userId
       - name
       - degree
-      - speciality
+      - specialty
       - email
     properties:
       userId:
@@ -564,7 +564,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -579,7 +579,7 @@ definitions:
       - userId
       - name
       - degree
-      - speciality
+      - specialty
       - email
     properties:
       userId:
@@ -588,7 +588,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -610,7 +610,7 @@ definitions:
       - verified
       - name
       - degree
-      - speciality
+      - specialty
     properties:
       userId:
         type: "string"
@@ -618,7 +618,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -637,7 +637,7 @@ definitions:
       - loggedIn
       - updated
       - email
-      - speciality
+      - specialty
     properties:
       userId:
         type: "string"
@@ -645,7 +645,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -662,7 +662,7 @@ definitions:
       - userId
       - name
       - degree
-      - speciality
+      - specialty
       - email
     properties:
       userId:
@@ -671,7 +671,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -684,7 +684,7 @@ definitions:
       - verified
       - name
       - degree
-      - speciality
+      - specialty
       - updated
       - email
     properties:
@@ -694,7 +694,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -711,7 +711,7 @@ definitions:
       - verified
       - name
       - degree
-      - speciality
+      - specialty
       - loggedIn
       - updated
       - email
@@ -722,7 +722,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -742,7 +742,7 @@ definitions:
       - verified
       - name
       - degree
-      - speciality
+      - specialty
       - email
     properties:
       userId:
@@ -751,7 +751,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -781,7 +781,7 @@ definitions:
       - userId
       - name
       - degree
-      - speciality
+      - specialty
     properties:
       userId:
         type: "string"
@@ -789,7 +789,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"

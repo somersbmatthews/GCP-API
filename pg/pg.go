@@ -22,12 +22,12 @@ import (
 )
 
 type User struct {
-	UserID     string `gorm: "unique"`
-	Email      string
-	Name       string
-	Speciality string
-	Degree     string
-	Verified   bool
+	UserID    string `gorm: "unique"`
+	Email     string
+	Name      string
+	Specialty string
+	Degree    string
+	Verified  bool
 }
 
 type Incident struct {
@@ -72,7 +72,9 @@ func init() {
 		panic(err)
 	}
 	postgrespassword = password
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
+	// TODO: add conn.Close for all other db := Open()
 	ok := db.Migrator().HasTable(&User{})
 	if !ok {
 		_ = db.AutoMigrate(&User{})
@@ -149,7 +151,7 @@ func configureConnectionPool(dbPool *sql.DB) {
 	dbPool.SetConnMaxLifetime(1800)
 }
 
-func Open() *gorm.DB {
+func Open() (*gorm.DB, *sql.DB) {
 	sqlDB, err := initTCPConnectionPool()
 	if err != nil {
 		errMsg := fmt.Sprintf("%v,::: %v", err, render.Render(sqlDB))
@@ -170,16 +172,16 @@ func Open() *gorm.DB {
 		errMsg := fmt.Sprintf("%v,::: %v", err, render.Render(db))
 		panic(errMsg)
 	}
-	return db
+	conn, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	return db, conn
 }
 
 func CreateIncident(ctx context.Context, incident models.CreateIncident, userID string) *models.CreateIncidentGoodResponse {
-	db := Open()
-	// conn, err := db.DB()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer conn.Close()
+	db, conn := Open()
+	defer conn.Close()
 	encryptedUserID, err := encryptUserID(userID)
 	if err != nil {
 		panic(err)
@@ -228,26 +230,28 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 	return &response
 }
 
-func CreateUser(ctx context.Context, user User, userID string) (*models.CreateUserGoodResponse, bool) {
-	db := Open()
-	user.UserID = userID
+func CreateUser(ctx context.Context, user User) (*models.CreateUserGoodResponse, bool) {
+	db, conn := Open()
+	defer conn.Close()
+
 	err := db.Create(user).Error
 	if err != nil {
 		return nil, false
 	}
 	booleanTrue := true
 	return &models.CreateUserGoodResponse{
-		UserID:     &userID,
-		Email:      user.Email,
-		Speciality: user.Speciality,
-		Degree:     user.Degree,
-		Created:    &booleanTrue,
-		Name:       user.Name,
+		UserID:    &user.UserID,
+		Email:     user.Email,
+		Specialty: user.Specialty,
+		Degree:    user.Degree,
+		Created:   &booleanTrue,
+		Name:      user.Name,
 	}, true
 }
 
 func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodResponse, bool) {
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 
 	encryptedUserID, err := encryptUserID(userID)
 	if err != nil {
@@ -307,7 +311,8 @@ func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodR
 }
 
 func UpdateIncident(ctx context.Context, incident models.UpdateIncident) (*models.UpdateIncidentGoodResponse, bool) {
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 	updateWithModel := Incident{
 		ID:                            *incident.ID,
 		DateOfIncident:                incident.DateOfIncident,
@@ -349,7 +354,8 @@ func UpdateIncident(ctx context.Context, incident models.UpdateIncident) (*model
 }
 
 func DeleteIncident(ctx context.Context, incidentID string) (*models.DeleteIncidentGoodResponse, bool) {
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 	err := db.First(&Incident{}, "id = ?", incidentID).Delete(Incident{}).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
@@ -365,7 +371,8 @@ func DeleteIncident(ctx context.Context, incidentID string) (*models.DeleteIncid
 }
 
 func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, bool) {
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 	model := User{}
 	err := db.First(&model, "user_id = ?", userId).Error
 	if err == gorm.ErrRecordNotFound {
@@ -375,20 +382,21 @@ func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, b
 	}
 
 	return &models.GetUserGoodResponse{
-			Name:       &model.Name,
-			Degree:     &model.Degree,
-			Verified:   &model.Verified,
-			Email:      &model.Email,
-			Speciality: &model.Speciality,
-			UserID:     &model.UserID,
+			Name:      &model.Name,
+			Degree:    &model.Degree,
+			Verified:  &model.Verified,
+			Email:     &model.Email,
+			Specialty: &model.Specialty,
+			UserID:    &model.UserID,
 		},
 		true
 }
 
-func UpdateUser(ctx context.Context, user User, userID string) (*models.UpdateUserGoodResponse, bool) {
-	db := Open()
+func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
+	db, conn := Open()
+	defer conn.Close()
 	model := user
-	err := db.First(&User{}, "user_id = ?", userID).Omit("user_id").Updates(user).Error
+	err := db.First(&User{}, "user_id = ?", user.UserID).Updates(user).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -396,19 +404,20 @@ func UpdateUser(ctx context.Context, user User, userID string) (*models.UpdateUs
 	}
 	booleanTrue := true
 	return &models.UpdateUserGoodResponse{
-			UserID:     &userID,
-			Name:       &model.Name,
-			Email:      &model.Email,
-			Degree:     &model.Degree,
-			Speciality: &model.Speciality,
-			Updated:    &booleanTrue,
-			Verified:   model.Verified,
+			UserID:    &model.UserID,
+			Name:      &model.Name,
+			Email:     &model.Email,
+			Degree:    &model.Degree,
+			Specialty: &model.Specialty,
+			Updated:   &booleanTrue,
+			Verified:  model.Verified,
 		},
 		true
 }
 
 func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodResponse, bool) {
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 	err := db.First(&User{}, "user_id = ?", userID).Delete(User{}).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
@@ -426,7 +435,8 @@ func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodRespo
 }
 
 func VerifyUser(ctx context.Context, verify models.Verify, userID string) (*models.UpdateUserGoodResponse, bool) {
-	db := Open()
+	db, conn := Open()
+	defer conn.Close()
 	model := User{}
 	err := db.First(&model, "user_id = ?", userID).Update("verified", verify.Verified).Error
 	if err == gorm.ErrRecordNotFound {
@@ -436,13 +446,13 @@ func VerifyUser(ctx context.Context, verify models.Verify, userID string) (*mode
 	}
 	booleanTrue := true
 	return &models.UpdateUserGoodResponse{
-			UserID:     &userID,
-			Name:       &model.Name,
-			Email:      &model.Email,
-			Degree:     &model.Degree,
-			Speciality: &model.Speciality,
-			Updated:    &booleanTrue,
-			Verified:   booleanTrue,
+			UserID:    &userID,
+			Name:      &model.Name,
+			Email:     &model.Email,
+			Degree:    &model.Degree,
+			Specialty: &model.Specialty,
+			Updated:   &booleanTrue,
+			Verified:  booleanTrue,
 		},
 		true
 }

@@ -31,9 +31,9 @@ type GetUserGoodResponse struct {
 	// Required: true
 	Name *string `json:"name"`
 
-	// speciality
+	// specialty
 	// Required: true
-	Speciality *string `json:"speciality"`
+	Specialty *string `json:"specialty"`
 
 	// user Id
 	// Required: true
@@ -61,7 +61,7 @@ func (m *GetUserGoodResponse) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateSpeciality(formats); err != nil {
+	if err := m.validateSpecialty(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -106,9 +106,9 @@ func (m *GetUserGoodResponse) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetUserGoodResponse) validateSpeciality(formats strfmt.Registry) error {
+func (m *GetUserGoodResponse) validateSpecialty(formats strfmt.Registry) error {
 
-	if err := validate.Required("speciality", "body", m.Speciality); err != nil {
+	if err := validate.Required("specialty", "body", m.Specialty); err != nil {
 		return err
 	}
 

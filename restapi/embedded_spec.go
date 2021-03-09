@@ -479,6 +479,32 @@ func init() {
     }
   },
   "definitions": {
+    "CreateExpert": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Expertise": {
+          "type": "number"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "Verified": {
+          "type": "boolean"
+        }
+      }
+    },
     "CreateIncident": {
       "type": "object",
       "required": [
@@ -687,7 +713,7 @@ func init() {
         "name",
         "email",
         "degree",
-        "speciality"
+        "specialty"
       ],
       "properties": {
         "degree": {
@@ -699,7 +725,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         }
       }
@@ -710,7 +736,7 @@ func init() {
         "created",
         "name",
         "email",
-        "speciality",
+        "specialty",
         "degree"
       ],
       "properties": {
@@ -727,7 +753,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         }
       }
@@ -751,7 +777,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "userId": {
@@ -827,6 +853,37 @@ func init() {
         },
         "userId": {
           "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "GetExpertResponse": {
+      "type": "object",
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Expertise": {
+          "type": "number"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "Verified": {
+          "type": "boolean"
         }
       }
     },
@@ -931,7 +988,7 @@ func init() {
         "verified",
         "name",
         "degree",
-        "speciality",
+        "specialty",
         "email"
       ],
       "properties": {
@@ -944,7 +1001,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "userId": {
@@ -1117,7 +1174,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         }
       }
@@ -1131,7 +1188,7 @@ func init() {
         "degree",
         "updated",
         "email",
-        "speciality"
+        "specialty"
       ],
       "properties": {
         "degree": {
@@ -1143,7 +1200,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "updated": {
@@ -1164,7 +1221,7 @@ func init() {
         "verified",
         "name",
         "degree",
-        "speciality",
+        "specialty",
         "updated",
         "email"
       ],
@@ -1178,7 +1235,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "updated": {
@@ -1695,6 +1752,32 @@ func init() {
     }
   },
   "definitions": {
+    "CreateExpert": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Expertise": {
+          "type": "number"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "Verified": {
+          "type": "boolean"
+        }
+      }
+    },
     "CreateIncident": {
       "type": "object",
       "required": [
@@ -1903,7 +1986,7 @@ func init() {
         "name",
         "email",
         "degree",
-        "speciality"
+        "specialty"
       ],
       "properties": {
         "degree": {
@@ -1915,7 +1998,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         }
       }
@@ -1926,7 +2009,7 @@ func init() {
         "created",
         "name",
         "email",
-        "speciality",
+        "specialty",
         "degree"
       ],
       "properties": {
@@ -1943,7 +2026,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         }
       }
@@ -1967,7 +2050,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "userId": {
@@ -2043,6 +2126,37 @@ func init() {
         },
         "userId": {
           "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "GetExpertResponse": {
+      "type": "object",
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Expertise": {
+          "type": "number"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "Verified": {
+          "type": "boolean"
         }
       }
     },
@@ -2147,7 +2261,7 @@ func init() {
         "verified",
         "name",
         "degree",
-        "speciality",
+        "specialty",
         "email"
       ],
       "properties": {
@@ -2160,7 +2274,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "userId": {
@@ -2333,7 +2447,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         }
       }
@@ -2347,7 +2461,7 @@ func init() {
         "degree",
         "updated",
         "email",
-        "speciality"
+        "specialty"
       ],
       "properties": {
         "degree": {
@@ -2359,7 +2473,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "updated": {
@@ -2380,7 +2494,7 @@ func init() {
         "verified",
         "name",
         "degree",
-        "speciality",
+        "specialty",
         "updated",
         "email"
       ],
@@ -2394,7 +2508,7 @@ func init() {
         "name": {
           "type": "string"
         },
-        "speciality": {
+        "specialty": {
           "type": "string"
         },
         "updated": {

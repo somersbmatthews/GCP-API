@@ -9,7 +9,8 @@ info:
 #  license:
   #  name: "Apache 2.0"
   #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-basePath: "/"
+host: girc.app
+basePath: "/v2"
 tags:
 - name: "incident"
   description: "to create, update, and delete incidents"
@@ -23,7 +24,7 @@ tags:
 schemes:
 - "https"
 paths:
-  /v2/verify:
+  /verify:
     patch:
       tags:
         - "verify"
@@ -32,7 +33,14 @@ paths:
       operationId: verify
       produces:
       - "application/json"
+      consumes:
+      - "application/json"
       parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
       - name: verified
         in: body
         description: "verified field is true to verify, false to unverify"
@@ -44,11 +52,45 @@ paths:
             description: successful operation
             schema:
               $ref: "#/definitions/UpdateUserGoodResponse"
+          401:
+            description: bad authorization token           
+            schema:
+              $ref: "#/definitions/UpdateUserNotFoundResponse"
           404:
             description: userid not found
             schema: 
               $ref: "#/definitions/UpdateUserNotFoundResponse"
-  /v2/user:
+  /user:
+    get:
+      tags:
+      - "user"
+      summary: "Get user's information."
+      description: "Get a user's information."
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetUserGoodResponse"
+        401:
+          description: bad authorization token
+          schema: 
+            $ref: "#/definitions/GetUserBadResponse"
+        "404":
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/GetUserBadResponse"
+
     post:
       tags:
       - "user"
@@ -57,10 +99,12 @@ paths:
       operationId: "createUser"
       produces: 
       - "application/json"
+      consumes:
+      - application/json
       parameters:
       - name: "Authorization"
         in: header
-        description: "authorization header contains firebase ID token"
+        description: "authorization header contains bearer token"
         type: string
         required: true
       - name: "user"
@@ -75,39 +119,16 @@ paths:
           schema:
             $ref: "#/definitions/CreateUserGoodResponse"
         "400":
-          description: "user not created"
+          description: database error while creating user
           schema:
             $ref: "#/definitions/CreateUserBadResponse"
+        "401":
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/CreateUserBadResponse"
+        
       
-    get:
-      tags:
-      - "user"
-      summary: "Get user's information."
-      description: "Get a user's information."
-      operationId: "getUser"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "Authorization"
-        in: "header"
-        description: "authorization header contains firebase ID token"
-        type: string
-        required: true
-      - name: "user"
-        in: body
-        required: true
-        description: object that contains userId of user you want to get
-        schema:
-          $ref: "#/definitions/GetUser"
-      responses:
-        "200":
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/GetUserGoodResponse"
-        "404":
-          description: "user not found"
-          schema:
-            $ref: "#/definitions/GetUserBadResponse"
+
           
     patch:
       tags:
@@ -117,10 +138,12 @@ paths:
       operationId: "updateUser"
       produces:
       - "application/json"
+      consumes:
+      - application/json
       parameters:
       - name: "Authorization"
         in: "header"
-        description: "authorization header contains firebase ID token"
+        description: "authorization header contains bearer token"
         type: string
         required: true
       - name: "user"
@@ -134,8 +157,8 @@ paths:
           description: "successful operation"
           schema: 
             $ref: "#/definitions/UpdateUserGoodResponse"
-        "400":
-          description: "Invalid user supplied"
+        "401":
+          description: bad authorization token
           schema:
             $ref: "#/definitions/UpdateUserInvalidResponse"
         "404":
@@ -150,20 +173,21 @@ paths:
       operationId: deleteUser
       produces:
       - "application/json"
+      consumes:
+      - application/json
       parameters:
-      - name: "user"
-        in: body
-        description: "deletes user with the requested userID"
+      - name: "Authorization"
+        in: header
+        description: "authorization token"
+        type: string
         required: true
-        schema:
-          $ref: '#/definitions/DeleteUser'
       responses:
         200: 
           description: "successful operation"
           schema:
             $ref: '#/definitions/DeleteUserGoodResponse'
-        400:
-          description: "invalid userId supplied"
+        401:
+          description: bad authorization token
           schema:
             $ref: '#/definitions/DeleteUserBadResponse'
         404:
@@ -171,7 +195,7 @@ paths:
           schema:
             $ref: '#/definitions/DeleteUserBadResponse'
           
-  /v2/incident:
+  /incident:
     post:
       tags:
       - "incident"
@@ -180,15 +204,16 @@ paths:
       operationId: "createIncident"
       produces:
       - "application/json"
+      consumes:
+      - application/json
       parameters:
       - in: header
         name: Authorization
-        description: "authorization header contains firebase ID token"
+        description: "authorization header contains bearer token"
         type: string
         required: true
-      - in: "body"
-        name: "incident"
-        description: "Creates an incident and returns the created incident"
+      - in: body
+        name: incident
         required: true
         schema:
           $ref: "#/definitions/CreateIncident"
@@ -201,43 +226,42 @@ paths:
             Authentication:
               description: "token"
               type: "string"
-        400:
-          description: "invalid incident data"
+        401:
+          description: bad authorization token
           schema:
             $ref: "#/definitions/CreateIncidentInvalidIncidentResponse"
         "404":
           description: "userId for this incident is not found"
           schema:
             $ref: "#/definitions/CreateIncidentUserIdNotFoundResponse"
-   # get:
-     # tags:
-    #  - "incident"
-    #  summary: "Get incidents"
-    #  description: "Use this to get all incidents created by a user"
-   #   operationId: "getIncidents"
-   #   produces:
-   #   - "application/json"
-    #  parameters:
-  #    - in: "header"
-    #    name: Authorization
-    #    description: "authorization header contains firebase ID token"
-   #     type: string
-    #    required: true
-  #    - in: "body"
-   #     name: "incident"
-  #      description: "returns the incidents for a userId"
-   #     required: true
-  #      schema:
-  #        $ref: "#/definitions/GetIncidents"
-   #   responses:
-  #      "200":
-  #        description: "successful operation"
-   #       schema:
-   #         $ref: "#/definitions/GetIncidentsGoodResponse"
-   #     404:
-   #       description: "userid not found"
-   #       schema:
-    #        $ref:  "#/definitions/GetIncidentsUserIdNotFoundResponse"
+    get:
+      tags:
+      - "incident"
+      summary: "Get incidents"
+      description: "Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created"
+      operationId: "getIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetIncidentsGoodResponse"
+            
+        401:
+          description: "bad authorization token"
+          schema:
+            $ref: "#/definitions/GetIncidentsBadRequestResponse"
+        404:
+          description: "userid not found"
+          schema:
+            $ref:  "#/definitions/GetIncidentsUserIdNotFoundResponse"
     patch:
       tags:
       - "incident"
@@ -246,10 +270,12 @@ paths:
       operationId: "updateIncidents"
       produces:
       - "application/json"
+      consumes:
+      - application/json
       parameters:
       - in: header
         name: Authorization
-        description: "authorization header contains firebase ID token"
+        description: "authorization header contains bearer token"
         type: string
         required: true
       - in: body
@@ -262,8 +288,8 @@ paths:
           description: successful operation
           schema:
             $ref: "#/definitions/UpdateIncidentGoodResponse"
-        400:
-          description: invalid incident data
+        401:
+          description: bad authorization token
           schema:
             $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
         404:
@@ -279,10 +305,12 @@ paths:
       operationId: "deleteIncidents"
       produces:
       - "application/json"
+      consumes:
+      - application/json
       parameters:
       - in: header
         name: Authorization
-        description: "authorization header contains firebase ID token"
+        description: "authorization header contains bearer token"
         type: string
         required: true
       - in: body
@@ -295,12 +323,61 @@ paths:
           description: successful operation
           schema:
             $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
         404:
           description: incident not found
           schema:
             $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
       
 definitions:
+
+
+  CreateExpert:
+    type: "object"
+    required: 
+      - ID
+    properties:
+      ID:
+        type: string
+      Email:
+        type: string
+      Password:
+        type: string
+      Expertise:
+        type: number
+      Degree:
+        type: number
+      Verified:
+        type: boolean
+        
+  ErrorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        
+  GetExpertResponse:
+    type: object
+    properties:
+      ID:
+        type: string
+      Email:
+        type: string
+      Password:
+        type: string
+      Expertise:
+        type: number
+      Degree:
+        type: number
+      Verified:
+        type: boolean
+        
+
+    
+      
 
   CreateIncident:
     type: "object"
@@ -341,6 +418,8 @@ definitions:
     properties:
       ID:
         type: "string"
+      UserID:
+        type: string
       Long-term_prognosis:
         type: "string"
       What_material_is_the_object_made_of:
@@ -367,7 +446,6 @@ definitions:
         type: "string" 
       Created:
         type: boolean
-      
           
         
      
@@ -443,14 +521,6 @@ definitions:
         type: boolean
         default: false
   
-  GetIncidents:
-    type: "object"
-    required:
-      - userId
-    properties:
-      userId:
-        type: string
-  
   
   GetIncidentsUserIdNotFoundResponse:
     type: "object"
@@ -460,17 +530,56 @@ definitions:
       userId:
         type: string
         
-  GetIncidentsGoodResponse:
-    type: "object"
+  GetIncidentsBadRequestResponse:
+    type: object
     required:
       - userId
     properties:
       userId:
         type: string
-      incidents:
+        
+  GetIncidentsIncident:
+    type: "object"
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+  
+        
+  GetIncidentsGoodResponse:
+    type: "object"
+    required:
+      - UserID
+    properties:
+      UserID:
+        type: string
+      Incidents:
         type: array
         items: 
-          $ref: "#/definitions/CreateIncident"
+          $ref: "#/definitions/GetIncidentsIncident"
           
   
   UpdateIncident:
@@ -615,14 +724,11 @@ definitions:
   CreateUser:
     type: object
     required:
-      - userId
       - name
       - email
       - degree
       - specialty
     properties:
-      userId:
-        type: string
       name:
         type: string
       email: 
@@ -635,6 +741,7 @@ definitions:
   CreateUserGoodResponse:
     type: object
     required:
+      - userId
       - created
     properties:
       userId:
@@ -685,7 +792,7 @@ definitions:
       - specialty
     properties:
       userId:
-        type: "string"
+        type: string
       name:
         type: "string"
       degree:
@@ -702,11 +809,8 @@ definitions:
         
   UpdateUser:
     type: "object"
-    required:
-      - userId
+
     properties:
-      userId:
-        type: "string"
       name:
         type: "string"
       email:
@@ -750,13 +854,7 @@ definitions:
       updated:
         type: "boolean"
         default: false
-  GetUser:
-    type: "object"
-    required:
-      - userId
-    properties:
-      userId:
-        type: string
+
   GetUserGoodResponse:
     type: "object"
     required: 
@@ -781,30 +879,27 @@ definitions:
         type: "boolean"
         example: false
   GetUserBadResponse:
-    type: "object"
-  Verify:
-    type: "object"
-    required:
-      - userId
-      - verified
-    properties:
-      userId:
-        type: string
-      verified:
-        type: "boolean"
-  
-  DeleteUser:
     type: object
     required:
       - userId
     properties:
       userId:
         type: string
+
+  
+  Verify:
+    type: "object"
+    required:
+      - verified
+    properties:
+      verified:
+        type: "boolean"
+  
+
   
   DeleteUserGoodResponse:
     type: object
     required:
-    - userId
     - deleted
     properties:
       userId:

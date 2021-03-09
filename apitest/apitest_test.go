@@ -56,10 +56,10 @@ func init() {
 // }
 func TestRegisterUser(t *testing.T) {
 	reqBody := body{
-		"name":       "Tee Bow",
-		"email":      "tbow@gmail.com",
-		"speciality": "otolaryngologist",
-		"degree":     "MD",
+		"name":      "Tee Bow",
+		"email":     "tbow@gmail.com",
+		"specialty": "otolaryngologist",
+		"degree":    "MD",
 	}
 	data, err := setBody(reqBody)
 	if err != nil {
@@ -82,12 +82,12 @@ func TestRegisterUser(t *testing.T) {
 	json := getBody(*resp)
 
 	want := body{
-		"userId":     "1234567890",
-		"name":       "Tee Bow",
-		"email":      "tbow@gmail.com",
-		"speciality": "otolaryngologist",
-		"degree":     "MD",
-		"created":    true,
+		"userId":    "1234567890",
+		"name":      "Tee Bow",
+		"email":     "tbow@gmail.com",
+		"specialty": "otolaryngologist",
+		"degree":    "MD",
+		"created":   true,
 	}
 	// t.Logf("this is running 6")
 	if !reflect.DeepEqual(want, json) {
@@ -110,12 +110,12 @@ func TestGetUser(t *testing.T) {
 	}
 	json := getBody(*resp)
 	want := body{
-		"userId":     "1234567890",
-		"name":       "Tee Bow",
-		"email":      "tbow@gmail.com",
-		"speciality": "otolaryngologist",
-		"degree":     "MD",
-		"verified":   false,
+		"userId":    "1234567890",
+		"name":      "Tee Bow",
+		"email":     "tbow@gmail.com",
+		"specialty": "otolaryngologist",
+		"degree":    "MD",
+		"verified":  false,
 	}
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
@@ -123,10 +123,10 @@ func TestGetUser(t *testing.T) {
 }
 func TestUpdateUser(t *testing.T) {
 	reqBody := body{
-		"name":       "Tee H.W. Bow",
-		"email":      "tbowSD@gmail.com",
-		"speciality": "spin doctor",
-		"degree":     "SD",
+		"name":      "Tee H.W. Bow",
+		"email":     "tbowSD@gmail.com",
+		"specialty": "spin doctor",
+		"degree":    "SD",
 	}
 	data, err := setBody(reqBody)
 	if err != nil {
@@ -146,13 +146,13 @@ func TestUpdateUser(t *testing.T) {
 	}
 	json := getBody(*resp)
 	want := body{
-		"userId":     "1234567890",
-		"name":       "Tee H.W. Bow",
-		"email":      "tbowSD@gmail.com",
-		"speciality": "spin doctor",
-		"degree":     "SD",
-		"verified":   false,
-		"updated":    true,
+		"userId":    "1234567890",
+		"name":      "Tee H.W. Bow",
+		"email":     "tbowSD@gmail.com",
+		"specialty": "spin doctor",
+		"degree":    "SD",
+		"verified":  false,
+		"updated":   true,
 	}
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))
@@ -182,13 +182,13 @@ func TestVerifyUser(t *testing.T) {
 	}
 	json := getBody(*resp)
 	want := body{
-		"userId":     "1234567890",
-		"name":       "Tee H.W. Bow",
-		"email":      "tbowSD@gmail.com",
-		"speciality": "spin doctor",
-		"degree":     "SD",
-		"verified":   true,
-		"updated":    true,
+		"userId":    "1234567890",
+		"name":      "Tee H.W. Bow",
+		"email":     "tbowSD@gmail.com",
+		"specialty": "spin doctor",
+		"degree":    "SD",
+		"verified":  true,
+		"updated":   true,
 	}
 	if !reflect.DeepEqual(want, json) {
 		t.Errorf("response json: \n %v \n does not equal json in request: \n %v \n.", render.Render(json), render.Render(want))

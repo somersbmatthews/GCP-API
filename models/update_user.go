@@ -26,8 +26,8 @@ type UpdateUser struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// speciality
-	Speciality string `json:"speciality,omitempty"`
+	// specialty
+	Specialty string `json:"specialty,omitempty"`
 }
 
 // Validate validates this update user

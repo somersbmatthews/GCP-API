@@ -52,33 +52,33 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			response := user.NewCreateUserUnauthorized()
 			booleanFalse := false
 			createUserBadResponse := models.CreateUserBadResponse{
-				Created:    &booleanFalse,
-				Email:      params.User.Email,
-				Degree:     params.User.Degree,
-				Speciality: params.User.Speciality,
-				Name:       params.User.Name,
+				Created:   &booleanFalse,
+				Email:     params.User.Email,
+				Degree:    params.User.Degree,
+				Specialty: params.User.Specialty,
+				Name:      params.User.Name,
 			}
 			response.WithPayload(&createUserBadResponse)
 			return response
 		}
 		newUser := pg.User{
-			UserID:     userID,
-			Email:      *params.User.Email,
-			Speciality: *params.User.Speciality,
-			Degree:     *params.User.Degree,
-			Name:       *params.User.Name,
-			Verified:   false,
+			UserID:    userID,
+			Email:     *params.User.Email,
+			Specialty: *params.User.Specialty,
+			Degree:    *params.User.Degree,
+			Name:      *params.User.Name,
+			Verified:  false,
 		}
-		payload, ok := pg.CreateUser(ctx, newUser, userID)
+		payload, ok := pg.CreateUser(ctx, newUser)
 		if !ok {
 			response := user.NewCreateUserBadRequest()
 			booleanFalse := false
 			createUserBadResponse := models.CreateUserBadResponse{
-				Created:    &booleanFalse,
-				Email:      params.User.Email,
-				Degree:     params.User.Degree,
-				Speciality: params.User.Speciality,
-				Name:       params.User.Name,
+				Created:   &booleanFalse,
+				Email:     params.User.Email,
+				Degree:    params.User.Degree,
+				Specialty: params.User.Specialty,
+				Name:      params.User.Name,
 			}
 			response.WithPayload(&createUserBadResponse)
 			return response
@@ -122,13 +122,13 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			return middleware.Error(401, updateUserInvalidResponse(params))
 		}
 		updatedUser := pg.User{
-			UserID:     userID,
-			Email:      params.User.Email,
-			Speciality: params.User.Speciality,
-			Degree:     params.User.Degree,
-			Name:       params.User.Name,
+			UserID:    userID,
+			Email:     params.User.Email,
+			Specialty: params.User.Specialty,
+			Degree:    params.User.Degree,
+			Name:      params.User.Name,
 		}
-		payload, ok := pg.UpdateUser(ctx, updatedUser, userID)
+		payload, ok := pg.UpdateUser(ctx, updatedUser)
 		if !ok {
 			return middleware.Error(404, updateUserNotFoundResponse(params, userID))
 		}
@@ -333,13 +333,14 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 func createUserBadResponse(params user.CreateUserParams) models.CreateUserBadResponse {
 	booleanFalse := false
 	createUserBadResponse := models.CreateUserBadResponse{
-		Created:    &booleanFalse,
-		Email:      params.User.Email,
-		Degree:     params.User.Degree,
-		Speciality: params.User.Speciality,
-		Name:       params.User.Name,
+		Created:   &booleanFalse,
+		Email:     params.User.Email,
+		Degree:    params.User.Degree,
+		Specialty: params.User.Specialty,
+		Name:      params.User.Name,
 	}
 	return createUserBadResponse
+
 }
 
 func updateUserInvalidResponse(params user.UpdateUserParams) models.UpdateUserInvalidResponse {

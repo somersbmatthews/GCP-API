@@ -31,9 +31,9 @@ type UpdateUserInvalidResponse struct {
 	// Required: true
 	Name *string `json:"name"`
 
-	// speciality
+	// specialty
 	// Required: true
-	Speciality *string `json:"speciality"`
+	Specialty *string `json:"specialty"`
 
 	// updated
 	// Example: false
@@ -62,7 +62,7 @@ func (m *UpdateUserInvalidResponse) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateSpeciality(formats); err != nil {
+	if err := m.validateSpecialty(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -107,9 +107,9 @@ func (m *UpdateUserInvalidResponse) validateName(formats strfmt.Registry) error 
 	return nil
 }
 
-func (m *UpdateUserInvalidResponse) validateSpeciality(formats strfmt.Registry) error {
+func (m *UpdateUserInvalidResponse) validateSpecialty(formats strfmt.Registry) error {
 
-	if err := validate.Required("speciality", "body", m.Speciality); err != nil {
+	if err := validate.Required("specialty", "body", m.Specialty); err != nil {
 		return err
 	}
 

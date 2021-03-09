@@ -639,7 +639,7 @@ definitions:
       - name
       - email
       - degree
-      - speciality
+      - specialty
     properties:
       name:
         type: string
@@ -647,7 +647,7 @@ definitions:
         type: string
       degree:
         type: string
-      speciality:
+      specialty:
         type: string
       
   CreateUserGoodResponse:
@@ -664,7 +664,7 @@ definitions:
         type: string
       degree:
         type: string
-      speciality:
+      specialty:
         type: string
       created:
         type: boolean
@@ -676,7 +676,7 @@ definitions:
       - created
       - name
       - email
-      - speciality
+      - specialty
       - degree
     properties:
       name:
@@ -685,7 +685,7 @@ definitions:
         type: string
       degree:
         type: string
-      speciality:
+      specialty:
         type: string
       created:
         type: boolean
@@ -701,7 +701,7 @@ definitions:
       - degree
       - updated
       - email
-      - speciality
+      - specialty
     properties:
       userId:
         type: string
@@ -709,7 +709,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -729,7 +729,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
 
   UpdateUserInvalidResponse:
@@ -738,7 +738,7 @@ definitions:
       - verified
       - name
       - degree
-      - speciality
+      - specialty
       - updated
       - email
     properties:
@@ -746,7 +746,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
@@ -774,7 +774,7 @@ definitions:
       - verified
       - name
       - degree
-      - speciality
+      - specialty
       - email
     properties:
       userId:
@@ -783,7 +783,7 @@ definitions:
         type: "string"
       degree:
         type: "string"
-      speciality:
+      specialty:
         type: "string"
       email:
         type: "string"
