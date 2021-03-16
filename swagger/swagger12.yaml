@@ -1,0 +1,1501 @@
+swagger: "2.0"
+info:
+  description: "This is test server for GIRC app"
+  version: "3.0.0"
+  title: "GIRC App API"
+  # termsOfService: "http://swagger.io/terms/"
+ # contact:
+   # email: "apiteam@swagger.io"
+#  license:
+  #  name: "Apache 2.0"
+  #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: girc.app
+basePath: "/"
+tags:
+- name: "incident"
+  description: "to create, update, and delete incidents using old app"
+- name: "user"
+  description: "for user registration and authentication"
+- name: verify
+  description: only used for testing and will be removed in production
+- name: ENT Incident
+  description: for Otolaryngology Incidents
+- name: EMT Incident
+  description: for Emergency Medical Technician Incidents
+- name: Coroner Incident
+  description: for Coroner Incidents
+- name: Vet Incident
+  description: for Vet Incidents
+- name: Derm Incident
+  description: for Dermatologist Incidents
+- name: Surg Incident
+  description: for Surgical Incidents
+- name: Medical Expert
+  description: for Medical Experts
+- name: Fire Incident
+  description: for fire incidents
+- name: ERP Incident
+  description: for Emergency Room Physician incidents
+#  externalDocs:
+ #   description: "Find out more about our store"
+ #   url: "http://swagger.io"
+schemes:
+- "https"
+paths:
+  /v2/verify:
+    patch:
+      tags:
+        - "verify"
+      summary:  use this to verify or unverify a user, for testing only
+      description: "verified field is true to verify, false to unverify"
+      operationId: verify
+      produces:
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - name: verified
+        in: body
+        description: "verified field is true to verify, false to unverify"
+        required: true
+        schema:
+          $ref: "#/definitions/Verify"
+      responses:
+          200:
+            description: successful operation
+            schema:
+              $ref: "#/definitions/UpdateUserGoodResponse"
+          401:
+            description: bad authorization token           
+            schema:
+              $ref: "#/definitions/UpdateUserNotFoundResponse"
+          404:
+            description: userid not found
+            schema: 
+              $ref: "#/definitions/UpdateUserNotFoundResponse"
+  /v2/user:
+    post:
+      tags:
+      - "user"
+      summary: "register a user"
+      description: "register a user with his information"
+      operationId: "createUser"
+      produces: 
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: header
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - name: "user"
+        in: "body"
+        required: true
+        description: "a user's information"
+        schema:
+          $ref: "#/definitions/CreateUser"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CreateUserGoodResponse"
+        "400":
+          description: database error while creating user
+          schema:
+            $ref: "#/definitions/CreateUserBadResponse"
+        "401":
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/CreateUserBadResponse"
+    get:
+      tags:
+      - "user"
+      summary: "Get user's information."
+      description: "Get a user's information."
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetUserGoodResponse"
+        401:
+          description: bad authorization token
+          schema: 
+            $ref: "#/definitions/GetUserBadResponse"
+        "404":
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/GetUserBadResponse"
+
+
+        
+      
+
+          
+    patch:
+      tags:
+      - "user"
+      summary: "Update user"
+      description: "Update a user's info"
+      operationId: "updateUser"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - name: "user"
+        in: "body"
+        description: "Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateUser"
+      responses:
+        "200":
+          description: "successful operation"
+          schema: 
+            $ref: "#/definitions/UpdateUserGoodResponse"
+        "401":
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateUserInvalidResponse"
+        "404":
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/UpdateUserNotFoundResponse"
+    delete:
+      tags:
+      - user
+      summary: unregisters a user, for testing only will be removed in production
+      description: deletes a user
+      operationId: deleteUser
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: header
+        description: "authorization token"
+        type: string
+        required: true
+      responses:
+        200: 
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/DeleteUserGoodResponse'
+        401:
+          description: bad authorization token
+          schema:
+            $ref: '#/definitions/DeleteUserBadResponse'
+        404:
+          description: 'user with requested userid not found'
+          schema:
+            $ref: '#/definitions/DeleteUserBadResponse'
+          
+  /v2/incident:
+    post:
+      tags:
+      - "incident"
+      summary: "Create an incident"
+      description: "use this to create an incident for a userId"
+      operationId: "createIncident"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIncident"
+      responses:
+        "200":
+          description: "successful operation, only returns token if not using OAuth"
+          schema:
+            $ref: "#/definitions/CreateIncidentGoodResponse"
+          headers:
+            Authentication:
+              description: "token"
+              type: "string"
+        401:
+          description: bNews and buzzad authorization token
+          schema:
+            $ref: "#/definitions/CreateIncidentInvalidIncidentResponse"
+        "404":
+          description: "userId for this incident is not found"
+          schema:
+            $ref: "#/definitions/CreateIncidentUserIdNotFoundResponse"
+    get:
+      tags:
+      - "incident"
+      summary: "Get incidents"
+      description: "Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created"
+      operationId: "getIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetIncidentsGoodResponse"
+            
+        401:
+          description: "bad authorization token"
+          schema:
+            $ref: "#/definitions/GetIncidentsBadRequestResponse"
+        404:
+          description: "userid not found"
+          schema:
+            $ref:  "#/definitions/GetIncidentsUserIdNotFoundResponse"
+    patch:
+      tags:
+      - "incident"
+      summary: "Update incident"
+      description: "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string"
+      operationId: "updateIncidents"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/UpdateIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            
+    delete:
+      tags:
+      - "incident"
+      summary: "Delete incident"
+      description: "Use this to delete an incident by incidentId"
+      operationId: "deleteIncidents"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            
+  /v3/expert:
+    post:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: registerExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+    get:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: getExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+    patch:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: updateExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+    delete:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: deleteExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+          
+  /v3/expert/login:
+    get:
+      tags:
+        - Medical Expert
+      summary: login expert
+      description: "Use this to delete an incident by incidentId"
+      operationId: loginExpert
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains token"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            
+  /v3/expert/logout:
+    get:
+      tags:
+        - Medical Expert
+      summary: login expert
+      description: "Use this tto login an expert"
+      operationId: logoutExpert
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains token"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            
+  /v3/verify:
+    patch:
+      tags:
+        - "verify"
+      summary:  use this to verify or unverify a Medcal Expert, for testing only
+      description: "verified field is true to verify, false to unverify"
+      operationId: verifyExpert
+      produces:
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains token"
+        type: string
+        required: true
+      - name: verified
+        in: body
+        description: "verified field is true to verify, false to unverify"
+        required: true
+        schema:
+          $ref: "#/definitions/Verify"
+      responses:
+          200:
+            description: successful operation
+            schema:
+              $ref: "#/definitions/UpdateUserGoodResponse"
+          401:
+            description: bad authorization token           
+            schema:
+              $ref: "#/definitions/UpdateUserNotFoundResponse"
+          404:
+            description: userid not found
+            schema: 
+              $ref: "#/definitions/UpdateUserNotFoundResponse"
+      
+  /v3/entincident:
+    post:
+      tags:
+        - ENT Incident
+      summary: create ENT Incident 
+      description: "Use this to delete an incident by incidentId"
+      operationId: "createENTIncident"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/CreateENTIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+      
+  /v3/emtincident:
+    post:
+      tags:
+        - EMT Incident
+      summary: create Emergency Medical Technician Incident 
+      description: "Use this to delete an incident by incidentId"
+      operationId: "createEMTIncident"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/CreateENTIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+      
+  /v3/erpincident:
+    post:
+      tags:
+        - ERP Incident
+      summary: create create Emergency Room Physician incident
+      description: "Use this to delete an incident by incidentId"
+      operationId: createERPIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+      
+  /v3/corincident:
+    post:
+      tags:
+        - Coroner Incident
+      summary: create coroner incident
+      description: "Use this to delete an incident by incidentId"
+      operationId: createCorIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+  
+  /v3/dermincident:
+    post:
+      tags:
+        - Derm Incident
+      summary: create coroner incident
+      description: "Use this to delete an incident by incidentId"
+      operationId: createDermIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+      
+  /v3/vetincident:
+    post:
+      tags:
+        - Vet Incident
+      description: "Use this to delete an incident by incidentId"
+      operationId: createVetIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            
+  /v3/surgincident:
+    post:
+      tags:
+        - Surg Incident
+      description: "Use this to delete an incident by incidentId"
+      operationId: createSurgIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            
+  /v3/fireincident:
+    post:
+      tags:
+        - Fire Incident
+      description: "Use this to delete an incident by incidentId"
+      operationId: createFireIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/DeleteIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/DeleteIncidentGoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            
+  
+      
+definitions:
+
+  
+
+
+  CreateExpert:
+    type: object
+    properties:
+      Email:
+        type: string
+      Password:
+        type: string
+      Expertise:
+        type: number
+      Degree:
+        type: number
+      Verified:
+        type: boolean
+        
+  ErrorResponse:
+    type: object
+    properties:
+      Message:
+        type: string
+        
+  GoodResponse:
+    type: object
+    properties:
+      Message:
+        type: string
+        
+  GetExpertResponse:
+    type: object
+    properties:
+      ID:
+        type: string
+      Email:
+        type: string
+      Password:
+        type: string
+      Expertise:
+        type: number
+      Degree:
+        type: number
+      Verified:
+        type: boolean
+        
+  UpdateExpert:
+    type: object
+    properties:
+      Email:
+        type: string
+      Password:
+        type: string
+      Expertise:
+        type: number
+      Degree:
+        type: number
+        
+
+  CreateENTIncident:
+    type: object
+    required:
+      - ID
+    properties:
+      Info:
+        type: string
+      ID:
+        type: string
+      Date:
+        type: integer
+      Prognosis:
+        type: integer
+      Gender:
+        type: integer
+      Age: 
+        type: integer
+      Imaging:
+        type: array
+        items: 
+          type: integer
+      CustomImaging:
+        type: array
+        items:
+          type: string
+      Procedures:
+        type: array
+        items: 
+          type: integer
+      CustomProcedures:
+        type: array
+        items:
+          type: string
+      Complications:
+        type: array
+        items:
+          type: integer
+      CustomComplications:
+        type: array
+        items:
+          type: string
+      Symptoms:
+        type: array
+        items:
+          type: integer
+      CustomSymptoms:
+        type: array
+        items:
+          type: string
+      SwallowedObjects:
+        type: array
+        items:
+          $ref: "#/definitions/CreateSwallowedObject"
+        
+
+      
+
+    
+  CreateSwallowedObject:
+    type: object
+    required:
+      - ID
+    properties:
+      ID:
+        type: string
+      Location:
+        type: integer
+      Shape:
+        type: integer
+      CustomShape:
+        type: string
+      
+        
+
+  CreateIncident:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object Consistency|22adc3a7-9d9a-4d9c-b90d-c31844093909:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+      
+  CreateIncidentGoodResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      UserID:
+        type: string
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string" 
+      Created:
+        type: boolean
+          
+        
+     
+    
+  
+  CreateIncidentInvalidIncidentResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+      Created:
+          type: boolean
+          default: false
+  
+  CreateIncidentUserIdNotFoundResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string" 
+      Created:
+        type: boolean
+        default: false
+  
+  
+  GetIncidentsUserIdNotFoundResponse:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+        
+  GetIncidentsBadRequestResponse:
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+        
+  GetIncidentsIncident:
+    type: "object"
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+  
+        
+  GetIncidentsGoodResponse:
+    type: "object"
+    required:
+      - UserID
+    properties:
+      UserID:
+        type: string
+      Incidents:
+        type: array
+        items: 
+          $ref: "#/definitions/GetIncidentsIncident"
+          
+  
+  UpdateIncident:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+  
+  
+
+
+  UpdateIncidentGoodResponse:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: "string"
+      Long-term_prognosis:
+        type: "string"
+      What_material_is_the_object_made_of:
+        type: "string"
+      Anterior: 
+        type: "string"
+      Date_of_Incident:
+        type: "string"
+      Object_Consistency:
+        type: "string"
+      Gender: 
+        type: "string"
+      Approximate_Patient_Age:
+        type: "string"
+      Location_of_object:
+        type: "string"
+      Incident_Description:
+        type: "string"
+      Largest_Length:
+        type: "string"
+      Object_Basic_Shape:
+        type: "string"
+      The_object_is:
+        type: "string"
+      Updated:
+          type: boolean
+          default: true         
+  
+  
+  UpdateIncidentIncidentIdNotFoundResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: "string"
+        Long-term_prognosis:
+          type: "string"
+        What_material_is_the_object_made_of:
+          type: "string"
+        Anterior: 
+          type: "string"
+        Date_of_Incident:
+          type: "string"
+        Object_Consistency:
+          type: "string"
+        Gender: 
+          type: "string"
+        Approximate_Patient_Age:
+          type: "string"
+        Location_of_object:
+          type: "string"
+        Incident_Description:
+          type: "string"
+        Largest_Length:
+          type: "string"
+        Object_Basic_Shape:
+          type: "string"
+        The_object_is:
+          type: "string"
+        Updated:
+          type: boolean
+          default: false
+          
+  
+  
+  
+  DeleteIncident:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+          
+  DeleteIncidentIncidentIdNotFoundResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+        Deleted:
+          type: boolean
+          default: true
+  
+  DeleteIncidentGoodResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+        Deleted:
+          type: boolean
+          default: true
+            
+  CreateUser:
+    type: object
+    required:
+      - name
+      - email
+      - degree
+      - specialty
+    properties:
+      name:
+        type: string
+      email: 
+        type: string
+      degree:
+        type: string
+      specialty:
+        type: string
+      
+  CreateUserGoodResponse:
+    type: object
+    required:
+      - userId
+      - created
+    properties:
+      userId:
+        type: string
+      name:
+        type: string
+      email: 
+        type: string
+      degree:
+        type: string
+      specialty:
+        type: string
+      created:
+        type: boolean
+  
+  
+  CreateUserBadResponse:
+    type: object
+    required:
+      - created
+      - name
+      - email
+      - specialty
+      - degree
+    properties:
+      name:
+        type: string
+      email: 
+        type: string
+      degree:
+        type: string
+      specialty:
+        type: string
+      created:
+        type: boolean
+        example: false
+  
+  
+  UpdateUserGoodResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - updated
+      - email
+      - specialty
+    properties:
+      userId:
+        type: string
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      specialty:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        default: false
+      updated:
+        type: "boolean"
+        
+  UpdateUser:
+    type: "object"
+
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
+      degree:
+        type: "string"
+      specialty:
+        type: "string"
+
+  UpdateUserInvalidResponse:
+    type: "object"
+    required: 
+      - verified
+      - name
+      - degree
+      - specialty
+      - updated
+      - email
+    properties:
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      specialty:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        example: false
+      updated:
+        type: "boolean"
+        example: false
+  UpdateUserNotFoundResponse:
+    type: "object"
+    required: 
+      - userId
+    properties:
+      userId:
+        type: "string"
+      updated:
+        type: "boolean"
+        default: false
+
+  GetUserGoodResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - specialty
+      - email
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      specialty:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        example: false
+  GetUserBadResponse:
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: string
+
+  
+  Verify:
+    type: "object"
+    required:
+      - verified
+    properties:
+      verified:
+        type: "boolean"
+  
+
+  
+  DeleteUserGoodResponse:
+    type: object
+    required:
+    - deleted
+    properties:
+      userId:
+        type: string
+      deleted:
+        type: boolean
+        
+  DeleteUserBadResponse:
+    type: object
+    required:
+    - userId
+    - deleted
+    properties:
+      userId:
+        type: string
+      deleted:
+        type: boolean
+        example: false
+        
+        
+        
