@@ -29,7 +29,7 @@ func NewUpdateIncidents(ctx *middleware.Context, handler UpdateIncidentsHandler)
 	return &UpdateIncidents{Context: ctx, Handler: handler}
 }
 
-/* UpdateIncidents swagger:route PATCH /incident incident updateIncidents
+/* UpdateIncidents swagger:route PATCH /v2/incident incident updateIncidents
 
 Update incident
 

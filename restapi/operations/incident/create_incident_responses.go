@@ -82,7 +82,7 @@ func (o *CreateIncidentOK) WriteResponse(rw http.ResponseWriter, producer runtim
 // CreateIncidentUnauthorizedCode is the HTTP code returned for type CreateIncidentUnauthorized
 const CreateIncidentUnauthorizedCode int = 401
 
-/*CreateIncidentUnauthorized bad authorization token
+/*CreateIncidentUnauthorized bNews and buzzad authorization token
 
 swagger:response createIncidentUnauthorized
 */

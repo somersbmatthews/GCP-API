@@ -8,10 +8,8 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // CreateExpert create expert
@@ -28,10 +26,6 @@ type CreateExpert struct {
 	// expertise
 	Expertise float64 `json:"Expertise,omitempty"`
 
-	// ID
-	// Required: true
-	ID *string `json:"ID"`
-
 	// password
 	Password string `json:"Password,omitempty"`
 
@@ -41,24 +35,6 @@ type CreateExpert struct {
 
 // Validate validates this create expert
 func (m *CreateExpert) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *CreateExpert) validateID(formats strfmt.Registry) error {
-
-	if err := validate.Required("ID", "body", m.ID); err != nil {
-		return err
-	}
-
 	return nil
 }
 

@@ -35,11 +35,11 @@ func (o *UpdateIncidentsURL) SetBasePath(bp string) {
 func (o *UpdateIncidentsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/incident"
+	var _path = "/v2/incident"
 
 	_basePath := o._basePath
 	if _basePath == "" {
-		_basePath = "/v2"
+		_basePath = "/"
 	}
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 

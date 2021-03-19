@@ -34,6 +34,8 @@ type Incident struct {
 	CreatedAt                     int64
 	ID                            string `gorm: "unique"`
 	EncryptedUserID               string `gorm:"type:bytea"`
+	Location                      string
+	LocationOfObject              string
 	LongTermPrognosis             string
 	WhatMaterialIsTheObjectMadeOf string
 	Anterior                      string
@@ -41,7 +43,6 @@ type Incident struct {
 	ObjectConsistency             string
 	Gender                        string
 	ApproximatePatientAge         string
-	LocationOfObject              string
 	IncidentDescription           string
 	LargestLength                 string
 	ObjectBasicShape              string

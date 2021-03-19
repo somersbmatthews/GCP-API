@@ -93,12 +93,9 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			response := user.NewGetUserUnauthorized()
-			getUserBadResponse := models.GetUserBadResponse{
-				UserID: &userID,
-			}
-			response.WithPayload(&getUserBadResponse)
-			return response
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
+			})
 		}
 		payload, ok := pg.GetUser(ctx, userID)
 		if !ok {
@@ -119,7 +116,9 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			return middleware.Error(401, updateUserInvalidResponse(params))
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
+			})
 		}
 		updatedUser := pg.User{
 			UserID:    userID,
@@ -143,9 +142,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
-			return middleware.Error(401, models.DeleteUserBadResponse{
-				Deleted: &booleanFalse,
-				UserID:  &userID,
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
 			})
 		}
 
@@ -166,7 +164,9 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			return middleware.Error(401, verifyUserNotFoundResponse(params, userID))
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
+			})
 		}
 		verifiedUser := models.Verify{
 			Verified: params.Verified.Verified,
@@ -184,22 +184,10 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		ctx := context.Background()
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
-		booleanFalse := false
+		// booleanFalse := false
 		if !ok {
-			return middleware.Error(401, models.CreateIncidentInvalidIncidentResponse{
-				ID:                            params.Incident.ID,
-				DateOfIncident:                params.Incident.DateOfIncident,
-				ApproximatePatientAge:         params.Incident.ApproximatePatientAge,
-				Gender:                        params.Incident.Gender,
-				LongTermPrognosis:             params.Incident.LongTermPrognosis,
-				IncidentDescription:           params.Incident.IncidentDescription,
-				Anterior:                      params.Incident.Anterior,
-				ObjectConsistency:             params.Incident.ObjectConsistency,
-				ObjectBasicShape:              params.Incident.ObjectBasicShape,
-				WhatMaterialIsTheObjectMadeOf: params.Incident.WhatMaterialIsTheObjectMadeOf,
-				TheObjectIs:                   params.Incident.TheObjectIs,
-				LargestLength:                 params.Incident.LargestLength,
-				Created:                       &booleanFalse,
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
 			})
 		}
 		payload := pg.CreateIncident(ctx, *params.Incident, userID)
@@ -213,12 +201,9 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		if !ok {
-			response := incident.NewGetIncidentsUnauthorized()
-			getIncidentsResponse := models.GetIncidentsBadRequestResponse{
-				UserID: &userID,
-			}
-			response.WithPayload(&getIncidentsResponse)
-			return response
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
+			})
 		}
 		payload, ok := pg.GetIncidents(ctx, userID)
 		if !ok {
@@ -240,20 +225,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		_, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
-			return middleware.Error(401, models.UpdateIncidentIncidentIDNotFoundResponse{
-				ID:                            params.Incident.ID,
-				DateOfIncident:                params.Incident.DateOfIncident,
-				ApproximatePatientAge:         params.Incident.ApproximatePatientAge,
-				Gender:                        params.Incident.Gender,
-				LongTermPrognosis:             params.Incident.LongTermPrognosis,
-				IncidentDescription:           params.Incident.IncidentDescription,
-				Anterior:                      params.Incident.Anterior,
-				ObjectConsistency:             params.Incident.ObjectConsistency,
-				ObjectBasicShape:              params.Incident.ObjectBasicShape,
-				WhatMaterialIsTheObjectMadeOf: params.Incident.WhatMaterialIsTheObjectMadeOf,
-				TheObjectIs:                   params.Incident.TheObjectIs,
-				LargestLength:                 params.Incident.LargestLength,
-				Updated:                       &booleanFalse,
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
 			})
 		}
 		payload, ok := pg.UpdateIncident(ctx, *params.Incident)
@@ -285,9 +258,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		_, ok := fba.VerifyToken(ctx, tokenStr)
 		booleanFalse := false
 		if !ok {
-			return middleware.Error(401, models.DeleteIncidentIncidentIDNotFoundResponse{
-				Deleted: &booleanFalse,
-				ID:      params.Incident.ID,
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
 			})
 		}
 		payload, ok := pg.DeleteIncident(ctx, *params.Incident.ID)

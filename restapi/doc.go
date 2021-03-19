@@ -6,8 +6,8 @@
 //  Schemes:
 //    https
 //  Host: girc.app
-//  BasePath: /v2
-//  Version: 2.0.0
+//  BasePath: /
+//  Version: 3.0.0
 //
 //  Consumes:
 //    - application/json

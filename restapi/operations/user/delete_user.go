@@ -29,7 +29,7 @@ func NewDeleteUser(ctx *middleware.Context, handler DeleteUserHandler) *DeleteUs
 	return &DeleteUser{Context: ctx, Handler: handler}
 }
 
-/* DeleteUser swagger:route DELETE /user user deleteUser
+/* DeleteUser swagger:route DELETE /v2/user user deleteUser
 
 unregisters a user, for testing only will be removed in production
 

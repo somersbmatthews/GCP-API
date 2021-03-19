@@ -19,45 +19,81 @@ import (
 // swagger:model CreateIncident
 type CreateIncident struct {
 
-	// anterior
-	Anterior string `json:"Anterior,omitempty"`
+	// anesthesia pipe 919f1a66 8bc1 4e4a abad 4c53b55cc6d1
+	AnesthesiaPipe919f1a668bc14e4aAbad4c53b55cc6d1 string `json:"Anesthesia|919f1a66-8bc1-4e4a-abad-4c53b55cc6d1,omitempty"`
 
-	// approximate patient age
-	ApproximatePatientAge string `json:"Approximate_Patient_Age,omitempty"`
+	// anterior pipe 45eed887 d382 41bd 81ab d775193e2339
+	AnteriorPipe45eed887D38241bd81abD775193e2339 string `json:"Anterior|45eed887-d382-41bd-81ab-d775193e2339,omitempty"`
 
-	// date of incident
-	DateOfIncident string `json:"Date_of_Incident,omitempty"`
+	// approximate patient age pipe 756ddebd 03a0 4a71 a8f3 caf2f0488d14
+	ApproximatePatientAgePipe756ddebd03a04a71A8f3Caf2f0488d14 string `json:"Approximate Patient Age|756ddebd-03a0-4a71-a8f3-caf2f0488d14,omitempty"`
 
-	// gender
-	Gender string `json:"Gender,omitempty"`
+	// clearly radiopaque visible on x ray pipe d1fd7838 f071 43f0 bdc8 b10ff758c8fa
+	ClearlyRadiopaqueVisibleOnxRayPipeD1fd7838F07143f0Bdc8B10ff758c8fa string `json:"Clearly radiopaque (visible) on x-ray|d1fd7838-f071-43f0-bdc8-b10ff758c8fa,omitempty"`
+
+	// could be described as pipe bf8e2f8b c728 4aa6 b994 e948352337fa
+	CouldBeDescribedAsPipeBf8e2f8bC7284aa6B994E948352337fa string `json:"Could be described as...|bf8e2f8b-c728-4aa6-b994-e948352337fa,omitempty"`
+
+	// date of incident pipe e5e9dec8 d5df 46be 9b15 3c0f7d021f3c
+	DateOfIncidentPipeE5e9dec8D5df46be9b153c0f7d021f3c string `json:"Date of Incident|e5e9dec8-d5df-46be-9b15-3c0f7d021f3c,omitempty"`
+
+	// ease of removal pipe 5626663d 7960 4e67 a12c 763b48a11b4e
+	EaseOfRemovalPipe5626663d79604e67A12c763b48a11b4e string `json:"Ease of removal|5626663d-7960-4e67-a12c-763b48a11b4e,omitempty"`
+
+	// gender pipe b2c88bd0 742a 4d38 b07d 91cc965aa676
+	GenderPipeB2c88bd0742a4d38B07d91cc965aa676 string `json:"Gender|b2c88bd0-742a-4d38-b07d-91cc965aa676,omitempty"`
+
+	// how severe were the symptoms pipe 6172e242 127a 4bb2 94b4 8059b4a0ccfe
+	HowSevereWereTheSymptomsPipe6172e242127a4bb294b48059b4a0ccfe string `json:"How severe were the symptoms?|6172e242-127a-4bb2-94b4-8059b4a0ccfe,omitempty"`
 
 	// ID
 	// Required: true
 	ID *string `json:"ID"`
 
-	// incident description
-	IncidentDescription string `json:"Incident_Description,omitempty"`
+	// incident description pipe 792068e1 3922 4fc2 84e3 37dcd0a8b6ae
+	IncidentDescriptionPipe792068e139224fc284e337dcd0a8b6ae string `json:"Incident Description|792068e1-3922-4fc2-84e3-37dcd0a8b6ae\",omitempty"`
 
-	// largest length
-	LargestLength string `json:"Largest_Length,omitempty"`
+	// largest length pipe 4ef141ca c0a2 4322 b4cd 3277f1036168
+	LargestLengthPipe4ef141caC0a24322B4cd3277f1036168 string `json:"Largest Length|4ef141ca-c0a2-4322-b4cd-3277f1036168,omitempty"`
 
-	// location of object
-	LocationOfObject string `json:"Location_of_object,omitempty"`
+	// length of hospital stay pipe 69a7613a 13b6 4c9a bcfa 8f6c30823eda
+	LengthOfHospitalStayPipe69a7613a13b64c9aBcfa8f6c30823eda string `json:"Length of hospital stay|69a7613a-13b6-4c9a-bcfa-8f6c30823eda,omitempty"`
 
-	// long term prognosis
-	LongTermPrognosis string `json:"Long-term_prognosis,omitempty"`
+	// location of object s pipe 39b2491f dc51 4e25 9e14 bd35161bf944
+	LocationOfObjectsPipe39b2491fDc514e259e14Bd35161bf944 string `json:"Location of object(s)|39b2491f-dc51-4e25-9e14-bd35161bf944,omitempty"`
 
-	// object basic shape
-	ObjectBasicShape string `json:"Object_Basic_Shape,omitempty"`
+	// location pipe e3e3480d d0b7 4160 aee1 98a473987d84
+	LocationPipeE3e3480dD0b74160Aee198a473987d84 string `json:"Location|e3e3480d-d0b7-4160-aee1-98a473987d84,omitempty"`
 
-	// object consistency
-	ObjectConsistency string `json:"Object_Consistency,omitempty"`
+	// long term prognosis pipe e951cc59 66e2 47ae b1a1 34e6c4cb9680
+	LongTermPrognosisPipeE951cc5966e247aeB1a134e6c4cb9680 string `json:"Long-term prognosis|e951cc59-66e2-47ae-b1a1-34e6c4cb9680,omitempty"`
 
-	// the object is
-	TheObjectIs string `json:"The_object_is,omitempty"`
+	// object basic shape pipe 705ce202 c90c 4ad7 8aae 604fa3877fb5
+	ObjectBasicShapePipe705ce202C90c4ad78aae604fa3877fb5 string `json:"Object Basic Shape|705ce202-c90c-4ad7-8aae-604fa3877fb5,omitempty"`
 
-	// what material is the object made of
-	WhatMaterialIsTheObjectMadeOf string `json:"What_material_is_the_object_made_of,omitempty"`
+	// object consistency pipe 22adc3a7 9d9a 4d9c b90d c31844093909
+	ObjectConsistencyPipe22adc3a79d9a4d9cB90dC31844093909 string `json:"Object Consistency|22adc3a7-9d9a-4d9c-b90d-c31844093909,omitempty"`
+
+	// removal strategy pipe d5f2b63e f16d 4efc a0f9 20b27c738623
+	RemovalStrategyPipeD5f2b63eF16d4efcA0f920b27c738623 string `json:"Removal strategy|d5f2b63e-f16d-4efc-a0f9-20b27c738623,omitempty"`
+
+	// setting of removal pipe 1f0911cc 631b 473a 8452 881c21165164
+	SettingOfRemovalPipe1f0911cc631b473a8452881c21165164 string `json:"Setting of removal|1f0911cc-631b-473a-8452-881c21165164,omitempty"`
+
+	// the object is pipe 30aff71b 328e 4f3e 88b3 1efd2bb46cfe
+	TheObjectIsPipe30aff71b328e4f3e88b31efd2bb46cfe string `json:"The object is...|30aff71b-328e-4f3e-88b3-1efd2bb46cfe,omitempty"`
+
+	// time from initial incident to removal pipe 1faac5d3 01f5 4f32 aec3 6c3c615ef103
+	TimeFromInitialIncidentToRemovalPipe1faac5d301f54f32Aec36c3c615ef103 string `json:"Time from initial incident to removal|1faac5d3-01f5-4f32-aec3-6c3c615ef103,omitempty"`
+
+	// what material is the object made of pipe b42d3d75 0786 4393 a0f9 3f23466e1440
+	WhatMaterialIsTheObjectMadeOfPipeB42d3d7507864393A0f93f23466e1440 string `json:"What material is the object made of?|b42d3d75-0786-4393-a0f9-3f23466e1440,omitempty"`
+
+	// which of the following symptoms were present pipe 69ff9829 ea2a 4b0e b6a2 1385eaa3dd7e
+	WhichOfTheFollowingSymptomsWerePresentPipe69ff9829Ea2a4b0eB6a21385eaa3dd7e string `json:"Which of the following symptoms were present?|69ff9829-ea2a-4b0e-b6a2-1385eaa3dd7e,omitempty"`
+
+	// without prompt medical intervention do you consider this incident life threatening pipe 9c02a7f4 210f 486f abad 054c881a48dc
+	WithoutPromptMedicalInterventionDoYouConsiderThisIncidentLifeThreateningPipe9c02a7f4210f486fAbad054c881a48dc string `json:"Without prompt medical intervention, do you consider this incident life-threatening?|9c02a7f4-210f-486f-abad-054c881a48dc,omitempty"`
 }
 
 // Validate validates this create incident

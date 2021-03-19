@@ -35,11 +35,11 @@ func (o *VerifyURL) SetBasePath(bp string) {
 func (o *VerifyURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/verify"
+	var _path = "/v2/verify"
 
 	_basePath := o._basePath
 	if _basePath == "" {
-		_basePath = "/v2"
+		_basePath = "/"
 	}
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 
