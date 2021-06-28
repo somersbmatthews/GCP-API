@@ -31,22 +31,52 @@ type User struct {
 }
 
 type Incident struct {
-	CreatedAt                     int64
-	ID                            string `gorm: "unique"`
-	EncryptedUserID               string `gorm:"type:bytea"`
-	Location                      string
-	LocationOfObject              string
-	LongTermPrognosis             string
-	WhatMaterialIsTheObjectMadeOf string
-	Anterior                      string
-	DateOfIncident                string
-	ObjectConsistency             string
-	Gender                        string
-	ApproximatePatientAge         string
-	IncidentDescription           string
-	LargestLength                 string
-	ObjectBasicShape              string
-	TheObjectIs                   string
+	CreatedAt                   int64
+	ID                          string `gorm: "unique"`
+	EncryptedUserID             string `gorm:"type:bytea"`
+	Location                    string
+	LocationOfObject            string
+	LongTermPrognosis           string
+	SymptomsPresent             string
+	AnteriorPhoto               string
+	LateralPhoto                string
+	PosteriorPhoto              string
+	IncidentYear                string
+	ObjectConsistency           string
+	Gender                      string
+	PatientAge                  string
+	LargestLength               string
+	RemovalStrategy             string
+	SettingOfRemoval            string
+	LengthOfHospitalStay        string
+	LifeThreatening             string
+	IncidentDescription         string
+	TimeUntilRemoval            string
+	EaseOfRemoval               string
+	ObjectMaterial              string
+	ObjectBasicShape            string
+	Anesthesia                  string
+	SymptomSeverity             string
+	XrayOpacity                 string
+	AceticAcid                  string
+	Other                       string
+	Dimensionality              string
+	AdditionalImagingAndSurgery string
+	NumberOfPieces              string
+	ObjectsIntact               string
+	ObjectCharacteristics       string
+	BatteryLocation             string
+	MagneticPoleDirection       string
+	Complications               string
+	LargestDepth                string
+	Sucralfate                  string
+	BatteryImprintCode          string
+	OtherShape                  string
+	LargestWidth                string
+	MagnetType                  string
+	NumberOfObjects             string
+	CustomMagnetType            string
+	Honey                       string
 }
 
 // type IncidentQuery struct {
@@ -193,20 +223,52 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 	bytea := getByteaFromString(encryptedUserID)
 
 	incidentModel := Incident{
-		CreatedAt:                     time.Now().UnixNano(),
-		ID:                            *incident.ID,
-		EncryptedUserID:               bytea,
-		DateOfIncident:                incident.DateOfIncident,
-		ApproximatePatientAge:         incident.ApproximatePatientAge,
-		Gender:                        incident.Gender,
-		LongTermPrognosis:             incident.LongTermPrognosis,
-		IncidentDescription:           incident.IncidentDescription,
-		Anterior:                      incident.Anterior,
-		ObjectConsistency:             incident.ObjectConsistency,
-		ObjectBasicShape:              incident.ObjectBasicShape,
-		WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
-		TheObjectIs:                   incident.TheObjectIs,
-		LargestLength:                 incident.LargestLength,
+		CreatedAt:                   time.Now().UnixNano(),
+		ID:                          *incident.ID,
+		EncryptedUserID:             bytea,
+		Location:                    incident.Location,
+		LocationOfObject:            incident.LocationOfObject,
+		LongTermPrognosis:           incident.LongTermPrognosis,
+		SymptomsPresent:             incident.SymptomsPresent,
+		AnteriorPhoto:               incident.AnteriorPhoto,
+		LateralPhoto:                incident.LateralPhoto,
+		PosteriorPhoto:              incident.PosteriorPhoto,
+		IncidentYear:                incident.IncidentYear,
+		ObjectConsistency:           incident.ObjectConsitency,
+		Gender:                      incident.Gender,
+		PatientAge:                  incident.PatientAge,
+		LargestLength:               incident.LargestLength,
+		RemovalStrategy:             incident.RemovalStrategy,
+		SettingOfRemoval:            incident.SettingOfRemoval,
+		LengthOfHospitalStay:        incident.LengthOfHospitalStay,
+		LifeThreatening:             incident.LifeThreatening,
+		IncidentDescription:         incident.IncidentDescription,
+		TimeUntilRemoval:            incident.TimeUntilRemoval,
+		EaseOfRemoval:               incident.EaseOfRemoval,
+		ObjectMaterial:              incident.ObjectMaterial,
+		ObjectBasicShape:            incident.ObjectBasicShape,
+		Anesthesia:                  incident.Anesthesia,
+		SymptomSeverity:             incident.SymptomSeverity,
+		XrayOpacity:                 incident.XrayOpacity,
+		AceticAcid:                  incident.AceticAcid,
+		Other:                       incident.Other,
+		Dimensionality:              incident.Dimensionality,
+		AdditionalImagingAndSurgery: incident.AdditionalImagingAndSurgery,
+		NumberOfPieces:              incident.NumberOfPieces,
+		ObjectsIntact:               incident.ObjectIntact,
+		ObjectCharacteristics:       incident.ObjectCharacteristics,
+		BatteryLocation:             incident.BatteryLocation,
+		MagneticPoleDirection:       incident.MagneticPoleDirection,
+		Complications:               incident.Complications,
+		LargestDepth:                incident.LargestDepth,
+		Sucralfate:                  incident.Sucralfate,
+		BatteryImprintCode:          incident.BatteryImprintCode,
+		OtherShape:                  incident.OtherShape,
+		LargestWidth:                incident.LargestWidth,
+		MagnetType:                  incident.MagnetType,
+		NumberOfObjects:             incident.NumberOfObjects,
+		CustomMagnetType:            incident.CustomMagnetType,
+		Honey:                       incident.Honey,
 	}
 	err = db.Create(incidentModel).Error
 	if err != nil {
