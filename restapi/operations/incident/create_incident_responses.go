@@ -79,14 +79,14 @@ func (o *CreateIncidentOK) WriteResponse(rw http.ResponseWriter, producer runtim
 	}
 }
 
-// CreateIncidentUnauthorizedCode is the HTTP code returned for type CreateIncidentUnauthorized
-const CreateIncidentUnauthorizedCode int = 401
+// CreateIncidentBadRequestCode is the HTTP code returned for type CreateIncidentBadRequest
+const CreateIncidentBadRequestCode int = 400
 
-/*CreateIncidentUnauthorized bNews and buzzad authorization token
+/*CreateIncidentBadRequest invalid incident data
 
-swagger:response createIncidentUnauthorized
+swagger:response createIncidentBadRequest
 */
-type CreateIncidentUnauthorized struct {
+type CreateIncidentBadRequest struct {
 
 	/*
 	  In: Body
@@ -94,27 +94,27 @@ type CreateIncidentUnauthorized struct {
 	Payload *models.CreateIncidentInvalidIncidentResponse `json:"body,omitempty"`
 }
 
-// NewCreateIncidentUnauthorized creates CreateIncidentUnauthorized with default headers values
-func NewCreateIncidentUnauthorized() *CreateIncidentUnauthorized {
+// NewCreateIncidentBadRequest creates CreateIncidentBadRequest with default headers values
+func NewCreateIncidentBadRequest() *CreateIncidentBadRequest {
 
-	return &CreateIncidentUnauthorized{}
+	return &CreateIncidentBadRequest{}
 }
 
-// WithPayload adds the payload to the create incident unauthorized response
-func (o *CreateIncidentUnauthorized) WithPayload(payload *models.CreateIncidentInvalidIncidentResponse) *CreateIncidentUnauthorized {
+// WithPayload adds the payload to the create incident bad request response
+func (o *CreateIncidentBadRequest) WithPayload(payload *models.CreateIncidentInvalidIncidentResponse) *CreateIncidentBadRequest {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the create incident unauthorized response
-func (o *CreateIncidentUnauthorized) SetPayload(payload *models.CreateIncidentInvalidIncidentResponse) {
+// SetPayload sets the payload to the create incident bad request response
+func (o *CreateIncidentBadRequest) SetPayload(payload *models.CreateIncidentInvalidIncidentResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *CreateIncidentUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *CreateIncidentBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(401)
+	rw.WriteHeader(400)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

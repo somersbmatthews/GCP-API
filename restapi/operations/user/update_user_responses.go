@@ -57,14 +57,14 @@ func (o *UpdateUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 	}
 }
 
-// UpdateUserUnauthorizedCode is the HTTP code returned for type UpdateUserUnauthorized
-const UpdateUserUnauthorizedCode int = 401
+// UpdateUserBadRequestCode is the HTTP code returned for type UpdateUserBadRequest
+const UpdateUserBadRequestCode int = 400
 
-/*UpdateUserUnauthorized bad authorization token
+/*UpdateUserBadRequest Invalid user supplied
 
-swagger:response updateUserUnauthorized
+swagger:response updateUserBadRequest
 */
-type UpdateUserUnauthorized struct {
+type UpdateUserBadRequest struct {
 
 	/*
 	  In: Body
@@ -72,27 +72,27 @@ type UpdateUserUnauthorized struct {
 	Payload *models.UpdateUserInvalidResponse `json:"body,omitempty"`
 }
 
-// NewUpdateUserUnauthorized creates UpdateUserUnauthorized with default headers values
-func NewUpdateUserUnauthorized() *UpdateUserUnauthorized {
+// NewUpdateUserBadRequest creates UpdateUserBadRequest with default headers values
+func NewUpdateUserBadRequest() *UpdateUserBadRequest {
 
-	return &UpdateUserUnauthorized{}
+	return &UpdateUserBadRequest{}
 }
 
-// WithPayload adds the payload to the update user unauthorized response
-func (o *UpdateUserUnauthorized) WithPayload(payload *models.UpdateUserInvalidResponse) *UpdateUserUnauthorized {
+// WithPayload adds the payload to the update user bad request response
+func (o *UpdateUserBadRequest) WithPayload(payload *models.UpdateUserInvalidResponse) *UpdateUserBadRequest {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the update user unauthorized response
-func (o *UpdateUserUnauthorized) SetPayload(payload *models.UpdateUserInvalidResponse) {
+// SetPayload sets the payload to the update user bad request response
+func (o *UpdateUserBadRequest) SetPayload(payload *models.UpdateUserInvalidResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *UpdateUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *UpdateUserBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(401)
+	rw.WriteHeader(400)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

@@ -60,7 +60,7 @@ func (o *CreateUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 // CreateUserBadRequestCode is the HTTP code returned for type CreateUserBadRequest
 const CreateUserBadRequestCode int = 400
 
-/*CreateUserBadRequest database error while creating user
+/*CreateUserBadRequest user not created
 
 swagger:response createUserBadRequest
 */
@@ -93,50 +93,6 @@ func (o *CreateUserBadRequest) SetPayload(payload *models.CreateUserBadResponse)
 func (o *CreateUserBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(400)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
-	}
-}
-
-// CreateUserUnauthorizedCode is the HTTP code returned for type CreateUserUnauthorized
-const CreateUserUnauthorizedCode int = 401
-
-/*CreateUserUnauthorized bad authorization token
-
-swagger:response createUserUnauthorized
-*/
-type CreateUserUnauthorized struct {
-
-	/*
-	  In: Body
-	*/
-	Payload *models.CreateUserBadResponse `json:"body,omitempty"`
-}
-
-// NewCreateUserUnauthorized creates CreateUserUnauthorized with default headers values
-func NewCreateUserUnauthorized() *CreateUserUnauthorized {
-
-	return &CreateUserUnauthorized{}
-}
-
-// WithPayload adds the payload to the create user unauthorized response
-func (o *CreateUserUnauthorized) WithPayload(payload *models.CreateUserBadResponse) *CreateUserUnauthorized {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the create user unauthorized response
-func (o *CreateUserUnauthorized) SetPayload(payload *models.CreateUserBadResponse) {
-	o.Payload = payload
-}
-
-// WriteResponse to the client
-func (o *CreateUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.WriteHeader(401)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

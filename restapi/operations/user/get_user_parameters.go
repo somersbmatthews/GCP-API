@@ -6,12 +6,17 @@ package user
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	"github.com/gircapp/api/models"
 )
 
 // NewGetUserParams creates a new GetUserParams object
@@ -31,11 +36,16 @@ type GetUserParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*authorization header contains bearer token
+	/*authorization header contains firebase ID token
 	  Required: true
 	  In: header
 	*/
 	Authorization string
+	/*object that contains userId of user you want to get
+	  Required: true
+	  In: body
+	*/
+	User *models.GetUser
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -49,6 +59,34 @@ func (o *GetUserParams) BindRequest(r *http.Request, route *middleware.MatchedRo
 
 	if err := o.bindAuthorization(r.Header[http.CanonicalHeaderKey("Authorization")], true, route.Formats); err != nil {
 		res = append(res, err)
+	}
+
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body models.GetUser
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			if err == io.EOF {
+				res = append(res, errors.Required("user", "body", ""))
+			} else {
+				res = append(res, errors.NewParseError("user", "body", "", err))
+			}
+		} else {
+			// validate body object
+			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			ctx := validate.WithOperationRequest(context.Background())
+			if err := body.ContextValidate(ctx, route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			if len(res) == 0 {
+				o.User = &body
+			}
+		}
+	} else {
+		res = append(res, errors.Required("user", "body", ""))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

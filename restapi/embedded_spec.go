@@ -17,6 +17,2232 @@ var (
 )
 
 func init() {
-	SwaggerJSON = json.RawMessage([]byte(``))
-	FlatSwaggerJSON = json.RawMessage([]byte(``))
+	SwaggerJSON = json.RawMessage([]byte(`{
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "This is test server for GIRC app",
+    "title": "GIRC App API",
+    "version": "2.0.0"
+  },
+  "host": "TODO",
+  "basePath": "/",
+  "paths": {
+    "/v2/incident": {
+      "post": {
+        "description": "use this to create an incident for a userId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Create an incident",
+        "operationId": "createIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "Creates an incident and returns the created incident",
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation, only returns token if not using OAuth",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentGoodResponse"
+            },
+            "headers": {
+              "Authentication": {
+                "type": "string",
+                "description": "token"
+              }
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
+            }
+          },
+          "404": {
+            "description": "userId for this incident is not found",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this to delete an incident by incidentId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Delete incident",
+        "operationId": "deleteIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Update incident",
+        "operationId": "updateIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v2/user": {
+      "get": {
+        "description": "Get a user's information.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user's information.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "object that contains userId of user you want to get",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUserGoodResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/GetUserBadResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "register a user with his information",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "register a user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "a user's information",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CreateUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "user not created",
+            "schema": {
+              "$ref": "#/definitions/CreateUserBadResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "deletes a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "unregisters a user, for testing only will be removed in production",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "description": "deletes user with the requested userID",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid userId supplied",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          },
+          "404": {
+            "description": "user with requested userid not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a user's info",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid user supplied",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserInvalidResponse"
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v2/verify": {
+      "patch": {
+        "description": "verified field is true to verify, false to unverify",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "verify"
+        ],
+        "summary": "use this to verify or unverify a user, for testing only",
+        "operationId": "verify",
+        "parameters": [
+          {
+            "description": "verified field is true to verify, false to unverify",
+            "name": "verified",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Verify"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserGoodResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentInvalidIncidentResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUser": {
+      "type": "object",
+      "required": [
+        "userId",
+        "name",
+        "email",
+        "degree",
+        "specialty"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserBadResponse": {
+      "type": "object",
+      "required": [
+        "created",
+        "name",
+        "email",
+        "specialty",
+        "degree"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean",
+          "example": false
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "created"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean"
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "ID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "ID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "ID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserBadResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "example": false
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidents": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "incidents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateIncident"
+          }
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetUserBadResponse": {
+      "type": "object"
+    },
+    "GetUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "verified",
+        "name",
+        "degree",
+        "specialty",
+        "email"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "UpdateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "Updated": {
+          "type": "boolean",
+          "default": true
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "Updated": {
+          "type": "boolean",
+          "default": false
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "verified",
+        "name",
+        "degree",
+        "updated",
+        "email",
+        "specialty"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "UpdateUserInvalidResponse": {
+      "type": "object",
+      "required": [
+        "verified",
+        "name",
+        "degree",
+        "specialty",
+        "updated",
+        "email"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean",
+          "example": false
+        },
+        "verified": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "UpdateUserNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "updated": {
+          "type": "boolean",
+          "default": false
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "Verify": {
+      "type": "object",
+      "required": [
+        "userId",
+        "verified"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "to create, update, and delete incidents",
+      "name": "incident"
+    },
+    {
+      "description": "for user registration and authentication",
+      "name": "user"
+    },
+    {
+      "description": "only used for testing and will be removed in production",
+      "name": "verify"
+    }
+  ]
+}`))
+	FlatSwaggerJSON = json.RawMessage([]byte(`{
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "This is test server for GIRC app",
+    "title": "GIRC App API",
+    "version": "2.0.0"
+  },
+  "host": "TODO",
+  "basePath": "/",
+  "paths": {
+    "/v2/incident": {
+      "post": {
+        "description": "use this to create an incident for a userId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Create an incident",
+        "operationId": "createIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "Creates an incident and returns the created incident",
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation, only returns token if not using OAuth",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentGoodResponse"
+            },
+            "headers": {
+              "Authentication": {
+                "type": "string",
+                "description": "token"
+              }
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
+            }
+          },
+          "404": {
+            "description": "userId for this incident is not found",
+            "schema": {
+              "$ref": "#/definitions/CreateIncidentUserIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this to delete an incident by incidentId",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Delete incident",
+        "operationId": "deleteIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Update incident",
+        "operationId": "updateIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid incident data",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v2/user": {
+      "get": {
+        "description": "Get a user's information.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user's information.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "object that contains userId of user you want to get",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUserGoodResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/GetUserBadResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "register a user with his information",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "register a user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "a user's information",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CreateUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "user not created",
+            "schema": {
+              "$ref": "#/definitions/CreateUserBadResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "deletes a user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "unregisters a user, for testing only will be removed in production",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "description": "deletes user with the requested userID",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "invalid userId supplied",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          },
+          "404": {
+            "description": "user with requested userid not found",
+            "schema": {
+              "$ref": "#/definitions/DeleteUserBadResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a user's info",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains firebase ID token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserGoodResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid user supplied",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserInvalidResponse"
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v2/verify": {
+      "patch": {
+        "description": "verified field is true to verify, false to unverify",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "verify"
+        ],
+        "summary": "use this to verify or unverify a user, for testing only",
+        "operationId": "verify",
+        "parameters": [
+          {
+            "description": "verified field is true to verify, false to unverify",
+            "name": "verified",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Verify"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserGoodResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentInvalidIncidentResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateIncidentUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "boolean",
+          "default": false
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUser": {
+      "type": "object",
+      "required": [
+        "userId",
+        "name",
+        "email",
+        "degree",
+        "specialty"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserBadResponse": {
+      "type": "object",
+      "required": [
+        "created",
+        "name",
+        "email",
+        "specialty",
+        "degree"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean",
+          "example": false
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "created"
+      ],
+      "properties": {
+        "created": {
+          "type": "boolean"
+        },
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "ID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "ID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Deleted": {
+          "type": "boolean",
+          "default": true
+        },
+        "ID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserBadResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "example": false
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "deleted"
+      ],
+      "properties": {
+        "deleted": {
+          "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidents": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "incidents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateIncident"
+          }
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetIncidentsUserIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "GetUserBadResponse": {
+      "type": "object"
+    },
+    "GetUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "verified",
+        "name",
+        "degree",
+        "specialty",
+        "email"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "UpdateIncident": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateIncidentGoodResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "Updated": {
+          "type": "boolean",
+          "default": true
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateIncidentIncidentIdNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "Anterior": {
+          "type": "string"
+        },
+        "Approximate_Patient_Age": {
+          "type": "string"
+        },
+        "Date_of_Incident": {
+          "type": "string"
+        },
+        "Gender": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Incident_Description": {
+          "type": "string"
+        },
+        "Largest_Length": {
+          "type": "string"
+        },
+        "Location_of_object": {
+          "type": "string"
+        },
+        "Long-term_prognosis": {
+          "type": "string"
+        },
+        "Object_Basic_Shape": {
+          "type": "string"
+        },
+        "Object_Consistency": {
+          "type": "string"
+        },
+        "The_object_is": {
+          "type": "string"
+        },
+        "Updated": {
+          "type": "boolean",
+          "default": false
+        },
+        "What_material_is_the_object_made_of": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateUser": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateUserGoodResponse": {
+      "type": "object",
+      "required": [
+        "userId",
+        "verified",
+        "name",
+        "degree",
+        "updated",
+        "email",
+        "specialty"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "UpdateUserInvalidResponse": {
+      "type": "object",
+      "required": [
+        "verified",
+        "name",
+        "degree",
+        "specialty",
+        "updated",
+        "email"
+      ],
+      "properties": {
+        "degree": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "specialty": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "boolean",
+          "example": false
+        },
+        "verified": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "UpdateUserNotFoundResponse": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "updated": {
+          "type": "boolean",
+          "default": false
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "Verify": {
+      "type": "object",
+      "required": [
+        "userId",
+        "verified"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "to create, update, and delete incidents",
+      "name": "incident"
+    },
+    {
+      "description": "for user registration and authentication",
+      "name": "user"
+    },
+    {
+      "description": "only used for testing and will be removed in production",
+      "name": "verify"
+    }
+  ]
+}`))
 }

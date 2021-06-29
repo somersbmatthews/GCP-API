@@ -19,18 +19,9 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/gircapp/api/restapi/operations/coroner_incident"
-	"github.com/gircapp/api/restapi/operations/derm_incident"
-	"github.com/gircapp/api/restapi/operations/e_m_t_incident"
-	"github.com/gircapp/api/restapi/operations/e_n_t_incident"
-	"github.com/gircapp/api/restapi/operations/e_r_p_incident"
-	"github.com/gircapp/api/restapi/operations/fire_incident"
 	"github.com/gircapp/api/restapi/operations/incident"
-	"github.com/gircapp/api/restapi/operations/medical_expert"
-	"github.com/gircapp/api/restapi/operations/surg_incident"
 	"github.com/gircapp/api/restapi/operations/user"
 	"github.com/gircapp/api/restapi/operations/verify"
-	"github.com/gircapp/api/restapi/operations/vet_incident"
 )
 
 // NewGircAPI creates a new Girc instance
@@ -55,38 +46,11 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		CoronerIncidentCreateCorIncidentHandler: coroner_incident.CreateCorIncidentHandlerFunc(func(params coroner_incident.CreateCorIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation coroner_incident.CreateCorIncident has not yet been implemented")
-		}),
-		DermIncidentCreateDermIncidentHandler: derm_incident.CreateDermIncidentHandlerFunc(func(params derm_incident.CreateDermIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation derm_incident.CreateDermIncident has not yet been implemented")
-		}),
-		EmtIncidentCreateEMTIncidentHandler: e_m_t_incident.CreateEMTIncidentHandlerFunc(func(params e_m_t_incident.CreateEMTIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation e_m_t_incident.CreateEMTIncident has not yet been implemented")
-		}),
-		EntIncidentCreateENTIncidentHandler: e_n_t_incident.CreateENTIncidentHandlerFunc(func(params e_n_t_incident.CreateENTIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation e_n_t_incident.CreateENTIncident has not yet been implemented")
-		}),
-		ErpIncidentCreateERPIncidentHandler: e_r_p_incident.CreateERPIncidentHandlerFunc(func(params e_r_p_incident.CreateERPIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation e_r_p_incident.CreateERPIncident has not yet been implemented")
-		}),
-		FireIncidentCreateFireIncidentHandler: fire_incident.CreateFireIncidentHandlerFunc(func(params fire_incident.CreateFireIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation fire_incident.CreateFireIncident has not yet been implemented")
-		}),
 		IncidentCreateIncidentHandler: incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.CreateIncident has not yet been implemented")
 		}),
-		SurgIncidentCreateSurgIncidentHandler: surg_incident.CreateSurgIncidentHandlerFunc(func(params surg_incident.CreateSurgIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation surg_incident.CreateSurgIncident has not yet been implemented")
-		}),
 		UserCreateUserHandler: user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.CreateUser has not yet been implemented")
-		}),
-		VetIncidentCreateVetIncidentHandler: vet_incident.CreateVetIncidentHandlerFunc(func(params vet_incident.CreateVetIncidentParams) middleware.Responder {
-			return middleware.NotImplemented("operation vet_incident.CreateVetIncident has not yet been implemented")
-		}),
-		MedicalExpertDeleteExpertHandler: medical_expert.DeleteExpertHandlerFunc(func(params medical_expert.DeleteExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation medical_expert.DeleteExpert has not yet been implemented")
 		}),
 		IncidentDeleteIncidentsHandler: incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
@@ -94,26 +58,8 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		UserDeleteUserHandler: user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.DeleteUser has not yet been implemented")
 		}),
-		MedicalExpertGetExpertHandler: medical_expert.GetExpertHandlerFunc(func(params medical_expert.GetExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation medical_expert.GetExpert has not yet been implemented")
-		}),
-		IncidentGetIncidentsHandler: incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
-			return middleware.NotImplemented("operation incident.GetIncidents has not yet been implemented")
-		}),
 		UserGetUserHandler: user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.GetUser has not yet been implemented")
-		}),
-		MedicalExpertLoginExpertHandler: medical_expert.LoginExpertHandlerFunc(func(params medical_expert.LoginExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation medical_expert.LoginExpert has not yet been implemented")
-		}),
-		MedicalExpertLogoutExpertHandler: medical_expert.LogoutExpertHandlerFunc(func(params medical_expert.LogoutExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation medical_expert.LogoutExpert has not yet been implemented")
-		}),
-		MedicalExpertRegisterExpertHandler: medical_expert.RegisterExpertHandlerFunc(func(params medical_expert.RegisterExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation medical_expert.RegisterExpert has not yet been implemented")
-		}),
-		MedicalExpertUpdateExpertHandler: medical_expert.UpdateExpertHandlerFunc(func(params medical_expert.UpdateExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation medical_expert.UpdateExpert has not yet been implemented")
 		}),
 		IncidentUpdateIncidentsHandler: incident.UpdateIncidentsHandlerFunc(func(params incident.UpdateIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.UpdateIncidents has not yet been implemented")
@@ -123,9 +69,6 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		}),
 		VerifyVerifyHandler: verify.VerifyHandlerFunc(func(params verify.VerifyParams) middleware.Responder {
 			return middleware.NotImplemented("operation verify.Verify has not yet been implemented")
-		}),
-		VerifyVerifyExpertHandler: verify.VerifyExpertHandlerFunc(func(params verify.VerifyExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation verify.VerifyExpert has not yet been implemented")
 		}),
 	}
 }
@@ -163,54 +106,22 @@ type GircAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
-	// CoronerIncidentCreateCorIncidentHandler sets the operation handler for the create cor incident operation
-	CoronerIncidentCreateCorIncidentHandler coroner_incident.CreateCorIncidentHandler
-	// DermIncidentCreateDermIncidentHandler sets the operation handler for the create derm incident operation
-	DermIncidentCreateDermIncidentHandler derm_incident.CreateDermIncidentHandler
-	// EmtIncidentCreateEMTIncidentHandler sets the operation handler for the create e m t incident operation
-	EmtIncidentCreateEMTIncidentHandler e_m_t_incident.CreateEMTIncidentHandler
-	// EntIncidentCreateENTIncidentHandler sets the operation handler for the create e n t incident operation
-	EntIncidentCreateENTIncidentHandler e_n_t_incident.CreateENTIncidentHandler
-	// ErpIncidentCreateERPIncidentHandler sets the operation handler for the create e r p incident operation
-	ErpIncidentCreateERPIncidentHandler e_r_p_incident.CreateERPIncidentHandler
-	// FireIncidentCreateFireIncidentHandler sets the operation handler for the create fire incident operation
-	FireIncidentCreateFireIncidentHandler fire_incident.CreateFireIncidentHandler
 	// IncidentCreateIncidentHandler sets the operation handler for the create incident operation
 	IncidentCreateIncidentHandler incident.CreateIncidentHandler
-	// SurgIncidentCreateSurgIncidentHandler sets the operation handler for the create surg incident operation
-	SurgIncidentCreateSurgIncidentHandler surg_incident.CreateSurgIncidentHandler
 	// UserCreateUserHandler sets the operation handler for the create user operation
 	UserCreateUserHandler user.CreateUserHandler
-	// VetIncidentCreateVetIncidentHandler sets the operation handler for the create vet incident operation
-	VetIncidentCreateVetIncidentHandler vet_incident.CreateVetIncidentHandler
-	// MedicalExpertDeleteExpertHandler sets the operation handler for the delete expert operation
-	MedicalExpertDeleteExpertHandler medical_expert.DeleteExpertHandler
 	// IncidentDeleteIncidentsHandler sets the operation handler for the delete incidents operation
 	IncidentDeleteIncidentsHandler incident.DeleteIncidentsHandler
 	// UserDeleteUserHandler sets the operation handler for the delete user operation
 	UserDeleteUserHandler user.DeleteUserHandler
-	// MedicalExpertGetExpertHandler sets the operation handler for the get expert operation
-	MedicalExpertGetExpertHandler medical_expert.GetExpertHandler
-	// IncidentGetIncidentsHandler sets the operation handler for the get incidents operation
-	IncidentGetIncidentsHandler incident.GetIncidentsHandler
 	// UserGetUserHandler sets the operation handler for the get user operation
 	UserGetUserHandler user.GetUserHandler
-	// MedicalExpertLoginExpertHandler sets the operation handler for the login expert operation
-	MedicalExpertLoginExpertHandler medical_expert.LoginExpertHandler
-	// MedicalExpertLogoutExpertHandler sets the operation handler for the logout expert operation
-	MedicalExpertLogoutExpertHandler medical_expert.LogoutExpertHandler
-	// MedicalExpertRegisterExpertHandler sets the operation handler for the register expert operation
-	MedicalExpertRegisterExpertHandler medical_expert.RegisterExpertHandler
-	// MedicalExpertUpdateExpertHandler sets the operation handler for the update expert operation
-	MedicalExpertUpdateExpertHandler medical_expert.UpdateExpertHandler
 	// IncidentUpdateIncidentsHandler sets the operation handler for the update incidents operation
 	IncidentUpdateIncidentsHandler incident.UpdateIncidentsHandler
 	// UserUpdateUserHandler sets the operation handler for the update user operation
 	UserUpdateUserHandler user.UpdateUserHandler
 	// VerifyVerifyHandler sets the operation handler for the verify operation
 	VerifyVerifyHandler verify.VerifyHandler
-	// VerifyVerifyExpertHandler sets the operation handler for the verify expert operation
-	VerifyVerifyExpertHandler verify.VerifyExpertHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -288,38 +199,11 @@ func (o *GircAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.CoronerIncidentCreateCorIncidentHandler == nil {
-		unregistered = append(unregistered, "coroner_incident.CreateCorIncidentHandler")
-	}
-	if o.DermIncidentCreateDermIncidentHandler == nil {
-		unregistered = append(unregistered, "derm_incident.CreateDermIncidentHandler")
-	}
-	if o.EmtIncidentCreateEMTIncidentHandler == nil {
-		unregistered = append(unregistered, "e_m_t_incident.CreateEMTIncidentHandler")
-	}
-	if o.EntIncidentCreateENTIncidentHandler == nil {
-		unregistered = append(unregistered, "e_n_t_incident.CreateENTIncidentHandler")
-	}
-	if o.ErpIncidentCreateERPIncidentHandler == nil {
-		unregistered = append(unregistered, "e_r_p_incident.CreateERPIncidentHandler")
-	}
-	if o.FireIncidentCreateFireIncidentHandler == nil {
-		unregistered = append(unregistered, "fire_incident.CreateFireIncidentHandler")
-	}
 	if o.IncidentCreateIncidentHandler == nil {
 		unregistered = append(unregistered, "incident.CreateIncidentHandler")
 	}
-	if o.SurgIncidentCreateSurgIncidentHandler == nil {
-		unregistered = append(unregistered, "surg_incident.CreateSurgIncidentHandler")
-	}
 	if o.UserCreateUserHandler == nil {
 		unregistered = append(unregistered, "user.CreateUserHandler")
-	}
-	if o.VetIncidentCreateVetIncidentHandler == nil {
-		unregistered = append(unregistered, "vet_incident.CreateVetIncidentHandler")
-	}
-	if o.MedicalExpertDeleteExpertHandler == nil {
-		unregistered = append(unregistered, "medical_expert.DeleteExpertHandler")
 	}
 	if o.IncidentDeleteIncidentsHandler == nil {
 		unregistered = append(unregistered, "incident.DeleteIncidentsHandler")
@@ -327,26 +211,8 @@ func (o *GircAPI) Validate() error {
 	if o.UserDeleteUserHandler == nil {
 		unregistered = append(unregistered, "user.DeleteUserHandler")
 	}
-	if o.MedicalExpertGetExpertHandler == nil {
-		unregistered = append(unregistered, "medical_expert.GetExpertHandler")
-	}
-	if o.IncidentGetIncidentsHandler == nil {
-		unregistered = append(unregistered, "incident.GetIncidentsHandler")
-	}
 	if o.UserGetUserHandler == nil {
 		unregistered = append(unregistered, "user.GetUserHandler")
-	}
-	if o.MedicalExpertLoginExpertHandler == nil {
-		unregistered = append(unregistered, "medical_expert.LoginExpertHandler")
-	}
-	if o.MedicalExpertLogoutExpertHandler == nil {
-		unregistered = append(unregistered, "medical_expert.LogoutExpertHandler")
-	}
-	if o.MedicalExpertRegisterExpertHandler == nil {
-		unregistered = append(unregistered, "medical_expert.RegisterExpertHandler")
-	}
-	if o.MedicalExpertUpdateExpertHandler == nil {
-		unregistered = append(unregistered, "medical_expert.UpdateExpertHandler")
 	}
 	if o.IncidentUpdateIncidentsHandler == nil {
 		unregistered = append(unregistered, "incident.UpdateIncidentsHandler")
@@ -356,9 +222,6 @@ func (o *GircAPI) Validate() error {
 	}
 	if o.VerifyVerifyHandler == nil {
 		unregistered = append(unregistered, "verify.VerifyHandler")
-	}
-	if o.VerifyVerifyExpertHandler == nil {
-		unregistered = append(unregistered, "verify.VerifyExpertHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -451,47 +314,11 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/v3/corincident"] = coroner_incident.NewCreateCorIncident(o.context, o.CoronerIncidentCreateCorIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/dermincident"] = derm_incident.NewCreateDermIncident(o.context, o.DermIncidentCreateDermIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/emtincident"] = e_m_t_incident.NewCreateEMTIncident(o.context, o.EmtIncidentCreateEMTIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/entincident"] = e_n_t_incident.NewCreateENTIncident(o.context, o.EntIncidentCreateENTIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/erpincident"] = e_r_p_incident.NewCreateERPIncident(o.context, o.ErpIncidentCreateERPIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/fireincident"] = fire_incident.NewCreateFireIncident(o.context, o.FireIncidentCreateFireIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
 	o.handlers["POST"]["/v2/incident"] = incident.NewCreateIncident(o.context, o.IncidentCreateIncidentHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/v3/surgincident"] = surg_incident.NewCreateSurgIncident(o.context, o.SurgIncidentCreateSurgIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
 	o.handlers["POST"]["/v2/user"] = user.NewCreateUser(o.context, o.UserCreateUserHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/vetincident"] = vet_incident.NewCreateVetIncident(o.context, o.VetIncidentCreateVetIncidentHandler)
-	if o.handlers["DELETE"] == nil {
-		o.handlers["DELETE"] = make(map[string]http.Handler)
-	}
-	o.handlers["DELETE"]["/v3/expert"] = medical_expert.NewDeleteExpert(o.context, o.MedicalExpertDeleteExpertHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -503,31 +330,7 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/v3/expert"] = medical_expert.NewGetExpert(o.context, o.MedicalExpertGetExpertHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/v2/incident"] = incident.NewGetIncidents(o.context, o.IncidentGetIncidentsHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
 	o.handlers["GET"]["/v2/user"] = user.NewGetUser(o.context, o.UserGetUserHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/v3/expert/login"] = medical_expert.NewLoginExpert(o.context, o.MedicalExpertLoginExpertHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/v3/expert/logout"] = medical_expert.NewLogoutExpert(o.context, o.MedicalExpertLogoutExpertHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/expert"] = medical_expert.NewRegisterExpert(o.context, o.MedicalExpertRegisterExpertHandler)
-	if o.handlers["PATCH"] == nil {
-		o.handlers["PATCH"] = make(map[string]http.Handler)
-	}
-	o.handlers["PATCH"]["/v3/expert"] = medical_expert.NewUpdateExpert(o.context, o.MedicalExpertUpdateExpertHandler)
 	if o.handlers["PATCH"] == nil {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
@@ -540,10 +343,6 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
 	o.handlers["PATCH"]["/v2/verify"] = verify.NewVerify(o.context, o.VerifyVerifyHandler)
-	if o.handlers["PATCH"] == nil {
-		o.handlers["PATCH"] = make(map[string]http.Handler)
-	}
-	o.handlers["PATCH"]["/v3/verify"] = verify.NewVerifyExpert(o.context, o.VerifyVerifyExpertHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

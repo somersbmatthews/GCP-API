@@ -57,14 +57,14 @@ func (o *DeleteUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 	}
 }
 
-// DeleteUserUnauthorizedCode is the HTTP code returned for type DeleteUserUnauthorized
-const DeleteUserUnauthorizedCode int = 401
+// DeleteUserBadRequestCode is the HTTP code returned for type DeleteUserBadRequest
+const DeleteUserBadRequestCode int = 400
 
-/*DeleteUserUnauthorized bad authorization token
+/*DeleteUserBadRequest invalid userId supplied
 
-swagger:response deleteUserUnauthorized
+swagger:response deleteUserBadRequest
 */
-type DeleteUserUnauthorized struct {
+type DeleteUserBadRequest struct {
 
 	/*
 	  In: Body
@@ -72,27 +72,27 @@ type DeleteUserUnauthorized struct {
 	Payload *models.DeleteUserBadResponse `json:"body,omitempty"`
 }
 
-// NewDeleteUserUnauthorized creates DeleteUserUnauthorized with default headers values
-func NewDeleteUserUnauthorized() *DeleteUserUnauthorized {
+// NewDeleteUserBadRequest creates DeleteUserBadRequest with default headers values
+func NewDeleteUserBadRequest() *DeleteUserBadRequest {
 
-	return &DeleteUserUnauthorized{}
+	return &DeleteUserBadRequest{}
 }
 
-// WithPayload adds the payload to the delete user unauthorized response
-func (o *DeleteUserUnauthorized) WithPayload(payload *models.DeleteUserBadResponse) *DeleteUserUnauthorized {
+// WithPayload adds the payload to the delete user bad request response
+func (o *DeleteUserBadRequest) WithPayload(payload *models.DeleteUserBadResponse) *DeleteUserBadRequest {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the delete user unauthorized response
-func (o *DeleteUserUnauthorized) SetPayload(payload *models.DeleteUserBadResponse) {
+// SetPayload sets the payload to the delete user bad request response
+func (o *DeleteUserBadRequest) SetPayload(payload *models.DeleteUserBadResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *DeleteUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *DeleteUserBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(401)
+	rw.WriteHeader(400)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

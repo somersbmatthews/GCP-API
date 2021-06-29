@@ -57,50 +57,6 @@ func (o *VerifyOK) WriteResponse(rw http.ResponseWriter, producer runtime.Produc
 	}
 }
 
-// VerifyUnauthorizedCode is the HTTP code returned for type VerifyUnauthorized
-const VerifyUnauthorizedCode int = 401
-
-/*VerifyUnauthorized bad authorization token
-
-swagger:response verifyUnauthorized
-*/
-type VerifyUnauthorized struct {
-
-	/*
-	  In: Body
-	*/
-	Payload *models.UpdateUserNotFoundResponse `json:"body,omitempty"`
-}
-
-// NewVerifyUnauthorized creates VerifyUnauthorized with default headers values
-func NewVerifyUnauthorized() *VerifyUnauthorized {
-
-	return &VerifyUnauthorized{}
-}
-
-// WithPayload adds the payload to the verify unauthorized response
-func (o *VerifyUnauthorized) WithPayload(payload *models.UpdateUserNotFoundResponse) *VerifyUnauthorized {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the verify unauthorized response
-func (o *VerifyUnauthorized) SetPayload(payload *models.UpdateUserNotFoundResponse) {
-	o.Payload = payload
-}
-
-// WriteResponse to the client
-func (o *VerifyUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.WriteHeader(401)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
-	}
-}
-
 // VerifyNotFoundCode is the HTTP code returned for type VerifyNotFound
 const VerifyNotFoundCode int = 404
 
