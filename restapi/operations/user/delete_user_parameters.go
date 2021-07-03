@@ -6,16 +6,12 @@ package user
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
-
-	"github.com/gircapp/api/models"
 )
 
 // NewDeleteUserParams creates a new DeleteUserParams object
@@ -35,11 +31,11 @@ type DeleteUserParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*deletes user with the requested userID
+	/*authorization token
 	  Required: true
-	  In: body
+	  In: header
 	*/
-	User *models.DeleteUser
+	Authorization string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -51,35 +47,31 @@ func (o *DeleteUserParams) BindRequest(r *http.Request, route *middleware.Matche
 
 	o.HTTPRequest = r
 
-	if runtime.HasBody(r) {
-		defer r.Body.Close()
-		var body models.DeleteUser
-		if err := route.Consumer.Consume(r.Body, &body); err != nil {
-			if err == io.EOF {
-				res = append(res, errors.Required("user", "body", ""))
-			} else {
-				res = append(res, errors.NewParseError("user", "body", "", err))
-			}
-		} else {
-			// validate body object
-			if err := body.Validate(route.Formats); err != nil {
-				res = append(res, err)
-			}
-
-			ctx := validate.WithOperationRequest(context.Background())
-			if err := body.ContextValidate(ctx, route.Formats); err != nil {
-				res = append(res, err)
-			}
-
-			if len(res) == 0 {
-				o.User = &body
-			}
-		}
-	} else {
-		res = append(res, errors.Required("user", "body", ""))
+	if err := o.bindAuthorization(r.Header[http.CanonicalHeaderKey("Authorization")], true, route.Formats); err != nil {
+		res = append(res, err)
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// bindAuthorization binds and validates parameter Authorization from header.
+func (o *DeleteUserParams) bindAuthorization(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("Authorization", "header", rawData)
+	}
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: true
+
+	if err := validate.RequiredString("Authorization", "header", raw); err != nil {
+		return err
+	}
+	o.Authorization = raw
+
 	return nil
 }

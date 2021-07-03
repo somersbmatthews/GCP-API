@@ -69,7 +69,7 @@ type CreateSurgIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateSurgIncidentUnauthorized creates CreateSurgIncidentUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewCreateSurgIncidentUnauthorized() *CreateSurgIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create surg incident unauthorized response
-func (o *CreateSurgIncidentUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *CreateSurgIncidentUnauthorized {
+func (o *CreateSurgIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateSurgIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create surg incident unauthorized response
-func (o *CreateSurgIncidentUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *CreateSurgIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type CreateSurgIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateSurgIncidentNotFound creates CreateSurgIncidentNotFound with default headers values
@@ -123,13 +123,13 @@ func NewCreateSurgIncidentNotFound() *CreateSurgIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create surg incident not found response
-func (o *CreateSurgIncidentNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *CreateSurgIncidentNotFound {
+func (o *CreateSurgIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateSurgIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create surg incident not found response
-func (o *CreateSurgIncidentNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *CreateSurgIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

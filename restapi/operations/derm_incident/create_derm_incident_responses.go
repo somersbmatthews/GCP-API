@@ -69,7 +69,7 @@ type CreateDermIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateDermIncidentUnauthorized creates CreateDermIncidentUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewCreateDermIncidentUnauthorized() *CreateDermIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create derm incident unauthorized response
-func (o *CreateDermIncidentUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *CreateDermIncidentUnauthorized {
+func (o *CreateDermIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateDermIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create derm incident unauthorized response
-func (o *CreateDermIncidentUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *CreateDermIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type CreateDermIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateDermIncidentNotFound creates CreateDermIncidentNotFound with default headers values
@@ -123,13 +123,13 @@ func NewCreateDermIncidentNotFound() *CreateDermIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create derm incident not found response
-func (o *CreateDermIncidentNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *CreateDermIncidentNotFound {
+func (o *CreateDermIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateDermIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create derm incident not found response
-func (o *CreateDermIncidentNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *CreateDermIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

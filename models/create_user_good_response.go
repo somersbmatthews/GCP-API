@@ -36,7 +36,8 @@ type CreateUserGoodResponse struct {
 	Specialty string `json:"specialty,omitempty"`
 
 	// user Id
-	UserID string `json:"userId,omitempty"`
+	// Required: true
+	UserID *string `json:"userId"`
 }
 
 // Validate validates this create user good response
@@ -44,6 +45,10 @@ func (m *CreateUserGoodResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreated(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -56,6 +61,15 @@ func (m *CreateUserGoodResponse) Validate(formats strfmt.Registry) error {
 func (m *CreateUserGoodResponse) validateCreated(formats strfmt.Registry) error {
 
 	if err := validate.Required("created", "body", m.Created); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *CreateUserGoodResponse) validateUserID(formats strfmt.Registry) error {
+
+	if err := validate.Required("userId", "body", m.UserID); err != nil {
 		return err
 	}
 

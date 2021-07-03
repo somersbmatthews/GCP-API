@@ -25,7 +25,7 @@ type GetExpertOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentGoodResponse `json:"body,omitempty"`
+	Payload *models.GoodResponse `json:"body,omitempty"`
 }
 
 // NewGetExpertOK creates GetExpertOK with default headers values
@@ -35,13 +35,13 @@ func NewGetExpertOK() *GetExpertOK {
 }
 
 // WithPayload adds the payload to the get expert o k response
-func (o *GetExpertOK) WithPayload(payload *models.DeleteIncidentGoodResponse) *GetExpertOK {
+func (o *GetExpertOK) WithPayload(payload *models.GoodResponse) *GetExpertOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get expert o k response
-func (o *GetExpertOK) SetPayload(payload *models.DeleteIncidentGoodResponse) {
+func (o *GetExpertOK) SetPayload(payload *models.GoodResponse) {
 	o.Payload = payload
 }
 

@@ -69,7 +69,7 @@ type LogoutExpertUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewLogoutExpertUnauthorized creates LogoutExpertUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewLogoutExpertUnauthorized() *LogoutExpertUnauthorized {
 }
 
 // WithPayload adds the payload to the logout expert unauthorized response
-func (o *LogoutExpertUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *LogoutExpertUnauthorized {
+func (o *LogoutExpertUnauthorized) WithPayload(payload *models.BadResponse) *LogoutExpertUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the logout expert unauthorized response
-func (o *LogoutExpertUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *LogoutExpertUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type LogoutExpertNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewLogoutExpertNotFound creates LogoutExpertNotFound with default headers values
@@ -123,13 +123,13 @@ func NewLogoutExpertNotFound() *LogoutExpertNotFound {
 }
 
 // WithPayload adds the payload to the logout expert not found response
-func (o *LogoutExpertNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *LogoutExpertNotFound {
+func (o *LogoutExpertNotFound) WithPayload(payload *models.BadResponse) *LogoutExpertNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the logout expert not found response
-func (o *LogoutExpertNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *LogoutExpertNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

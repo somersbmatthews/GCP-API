@@ -69,7 +69,7 @@ type GetIncidentsUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.GetIncidentsBadRequestResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewGetIncidentsUnauthorized creates GetIncidentsUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewGetIncidentsUnauthorized() *GetIncidentsUnauthorized {
 }
 
 // WithPayload adds the payload to the get incidents unauthorized response
-func (o *GetIncidentsUnauthorized) WithPayload(payload *models.GetIncidentsBadRequestResponse) *GetIncidentsUnauthorized {
+func (o *GetIncidentsUnauthorized) WithPayload(payload *models.BadResponse) *GetIncidentsUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get incidents unauthorized response
-func (o *GetIncidentsUnauthorized) SetPayload(payload *models.GetIncidentsBadRequestResponse) {
+func (o *GetIncidentsUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type GetIncidentsNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.GetIncidentsUserIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewGetIncidentsNotFound creates GetIncidentsNotFound with default headers values
@@ -123,13 +123,13 @@ func NewGetIncidentsNotFound() *GetIncidentsNotFound {
 }
 
 // WithPayload adds the payload to the get incidents not found response
-func (o *GetIncidentsNotFound) WithPayload(payload *models.GetIncidentsUserIDNotFoundResponse) *GetIncidentsNotFound {
+func (o *GetIncidentsNotFound) WithPayload(payload *models.BadResponse) *GetIncidentsNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get incidents not found response
-func (o *GetIncidentsNotFound) SetPayload(payload *models.GetIncidentsUserIDNotFoundResponse) {
+func (o *GetIncidentsNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

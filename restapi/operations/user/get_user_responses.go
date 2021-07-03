@@ -57,6 +57,50 @@ func (o *GetUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Produ
 	}
 }
 
+// GetUserUnauthorizedCode is the HTTP code returned for type GetUserUnauthorized
+const GetUserUnauthorizedCode int = 401
+
+/*GetUserUnauthorized bad authorization token
+
+swagger:response getUserUnauthorized
+*/
+type GetUserUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewGetUserUnauthorized creates GetUserUnauthorized with default headers values
+func NewGetUserUnauthorized() *GetUserUnauthorized {
+
+	return &GetUserUnauthorized{}
+}
+
+// WithPayload adds the payload to the get user unauthorized response
+func (o *GetUserUnauthorized) WithPayload(payload *models.BadResponse) *GetUserUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get user unauthorized response
+func (o *GetUserUnauthorized) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // GetUserNotFoundCode is the HTTP code returned for type GetUserNotFound
 const GetUserNotFoundCode int = 404
 
@@ -69,7 +113,7 @@ type GetUserNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload models.GetUserBadResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewGetUserNotFound creates GetUserNotFound with default headers values
@@ -79,13 +123,13 @@ func NewGetUserNotFound() *GetUserNotFound {
 }
 
 // WithPayload adds the payload to the get user not found response
-func (o *GetUserNotFound) WithPayload(payload models.GetUserBadResponse) *GetUserNotFound {
+func (o *GetUserNotFound) WithPayload(payload *models.BadResponse) *GetUserNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get user not found response
-func (o *GetUserNotFound) SetPayload(payload models.GetUserBadResponse) {
+func (o *GetUserNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -93,8 +137,10 @@ func (o *GetUserNotFound) SetPayload(payload models.GetUserBadResponse) {
 func (o *GetUserNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(404)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
 }

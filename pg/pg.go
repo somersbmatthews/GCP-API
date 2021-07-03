@@ -35,7 +35,7 @@ type Incident struct {
 	ID                          string `gorm: "unique"`
 	EncryptedUserID             string `gorm:"type:bytea"`
 	Location                    string
-	LocationOfObject            string
+	LocationOfObjects           string
 	LongTermPrognosis           string
 	SymptomsPresent             string
 	AnteriorPhoto               string
@@ -210,15 +210,13 @@ func Open() (*gorm.DB, *sql.DB) {
 	return db, conn
 }
 
-func CreateIncident(ctx context.Context, incident models.CreateIncident, userID string) *models.CreateIncidentGoodResponse {
+func CreateIncident(ctx context.Context, incident models.Incident, userID string) *models.GoodResponse {
 	db, conn := Open()
 	defer conn.Close()
 	encryptedUserID, err := encryptUserID(userID)
 	if err != nil {
 		panic(err)
 	}
-
-	// bytea := stringToBin(encryptedUserID)
 
 	bytea := getByteaFromString(encryptedUserID)
 
@@ -227,14 +225,14 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 		ID:                          *incident.ID,
 		EncryptedUserID:             bytea,
 		Location:                    incident.Location,
-		LocationOfObject:            incident.LocationOfObject,
+		LocationOfObjects:           incident.LocationOfObjects,
 		LongTermPrognosis:           incident.LongTermPrognosis,
 		SymptomsPresent:             incident.SymptomsPresent,
 		AnteriorPhoto:               incident.AnteriorPhoto,
 		LateralPhoto:                incident.LateralPhoto,
 		PosteriorPhoto:              incident.PosteriorPhoto,
 		IncidentYear:                incident.IncidentYear,
-		ObjectConsistency:           incident.ObjectConsitency,
+		ObjectConsistency:           incident.ObjectConsistency,
 		Gender:                      incident.Gender,
 		PatientAge:                  incident.PatientAge,
 		LargestLength:               incident.LargestLength,
@@ -255,7 +253,7 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 		Dimensionality:              incident.Dimensionality,
 		AdditionalImagingAndSurgery: incident.AdditionalImagingAndSurgery,
 		NumberOfPieces:              incident.NumberOfPieces,
-		ObjectsIntact:               incident.ObjectIntact,
+		ObjectsIntact:               incident.ObjectsIntact,
 		ObjectCharacteristics:       incident.ObjectCharacteristics,
 		BatteryLocation:             incident.BatteryLocation,
 		MagneticPoleDirection:       incident.MagneticPoleDirection,
@@ -274,21 +272,8 @@ func CreateIncident(ctx context.Context, incident models.CreateIncident, userID 
 	if err != nil {
 		panic(err)
 	}
-	response := models.CreateIncidentGoodResponse{
-		UserID:                        userID,
-		ID:                            incident.ID,
-		DateOfIncident:                incident.DateOfIncident,
-		ApproximatePatientAge:         incident.ApproximatePatientAge,
-		Gender:                        incident.Gender,
-		LongTermPrognosis:             incident.LongTermPrognosis,
-		IncidentDescription:           incident.IncidentDescription,
-		Anterior:                      incident.Anterior,
-		ObjectConsistency:             incident.ObjectConsistency,
-		ObjectBasicShape:              incident.ObjectBasicShape,
-		WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
-		TheObjectIs:                   incident.TheObjectIs,
-		LargestLength:                 incident.LargestLength,
-		Created:                       true,
+	response := models.GoodResponse{
+		Message: fmt.Sprintf("incident created with id: %s", *incident.ID),
 	}
 	return &response
 }
@@ -336,30 +321,61 @@ func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodR
 	// FIRST: make sql query in psql to convert the bytea value to text so you can see what it is
 	err = db.Raw(sql, bytea).Scan(&incidents).Error
 
-	// err = db.Where(Incident{}, "encrypted_user_id = ?", bytea).Find(&incidents).Error
+	//	err = db.Where(Incident{}, "encrypted_user_id = ?", bytea).Find(&incidents).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
 		panic(err)
 	}
 
-	incidentResponses := []*models.GetIncidentsIncident{}
+	incidentResponses := []*models.Incident{}
 
 	for _, incident := range incidents {
-		incidentResponses = append(incidentResponses, &models.GetIncidentsIncident{
-			ID:                            incident.ID,
-			DateOfIncident:                incident.DateOfIncident,
-			ApproximatePatientAge:         incident.ApproximatePatientAge,
-			Gender:                        incident.Gender,
-			LongTermPrognosis:             incident.LongTermPrognosis,
-			IncidentDescription:           incident.IncidentDescription,
-			Anterior:                      incident.Anterior,
-			ObjectConsistency:             incident.ObjectConsistency,
-			ObjectBasicShape:              incident.ObjectBasicShape,
-			WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
-			TheObjectIs:                   incident.TheObjectIs,
-			LargestLength:                 incident.LargestLength,
-			LocationOfObject:              incident.LocationOfObject,
+		incidentResponses = append(incidentResponses, &models.Incident{
+			ID:                          &incident.ID,
+			Location:                    incident.Location,
+			LocationOfObjects:           incident.LocationOfObjects,
+			LongTermPrognosis:           incident.LongTermPrognosis,
+			SymptomsPresent:             incident.SymptomsPresent,
+			AnteriorPhoto:               incident.AnteriorPhoto,
+			LateralPhoto:                incident.LateralPhoto,
+			PosteriorPhoto:              incident.PosteriorPhoto,
+			IncidentYear:                incident.IncidentYear,
+			ObjectConsistency:           incident.ObjectConsistency,
+			Gender:                      incident.Gender,
+			PatientAge:                  incident.PatientAge,
+			LargestLength:               incident.LargestLength,
+			RemovalStrategy:             incident.RemovalStrategy,
+			SettingOfRemoval:            incident.SettingOfRemoval,
+			LengthOfHospitalStay:        incident.LengthOfHospitalStay,
+			LifeThreatening:             incident.LifeThreatening,
+			IncidentDescription:         incident.IncidentDescription,
+			TimeUntilRemoval:            incident.TimeUntilRemoval,
+			EaseOfRemoval:               incident.EaseOfRemoval,
+			ObjectMaterial:              incident.ObjectMaterial,
+			ObjectBasicShape:            incident.ObjectBasicShape,
+			Anesthesia:                  incident.Anesthesia,
+			SymptomSeverity:             incident.SymptomSeverity,
+			XrayOpacity:                 incident.XrayOpacity,
+			AceticAcid:                  incident.AceticAcid,
+			Other:                       incident.Other,
+			Dimensionality:              incident.Dimensionality,
+			AdditionalImagingAndSurgery: incident.AdditionalImagingAndSurgery,
+			NumberOfPieces:              incident.NumberOfPieces,
+			ObjectsIntact:               incident.ObjectsIntact,
+			ObjectCharacteristics:       incident.ObjectCharacteristics,
+			BatteryLocation:             incident.BatteryLocation,
+			MagneticPoleDirection:       incident.MagneticPoleDirection,
+			Complications:               incident.Complications,
+			LargestDepth:                incident.LargestDepth,
+			Sucralfate:                  incident.Sucralfate,
+			BatteryImprintCode:          incident.BatteryImprintCode,
+			OtherShape:                  incident.OtherShape,
+			LargestWidth:                incident.LargestWidth,
+			MagnetType:                  incident.MagnetType,
+			NumberOfObjects:             incident.NumberOfObjects,
+			CustomMagnetType:            incident.CustomMagnetType,
+			Honey:                       incident.Honey,
 		})
 	}
 
@@ -373,62 +389,73 @@ func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodR
 	return response, true
 }
 
-func UpdateIncident(ctx context.Context, incident models.UpdateIncident) (*models.UpdateIncidentGoodResponse, bool) {
-	db, conn := Open()
-	defer conn.Close()
-	updateWithModel := Incident{
-		ID:                            *incident.ID,
-		DateOfIncident:                incident.DateOfIncident,
-		ApproximatePatientAge:         incident.ApproximatePatientAge,
-		Gender:                        incident.Gender,
-		LongTermPrognosis:             incident.LongTermPrognosis,
-		IncidentDescription:           incident.IncidentDescription,
-		Anterior:                      incident.Anterior,
-		ObjectConsistency:             incident.ObjectConsistency,
-		ObjectBasicShape:              incident.ObjectBasicShape,
-		WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
-		TheObjectIs:                   incident.TheObjectIs,
-		LargestLength:                 incident.LargestLength,
-		LocationOfObject:              incident.LocationOfObject,
-	}
-	err := db.First(&Incident{}, "id = ?", incident.ID).Updates(updateWithModel).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, false
-	} else if err != nil {
-		panic(err)
-	}
-	booleanTrue := true
-	return &models.UpdateIncidentGoodResponse{
-			ID:                            incident.ID,
-			DateOfIncident:                incident.DateOfIncident,
-			ApproximatePatientAge:         incident.ApproximatePatientAge,
-			Gender:                        incident.Gender,
-			LongTermPrognosis:             incident.LongTermPrognosis,
-			IncidentDescription:           incident.IncidentDescription,
-			Anterior:                      incident.Anterior,
-			ObjectConsistency:             incident.ObjectConsistency,
-			ObjectBasicShape:              incident.ObjectBasicShape,
-			WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
-			TheObjectIs:                   incident.TheObjectIs,
-			LargestLength:                 incident.LargestLength,
-			Updated:                       &booleanTrue,
-		},
-		true
-}
+// func UpdateIncident(ctx context.Context, incident models.UpdateIncident) (*models.UpdateIncidentGoodResponse, bool) {
+// 	db, conn := Open()
+// 	defer conn.Close()
+// 	updateWithModel := Incident{
+// 		ID:                            *incident.ID,
+// 		DateOfIncident:                incident.DateOfIncident,
+// 		ApproximatePatientAge:         incident.ApproximatePatientAge,
+// 		Gender:                        incident.Gender,
+// 		LongTermPrognosis:             incident.LongTermPrognosis,
+// 		IncidentDescription:           incident.IncidentDescription,
+// 		Anterior:                      incident.Anterior,
+// 		ObjectConsistency:             incident.ObjectConsistency,
+// 		ObjectBasicShape:              incident.ObjectBasicShape,
+// 		WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
+// 		TheObjectIs:                   incident.TheObjectIs,
+// 		LargestLength:                 incident.LargestLength,
+// 		LocationOfObject:              incident.LocationOfObject,
+// 	}
+// 	err := db.First(&Incident{}, "id = ?", incident.ID).Updates(updateWithModel).Error
+// 	if err == gorm.ErrRecordNotFound {
+// 		return nil, false
+// 	} else if err != nil {
+// 		panic(err)
+// 	}
+// 	booleanTrue := true
+// 	return &models.UpdateIncidentGoodResponse{
+// 			ID:                            incident.ID,
+// 			DateOfIncident:                incident.DateOfIncident,
+// 			ApproximatePatientAge:         incident.ApproximatePatientAge,
+// 			Gender:                        incident.Gender,
+// 			LongTermPrognosis:             incident.LongTermPrognosis,
+// 			IncidentDescription:           incident.IncidentDescription,
+// 			Anterior:                      incident.Anterior,
+// 			ObjectConsistency:             incident.ObjectConsistency,
+// 			ObjectBasicShape:              incident.ObjectBasicShape,
+// 			WhatMaterialIsTheObjectMadeOf: incident.WhatMaterialIsTheObjectMadeOf,
+// 			TheObjectIs:                   incident.TheObjectIs,
+// 			LargestLength:                 incident.LargestLength,
+// 			Updated:                       &booleanTrue,
+// 		},
+// 		true
+// }
 
-func DeleteIncident(ctx context.Context, incidentID string) (*models.DeleteIncidentGoodResponse, bool) {
+func DeleteIncidents(ctx context.Context, userID string) (*models.GoodResponse, bool) {
 	db, conn := Open()
 	defer conn.Close()
-	err := db.First(&Incident{}, "id = ?", incidentID).Delete(Incident{}).Error
+
+	encryptedUserID, err := encryptUserID(userID)
+	if err != nil {
+		panic(err)
+	}
+
+	bytea := getByteaFromString(encryptedUserID)
+
+	incidents := []Incident{}
+	// TODO CHANGE TO DELETE
+	sql := "SELECT * FROM incidents WHERE encrypted_user_id = ? ORDER BY created_at DESC"
+	//err := db.Where(&Incident{}, "id = ?", incidentID).Delete(Incident{}).Error
+	err = db.Raw(sql, bytea).Scan(&incidents).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
 		panic(err)
 	}
-	booleanTrue := true
-	return &models.DeleteIncidentGoodResponse{
-			Deleted: &booleanTrue,
-			ID:      &incidentID,
+
+	return &models.GoodResponse{
+			Message: fmt.Sprintf("all incidents deleted for user id: %s", userID),
 		},
 		true
 }
@@ -455,28 +482,28 @@ func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, b
 		true
 }
 
-func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
-	db, conn := Open()
-	defer conn.Close()
-	model := user
-	err := db.First(&User{}, "user_id = ?", user.UserID).Updates(user).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, false
-	} else if err != nil {
-		panic(err)
-	}
-	booleanTrue := true
-	return &models.UpdateUserGoodResponse{
-			UserID:    &model.UserID,
-			Name:      &model.Name,
-			Email:     &model.Email,
-			Degree:    &model.Degree,
-			Specialty: &model.Specialty,
-			Updated:   &booleanTrue,
-			Verified:  model.Verified,
-		},
-		true
-}
+// func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
+// 	db, conn := Open()
+// 	defer conn.Close()
+// 	model := user
+// 	err := db.First(&User{}, "user_id = ?", user.UserID).Updates(user).Error
+// 	if err == gorm.ErrRecordNotFound {
+// 		return nil, false
+// 	} else if err != nil {
+// 		panic(err)
+// 	}
+// 	booleanTrue := true
+// 	return &models.UpdateUserGoodResponse{
+// 			UserID:    &model.UserID,
+// 			Name:      &model.Name,
+// 			Email:     &model.Email,
+// 			Degree:    &model.Degree,
+// 			Specialty: &model.Specialty,
+// 			Updated:   &booleanTrue,
+// 			Verified:  model.Verified,
+// 		},
+// 		true
+// }
 
 func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodResponse, bool) {
 	db, conn := Open()
@@ -497,28 +524,28 @@ func DeleteUser(ctx context.Context, userID string) (*models.DeleteUserGoodRespo
 		true
 }
 
-func VerifyUser(ctx context.Context, verify models.Verify, userID string) (*models.UpdateUserGoodResponse, bool) {
-	db, conn := Open()
-	defer conn.Close()
-	model := User{}
-	err := db.First(&model, "user_id = ?", userID).Update("verified", verify.Verified).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, false
-	} else if err != nil {
-		panic(err)
-	}
-	booleanTrue := true
-	return &models.UpdateUserGoodResponse{
-			UserID:    &userID,
-			Name:      &model.Name,
-			Email:     &model.Email,
-			Degree:    &model.Degree,
-			Specialty: &model.Specialty,
-			Updated:   &booleanTrue,
-			Verified:  booleanTrue,
-		},
-		true
-}
+// func VerifyUser(ctx context.Context, verify models.Verify, userID string) (*models.UpdateUserGoodResponse, bool) {
+// 	db, conn := Open()
+// 	defer conn.Close()
+// 	model := User{}
+// 	err := db.First(&model, "user_id = ?", userID).Update("verified", verify.Verified).Error
+// 	if err == gorm.ErrRecordNotFound {
+// 		return nil, false
+// 	} else if err != nil {
+// 		panic(err)
+// 	}
+// 	booleanTrue := true
+// 	return &models.UpdateUserGoodResponse{
+// 			UserID:    &userID,
+// 			Name:      &model.Name,
+// 			Email:     &model.Email,
+// 			Degree:    &model.Degree,
+// 			Specialty: &model.Specialty,
+// 			Updated:   &booleanTrue,
+// 			Verified:  booleanTrue,
+// 		},
+// 		true
+// }
 
 func hashAndSalt(pwd []byte) string {
 	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)

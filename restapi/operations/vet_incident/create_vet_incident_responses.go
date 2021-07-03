@@ -69,7 +69,7 @@ type CreateVetIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateVetIncidentUnauthorized creates CreateVetIncidentUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewCreateVetIncidentUnauthorized() *CreateVetIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create vet incident unauthorized response
-func (o *CreateVetIncidentUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *CreateVetIncidentUnauthorized {
+func (o *CreateVetIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateVetIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create vet incident unauthorized response
-func (o *CreateVetIncidentUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *CreateVetIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type CreateVetIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateVetIncidentNotFound creates CreateVetIncidentNotFound with default headers values
@@ -123,13 +123,13 @@ func NewCreateVetIncidentNotFound() *CreateVetIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create vet incident not found response
-func (o *CreateVetIncidentNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *CreateVetIncidentNotFound {
+func (o *CreateVetIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateVetIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create vet incident not found response
-func (o *CreateVetIncidentNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *CreateVetIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

@@ -7,11 +7,11 @@ package models
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // CreateIncident create incident
@@ -19,52 +19,18 @@ import (
 // swagger:model CreateIncident
 type CreateIncident struct {
 
-	// anterior
-	Anterior string `json:"Anterior,omitempty"`
+	// incidents
+	Incidents []*Incident `json:"incidents"`
 
-	// approximate patient age
-	ApproximatePatientAge string `json:"Approximate_Patient_Age,omitempty"`
-
-	// date of incident
-	DateOfIncident string `json:"Date_of_Incident,omitempty"`
-
-	// gender
-	Gender string `json:"Gender,omitempty"`
-
-	// ID
-	// Required: true
-	ID *string `json:"ID"`
-
-	// incident description
-	IncidentDescription string `json:"Incident_Description,omitempty"`
-
-	// largest length
-	LargestLength string `json:"Largest_Length,omitempty"`
-
-	// location of object
-	LocationOfObject string `json:"Location_of_object,omitempty"`
-
-	// long term prognosis
-	LongTermPrognosis string `json:"Long-term_prognosis,omitempty"`
-
-	// object basic shape
-	ObjectBasicShape string `json:"Object_Basic_Shape,omitempty"`
-
-	// object consistency
-	ObjectConsistency string `json:"Object_Consistency,omitempty"`
-
-	// the object is
-	TheObjectIs string `json:"The_object_is,omitempty"`
-
-	// what material is the object made of
-	WhatMaterialIsTheObjectMadeOf string `json:"What_material_is_the_object_made_of,omitempty"`
+	// user Id
+	UserID string `json:"userId,omitempty"`
 }
 
 // Validate validates this create incident
 func (m *CreateIncident) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateID(formats); err != nil {
+	if err := m.validateIncidents(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -74,17 +40,59 @@ func (m *CreateIncident) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *CreateIncident) validateID(formats strfmt.Registry) error {
+func (m *CreateIncident) validateIncidents(formats strfmt.Registry) error {
+	if swag.IsZero(m.Incidents) { // not required
+		return nil
+	}
 
-	if err := validate.Required("ID", "body", m.ID); err != nil {
-		return err
+	for i := 0; i < len(m.Incidents); i++ {
+		if swag.IsZero(m.Incidents[i]) { // not required
+			continue
+		}
+
+		if m.Incidents[i] != nil {
+			if err := m.Incidents[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("incidents" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
 }
 
-// ContextValidate validates this create incident based on context it is used
+// ContextValidate validate this create incident based on the context it is used
 func (m *CreateIncident) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateIncidents(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *CreateIncident) contextValidateIncidents(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Incidents); i++ {
+
+		if m.Incidents[i] != nil {
+			if err := m.Incidents[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("incidents" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

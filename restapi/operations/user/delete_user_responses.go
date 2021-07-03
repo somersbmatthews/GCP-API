@@ -25,7 +25,7 @@ type DeleteUserOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteUserGoodResponse `json:"body,omitempty"`
+	Payload *models.GoodResponse `json:"body,omitempty"`
 }
 
 // NewDeleteUserOK creates DeleteUserOK with default headers values
@@ -35,13 +35,13 @@ func NewDeleteUserOK() *DeleteUserOK {
 }
 
 // WithPayload adds the payload to the delete user o k response
-func (o *DeleteUserOK) WithPayload(payload *models.DeleteUserGoodResponse) *DeleteUserOK {
+func (o *DeleteUserOK) WithPayload(payload *models.GoodResponse) *DeleteUserOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the delete user o k response
-func (o *DeleteUserOK) SetPayload(payload *models.DeleteUserGoodResponse) {
+func (o *DeleteUserOK) SetPayload(payload *models.GoodResponse) {
 	o.Payload = payload
 }
 
@@ -57,42 +57,42 @@ func (o *DeleteUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 	}
 }
 
-// DeleteUserBadRequestCode is the HTTP code returned for type DeleteUserBadRequest
-const DeleteUserBadRequestCode int = 400
+// DeleteUserUnauthorizedCode is the HTTP code returned for type DeleteUserUnauthorized
+const DeleteUserUnauthorizedCode int = 401
 
-/*DeleteUserBadRequest invalid userId supplied
+/*DeleteUserUnauthorized bad authorization token
 
-swagger:response deleteUserBadRequest
+swagger:response deleteUserUnauthorized
 */
-type DeleteUserBadRequest struct {
+type DeleteUserUnauthorized struct {
 
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteUserBadResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
-// NewDeleteUserBadRequest creates DeleteUserBadRequest with default headers values
-func NewDeleteUserBadRequest() *DeleteUserBadRequest {
+// NewDeleteUserUnauthorized creates DeleteUserUnauthorized with default headers values
+func NewDeleteUserUnauthorized() *DeleteUserUnauthorized {
 
-	return &DeleteUserBadRequest{}
+	return &DeleteUserUnauthorized{}
 }
 
-// WithPayload adds the payload to the delete user bad request response
-func (o *DeleteUserBadRequest) WithPayload(payload *models.DeleteUserBadResponse) *DeleteUserBadRequest {
+// WithPayload adds the payload to the delete user unauthorized response
+func (o *DeleteUserUnauthorized) WithPayload(payload *models.BadResponse) *DeleteUserUnauthorized {
 	o.Payload = payload
 	return o
 }
 
-// SetPayload sets the payload to the delete user bad request response
-func (o *DeleteUserBadRequest) SetPayload(payload *models.DeleteUserBadResponse) {
+// SetPayload sets the payload to the delete user unauthorized response
+func (o *DeleteUserUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
 // WriteResponse to the client
-func (o *DeleteUserBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *DeleteUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(400)
+	rw.WriteHeader(401)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {
@@ -113,7 +113,7 @@ type DeleteUserNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteUserBadResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewDeleteUserNotFound creates DeleteUserNotFound with default headers values
@@ -123,13 +123,13 @@ func NewDeleteUserNotFound() *DeleteUserNotFound {
 }
 
 // WithPayload adds the payload to the delete user not found response
-func (o *DeleteUserNotFound) WithPayload(payload *models.DeleteUserBadResponse) *DeleteUserNotFound {
+func (o *DeleteUserNotFound) WithPayload(payload *models.BadResponse) *DeleteUserNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the delete user not found response
-func (o *DeleteUserNotFound) SetPayload(payload *models.DeleteUserBadResponse) {
+func (o *DeleteUserNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

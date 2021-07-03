@@ -5,9 +5,9 @@
 //  This is test server for GIRC app
 //  Schemes:
 //    https
-//  Host: TODO
+//  Host: girc.app
 //  BasePath: /
-//  Version: 2.0.0
+//  Version: 3.0.0
 //
 //  Consumes:
 //    - application/json

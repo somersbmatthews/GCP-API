@@ -25,7 +25,7 @@ type RegisterExpertOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentGoodResponse `json:"body,omitempty"`
+	Payload *models.GoodResponse `json:"body,omitempty"`
 }
 
 // NewRegisterExpertOK creates RegisterExpertOK with default headers values
@@ -35,13 +35,13 @@ func NewRegisterExpertOK() *RegisterExpertOK {
 }
 
 // WithPayload adds the payload to the register expert o k response
-func (o *RegisterExpertOK) WithPayload(payload *models.DeleteIncidentGoodResponse) *RegisterExpertOK {
+func (o *RegisterExpertOK) WithPayload(payload *models.GoodResponse) *RegisterExpertOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the register expert o k response
-func (o *RegisterExpertOK) SetPayload(payload *models.DeleteIncidentGoodResponse) {
+func (o *RegisterExpertOK) SetPayload(payload *models.GoodResponse) {
 	o.Payload = payload
 }
 

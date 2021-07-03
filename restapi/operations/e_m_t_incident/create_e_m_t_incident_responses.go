@@ -69,7 +69,7 @@ type CreateEMTIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateEMTIncidentUnauthorized creates CreateEMTIncidentUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewCreateEMTIncidentUnauthorized() *CreateEMTIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create e m t incident unauthorized response
-func (o *CreateEMTIncidentUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *CreateEMTIncidentUnauthorized {
+func (o *CreateEMTIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateEMTIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create e m t incident unauthorized response
-func (o *CreateEMTIncidentUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *CreateEMTIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type CreateEMTIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateEMTIncidentNotFound creates CreateEMTIncidentNotFound with default headers values
@@ -123,13 +123,13 @@ func NewCreateEMTIncidentNotFound() *CreateEMTIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create e m t incident not found response
-func (o *CreateEMTIncidentNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *CreateEMTIncidentNotFound {
+func (o *CreateEMTIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateEMTIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create e m t incident not found response
-func (o *CreateEMTIncidentNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *CreateEMTIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

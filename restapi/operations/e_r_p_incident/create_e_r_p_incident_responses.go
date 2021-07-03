@@ -69,7 +69,7 @@ type CreateERPIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateERPIncidentUnauthorized creates CreateERPIncidentUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewCreateERPIncidentUnauthorized() *CreateERPIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create e r p incident unauthorized response
-func (o *CreateERPIncidentUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *CreateERPIncidentUnauthorized {
+func (o *CreateERPIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateERPIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create e r p incident unauthorized response
-func (o *CreateERPIncidentUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *CreateERPIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type CreateERPIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateERPIncidentNotFound creates CreateERPIncidentNotFound with default headers values
@@ -123,13 +123,13 @@ func NewCreateERPIncidentNotFound() *CreateERPIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create e r p incident not found response
-func (o *CreateERPIncidentNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *CreateERPIncidentNotFound {
+func (o *CreateERPIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateERPIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create e r p incident not found response
-func (o *CreateERPIncidentNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *CreateERPIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

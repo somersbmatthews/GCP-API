@@ -42,7 +42,7 @@ type CreateFireIncident struct {
 func (o *CreateFireIncident) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewCreateFireIncidentParams()
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

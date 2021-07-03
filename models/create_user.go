@@ -27,6 +27,9 @@ type CreateUser struct {
 	// Required: true
 	Email *string `json:"email"`
 
+	// id
+	ID string `json:"id,omitempty"`
+
 	// name
 	// Required: true
 	Name *string `json:"name"`
@@ -34,10 +37,6 @@ type CreateUser struct {
 	// specialty
 	// Required: true
 	Specialty *string `json:"specialty"`
-
-	// user Id
-	// Required: true
-	UserID *string `json:"userId"`
 }
 
 // Validate validates this create user
@@ -57,10 +56,6 @@ func (m *CreateUser) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateSpecialty(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -100,15 +95,6 @@ func (m *CreateUser) validateName(formats strfmt.Registry) error {
 func (m *CreateUser) validateSpecialty(formats strfmt.Registry) error {
 
 	if err := validate.Required("specialty", "body", m.Specialty); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *CreateUser) validateUserID(formats strfmt.Registry) error {
-
-	if err := validate.Required("userId", "body", m.UserID); err != nil {
 		return err
 	}
 

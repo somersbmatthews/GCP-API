@@ -36,16 +36,16 @@ type CreateIncidentParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*authorization header contains firebase ID token
+	/*authorization header contains bearer token
 	  Required: true
 	  In: header
 	*/
 	Authorization string
-	/*Creates an incident and returns the created incident
+	/*
 	  Required: true
 	  In: body
 	*/
-	Incident *models.CreateIncident
+	Incident *models.Incident
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -63,7 +63,7 @@ func (o *CreateIncidentParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.CreateIncident
+		var body models.Incident
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("incident", "body", ""))

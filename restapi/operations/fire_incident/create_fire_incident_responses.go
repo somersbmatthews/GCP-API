@@ -69,7 +69,7 @@ type CreateFireIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateFireIncidentUnauthorized creates CreateFireIncidentUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewCreateFireIncidentUnauthorized() *CreateFireIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create fire incident unauthorized response
-func (o *CreateFireIncidentUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *CreateFireIncidentUnauthorized {
+func (o *CreateFireIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateFireIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create fire incident unauthorized response
-func (o *CreateFireIncidentUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *CreateFireIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type CreateFireIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateFireIncidentNotFound creates CreateFireIncidentNotFound with default headers values
@@ -123,13 +123,13 @@ func NewCreateFireIncidentNotFound() *CreateFireIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create fire incident not found response
-func (o *CreateFireIncidentNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *CreateFireIncidentNotFound {
+func (o *CreateFireIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateFireIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create fire incident not found response
-func (o *CreateFireIncidentNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *CreateFireIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

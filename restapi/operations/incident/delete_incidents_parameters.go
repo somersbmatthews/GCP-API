@@ -36,7 +36,7 @@ type DeleteIncidentsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*authorization header contains firebase ID token
+	/*authorization header contains bearer token
 	  Required: true
 	  In: header
 	*/
@@ -45,7 +45,7 @@ type DeleteIncidentsParams struct {
 	  Required: true
 	  In: body
 	*/
-	Incident *models.DeleteIncident
+	Incident *models.DeleteIncidents
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -63,7 +63,7 @@ func (o *DeleteIncidentsParams) BindRequest(r *http.Request, route *middleware.M
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.DeleteIncident
+		var body models.DeleteIncidents
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("incident", "body", ""))

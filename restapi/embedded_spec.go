@@ -25,14 +25,64 @@ func init() {
   "info": {
     "description": "This is test server for GIRC app",
     "title": "GIRC App API",
-    "version": "2.0.0"
+    "version": "3.0.0"
   },
-  "host": "TODO",
+  "host": "girc.app",
   "basePath": "/",
   "paths": {
     "/v2/incident": {
+      "get": {
+        "description": "Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Get incidents",
+        "operationId": "getIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "contains user id",
+            "name": "User",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
       "post": {
         "description": "use this to create an incident for a userId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -44,18 +94,17 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "Creates an incident and returns the created incident",
             "name": "incident",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateIncident"
+              "$ref": "#/definitions/Incident"
             }
           }
         ],
@@ -63,7 +112,7 @@ func init() {
           "200": {
             "description": "successful operation, only returns token if not using OAuth",
             "schema": {
-              "$ref": "#/definitions/CreateIncidentGoodResponse"
+              "$ref": "#/definitions/GoodResponse"
             },
             "headers": {
               "Authentication": {
@@ -72,8 +121,8 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
             }
@@ -88,6 +137,9 @@ func init() {
       },
       "delete": {
         "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -99,7 +151,200 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidents"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v2/user": {
+      "get": {
+        "description": "Get a user's information.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user's information.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUserGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "register a user with his information",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "register a user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "a user's information",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "400": {
+            "description": "database error while creating user",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "deletes a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "unregisters a user, for testing only will be removed in production",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user with requested userid not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/corincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Coroner Incident"
+        ],
+        "summary": "create coroner incident",
+        "operationId": "createCorIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -120,28 +365,39 @@ func init() {
               "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
           "404": {
             "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
-      },
-      "patch": {
-        "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+      }
+    },
+    "/v3/dermincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "incident"
+          "Derm Incident"
         ],
-        "summary": "Update incident",
-        "operationId": "updateIncidents",
+        "summary": "create coroner incident",
+        "operationId": "createDermIncident",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -151,7 +407,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UpdateIncident"
+              "$ref": "#/definitions/DeleteIncident"
             }
           }
         ],
@@ -159,50 +415,52 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/UpdateIncidentGoodResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
-              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
             "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
       }
     },
-    "/v2/user": {
-      "get": {
-        "description": "Get a user's information.",
+    "/v3/emtincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "EMT Incident"
         ],
-        "summary": "Get user's information.",
-        "operationId": "getUser",
+        "summary": "create Emergency Medical Technician Incident",
+        "operationId": "createEMTIncident",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "object that contains userId of user you want to get",
-            "name": "user",
+            "name": "incident",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/GetUser"
+              "$ref": "#/definitions/CreateENTIncident"
             }
           }
         ],
@@ -210,127 +468,373 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/GetUserGoodResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
-            "description": "user not found",
+            "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/GetUserBadResponse"
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/entincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "ENT Incident"
+        ],
+        "summary": "create ENT Incident",
+        "operationId": "createENTIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateENTIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/erpincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "ERP Incident"
+        ],
+        "summary": "create create Emergency Room Physician incident",
+        "operationId": "createERPIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/expert": {
+      "get": {
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "register expert",
+        "operationId": "getExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "if using google oauth, set that token here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
             }
           }
         }
       },
       "post": {
-        "description": "register a user with his information",
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "Medical Expert"
         ],
-        "summary": "register a user",
-        "operationId": "createUser",
+        "summary": "register expert",
+        "operationId": "registerExpert",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "if using google oauth, set that token here",
             "name": "Authorization",
             "in": "header",
             "required": true
-          },
-          {
-            "description": "a user's information",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CreateUser"
-            }
           }
         ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/CreateUserGoodResponse"
-            }
-          },
-          "400": {
-            "description": "user not created",
-            "schema": {
-              "$ref": "#/definitions/CreateUserBadResponse"
+              "$ref": "#/definitions/GoodResponse"
             }
           }
         }
       },
       "delete": {
-        "description": "deletes a user",
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "Medical Expert"
         ],
-        "summary": "unregisters a user, for testing only will be removed in production",
-        "operationId": "deleteUser",
+        "summary": "register expert",
+        "operationId": "deleteExpert",
         "parameters": [
           {
-            "description": "deletes user with the requested userID",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteUser"
-            }
+            "type": "string",
+            "description": "if using google oauth, set that token here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/DeleteUserGoodResponse"
-            }
-          },
-          "400": {
-            "description": "invalid userId supplied",
-            "schema": {
-              "$ref": "#/definitions/DeleteUserBadResponse"
-            }
-          },
-          "404": {
-            "description": "user with requested userid not found",
-            "schema": {
-              "$ref": "#/definitions/DeleteUserBadResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           }
         }
       },
       "patch": {
-        "description": "Update a user's info",
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "Medical Expert"
         ],
-        "summary": "Update user",
-        "operationId": "updateUser",
+        "summary": "register expert",
+        "operationId": "updateExpert",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "if using google oauth, set that token here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/expert/login": {
+      "get": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "login expert",
+        "operationId": "loginExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/expert/logout": {
+      "get": {
+        "description": "Use this tto login an expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "login expert",
+        "operationId": "logoutExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/fireincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Fire Incident"
+        ],
+        "operationId": "createFireIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
-            "name": "user",
+            "name": "incident",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UpdateUser"
+              "$ref": "#/definitions/DeleteIncident"
             }
           }
         ],
@@ -338,36 +842,98 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/UpdateUserGoodResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
-          "400": {
-            "description": "Invalid user supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
-              "$ref": "#/definitions/UpdateUserInvalidResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
-            "description": "User not found",
+            "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
       }
     },
-    "/v2/verify": {
+    "/v3/surgincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Surg Incident"
+        ],
+        "operationId": "createSurgIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/verify": {
       "patch": {
         "description": "verified field is true to verify, false to unverify",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
           "verify"
         ],
-        "summary": "use this to verify or unverify a user, for testing only",
-        "operationId": "verify",
+        "summary": "use this to verify or unverify a Medcal Expert, for testing only",
+        "operationId": "verifyExpert",
         "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
           {
             "description": "verified field is true to verify, false to unverify",
             "name": "verified",
@@ -382,13 +948,71 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/UpdateUserGoodResponse"
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
             "description": "userid not found",
             "schema": {
-              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/vetincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Vet Incident"
+        ],
+        "operationId": "createVetIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
@@ -396,50 +1020,126 @@ func init() {
     }
   },
   "definitions": {
-    "CreateIncident": {
+    "BadResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateENTIncident": {
       "type": "object",
       "required": [
         "ID"
       ],
       "properties": {
-        "Anterior": {
+        "Age": {
+          "type": "integer"
+        },
+        "Anesthesia": {
+          "type": "integer"
+        },
+        "Complications": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "Country": {
           "type": "string"
         },
-        "Approximate_Patient_Age": {
-          "type": "string"
+        "CustomComplications": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
-        "Date_of_Incident": {
-          "type": "string"
+        "CustomImaging": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "CustomProcedures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "CustomSymptoms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Date": {
+          "type": "integer"
         },
         "Gender": {
-          "type": "string"
+          "type": "integer"
         },
         "ID": {
           "type": "string"
         },
-        "Incident_Description": {
+        "Imaging": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "Info": {
           "type": "string"
         },
-        "Largest_Length": {
+        "Procedures": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "Prognosis": {
+          "type": "integer"
+        },
+        "RemovalSetting": {
+          "type": "integer"
+        },
+        "SwallowedObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateSwallowedObject"
+          }
+        },
+        "SymptomSeverity": {
+          "type": "integer"
+        },
+        "Symptoms": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "TimeUntilRemoval": {
+          "type": "integer"
+        }
+      }
+    },
+    "CreateExpert": {
+      "type": "object",
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
           "type": "string"
         },
-        "Location_of_object": {
+        "Expertise": {
+          "type": "number"
+        },
+        "Password": {
           "type": "string"
         },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
+        "Verified": {
+          "type": "boolean"
         }
       }
     },
@@ -486,6 +1186,9 @@ func init() {
           "type": "string"
         },
         "The_object_is": {
+          "type": "string"
+        },
+        "UserID": {
           "type": "string"
         },
         "What_material_is_the_object_made_of": {
@@ -595,10 +1298,82 @@ func init() {
         }
       }
     },
+    "CreateIncidents": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "incidents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Incident"
+          }
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateSwallowedObject": {
+      "type": "object",
+      "properties": {
+        "AnteriorPhoto": {
+          "type": "string"
+        },
+        "Consistency": {
+          "type": "string"
+        },
+        "CustomMaterials": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "CustomShape": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "IncidentID": {
+          "type": "string"
+        },
+        "LaterialPhoto": {
+          "type": "string"
+        },
+        "Location": {
+          "type": "integer"
+        },
+        "LongestDepth": {
+          "type": "number"
+        },
+        "LongestHeight": {
+          "type": "number"
+        },
+        "LongestWidth": {
+          "type": "number"
+        },
+        "Materials": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "PosteriorPhoto": {
+          "type": "string"
+        },
+        "RemovalDifficulty": {
+          "type": "integer"
+        },
+        "Shape": {
+          "type": "integer"
+        }
+      }
+    },
     "CreateUser": {
       "type": "object",
       "required": [
-        "userId",
         "name",
         "email",
         "degree",
@@ -611,13 +1386,13 @@ func init() {
         "email": {
           "type": "string"
         },
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
         "specialty": {
-          "type": "string"
-        },
-        "userId": {
           "type": "string"
         }
       }
@@ -653,6 +1428,7 @@ func init() {
     "CreateUserGoodResponse": {
       "type": "object",
       "required": [
+        "userId",
         "created"
       ],
       "properties": {
@@ -717,13 +1493,13 @@ func init() {
         }
       }
     },
-    "DeleteUser": {
+    "DeleteIncidents": {
       "type": "object",
       "required": [
-        "userId"
+        "userID"
       ],
       "properties": {
-        "userId": {
+        "userID": {
           "type": "string"
         }
       }
@@ -747,7 +1523,6 @@ func init() {
     "DeleteUserGoodResponse": {
       "type": "object",
       "required": [
-        "userId",
         "deleted"
       ],
       "properties": {
@@ -759,7 +1534,30 @@ func init() {
         }
       }
     },
-    "GetIncidents": {
+    "GetExpertResponse": {
+      "type": "object",
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Expertise": {
+          "type": "number"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "Verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GetIncidentsBadRequestResponse": {
       "type": "object",
       "required": [
         "userId"
@@ -779,7 +1577,7 @@ func init() {
         "incidents": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CreateIncident"
+            "$ref": "#/definitions/Incident"
           }
         },
         "userId": {
@@ -798,7 +1596,7 @@ func init() {
         }
       }
     },
-    "GetUser": {
+    "GetUserBadResponse": {
       "type": "object",
       "required": [
         "userId"
@@ -808,9 +1606,6 @@ func init() {
           "type": "string"
         }
       }
-    },
-    "GetUserBadResponse": {
-      "type": "object"
     },
     "GetUserGoodResponse": {
       "type": "object",
@@ -844,258 +1639,167 @@ func init() {
         }
       }
     },
-    "UpdateIncident": {
+    "GoodResponse": {
       "type": "object",
-      "required": [
-        "ID"
-      ],
       "properties": {
-        "Anterior": {
-          "type": "string"
-        },
-        "Approximate_Patient_Age": {
-          "type": "string"
-        },
-        "Date_of_Incident": {
-          "type": "string"
-        },
-        "Gender": {
-          "type": "string"
-        },
-        "ID": {
-          "type": "string"
-        },
-        "Incident_Description": {
-          "type": "string"
-        },
-        "Largest_Length": {
-          "type": "string"
-        },
-        "Location_of_object": {
-          "type": "string"
-        },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "What_material_is_the_object_made_of": {
+        "message": {
           "type": "string"
         }
       }
     },
-    "UpdateIncidentGoodResponse": {
+    "Incident": {
       "type": "object",
       "required": [
-        "ID"
+        "id"
       ],
       "properties": {
-        "Anterior": {
+        "aceticAcid": {
           "type": "string"
         },
-        "Approximate_Patient_Age": {
+        "additionalImagingAndSurgery": {
           "type": "string"
         },
-        "Date_of_Incident": {
+        "anesthesia": {
           "type": "string"
         },
-        "Gender": {
+        "anteriorPhoto": {
           "type": "string"
         },
-        "ID": {
+        "batteryImprintCode": {
           "type": "string"
         },
-        "Incident_Description": {
+        "batteryLocation": {
           "type": "string"
         },
-        "Largest_Length": {
+        "complications": {
           "type": "string"
         },
-        "Location_of_object": {
+        "customMagnetType": {
           "type": "string"
         },
-        "Long-term_prognosis": {
+        "dimensionality": {
           "type": "string"
         },
-        "Object_Basic_Shape": {
+        "easeOfRemoval": {
           "type": "string"
         },
-        "Object_Consistency": {
+        "gender": {
           "type": "string"
         },
-        "The_object_is": {
+        "honey": {
           "type": "string"
         },
-        "Updated": {
-          "type": "boolean",
-          "default": true
+        "id": {
+          "type": "string"
         },
-        "What_material_is_the_object_made_of": {
+        "incidentDescription": {
+          "type": "string"
+        },
+        "incidentYear": {
+          "type": "string"
+        },
+        "largestDepth": {
+          "type": "string"
+        },
+        "largestLength": {
+          "type": "string"
+        },
+        "largestWidth": {
+          "type": "string"
+        },
+        "lateralPhoto": {
+          "type": "string"
+        },
+        "lengthOfHospitalStay": {
+          "type": "string"
+        },
+        "lifeThreatening": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "locationOfObjects": {
+          "type": "string"
+        },
+        "longTermPrognosis": {
+          "type": "string"
+        },
+        "magnetType": {
+          "type": "string"
+        },
+        "magneticPoleDirection": {
+          "type": "string"
+        },
+        "numberOfObjects": {
+          "type": "string"
+        },
+        "numberOfPieces": {
+          "type": "string"
+        },
+        "objectBasicShape": {
+          "type": "string"
+        },
+        "objectCharacteristics": {
+          "type": "string"
+        },
+        "objectConsistency": {
+          "type": "string"
+        },
+        "objectMaterial": {
+          "type": "string"
+        },
+        "objectsIntact": {
+          "type": "string"
+        },
+        "other": {
+          "type": "string"
+        },
+        "otherShape": {
+          "type": "string"
+        },
+        "patientAge": {
+          "type": "string"
+        },
+        "posteriorPhoto": {
+          "type": "string"
+        },
+        "removalStrategy": {
+          "type": "string"
+        },
+        "settingOfRemoval": {
+          "type": "string"
+        },
+        "sucralfate": {
+          "type": "string"
+        },
+        "symptomSeverity": {
+          "type": "string"
+        },
+        "symptomsPresent": {
+          "type": "string"
+        },
+        "timeUntilRemoval": {
+          "type": "string"
+        },
+        "xrayOpacity": {
           "type": "string"
         }
       }
     },
-    "UpdateIncidentIncidentIdNotFoundResponse": {
+    "UpdateExpert": {
       "type": "object",
-      "required": [
-        "ID"
-      ],
       "properties": {
-        "Anterior": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
           "type": "string"
         },
-        "Approximate_Patient_Age": {
-          "type": "string"
+        "Expertise": {
+          "type": "number"
         },
-        "Date_of_Incident": {
-          "type": "string"
-        },
-        "Gender": {
-          "type": "string"
-        },
-        "ID": {
-          "type": "string"
-        },
-        "Incident_Description": {
-          "type": "string"
-        },
-        "Largest_Length": {
-          "type": "string"
-        },
-        "Location_of_object": {
-          "type": "string"
-        },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "Updated": {
-          "type": "boolean",
-          "default": false
-        },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
-        }
-      }
-    },
-    "UpdateUser": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "specialty": {
-          "type": "string"
-        },
-        "userId": {
-          "type": "string"
-        }
-      }
-    },
-    "UpdateUserGoodResponse": {
-      "type": "object",
-      "required": [
-        "userId",
-        "verified",
-        "name",
-        "degree",
-        "updated",
-        "email",
-        "specialty"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "specialty": {
-          "type": "string"
-        },
-        "updated": {
-          "type": "boolean"
-        },
-        "userId": {
-          "type": "string"
-        },
-        "verified": {
-          "type": "boolean",
-          "default": false
-        }
-      }
-    },
-    "UpdateUserInvalidResponse": {
-      "type": "object",
-      "required": [
-        "verified",
-        "name",
-        "degree",
-        "specialty",
-        "updated",
-        "email"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "specialty": {
-          "type": "string"
-        },
-        "updated": {
-          "type": "boolean",
-          "example": false
-        },
-        "verified": {
-          "type": "boolean",
-          "example": false
-        }
-      }
-    },
-    "UpdateUserNotFoundResponse": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "updated": {
-          "type": "boolean",
-          "default": false
-        },
-        "userId": {
+        "Password": {
           "type": "string"
         }
       }
@@ -1103,13 +1807,9 @@ func init() {
     "Verify": {
       "type": "object",
       "required": [
-        "userId",
         "verified"
       ],
       "properties": {
-        "userId": {
-          "type": "string"
-        },
         "verified": {
           "type": "boolean"
         }
@@ -1118,7 +1818,7 @@ func init() {
   },
   "tags": [
     {
-      "description": "to create, update, and delete incidents",
+      "description": "to create, update, and delete incidents using old app",
       "name": "incident"
     },
     {
@@ -1128,6 +1828,42 @@ func init() {
     {
       "description": "only used for testing and will be removed in production",
       "name": "verify"
+    },
+    {
+      "description": "for Medical Experts",
+      "name": "Medical Expert"
+    },
+    {
+      "description": "for Otolaryngology Incidents",
+      "name": "ENT Incident"
+    },
+    {
+      "description": "for Vet Incidents",
+      "name": "Vet Incident"
+    },
+    {
+      "description": "for Emergency Medical Technician Incidents",
+      "name": "EMT Incident"
+    },
+    {
+      "description": "for Coroner Incidents",
+      "name": "Coroner Incident"
+    },
+    {
+      "description": "for Dermatologist Incidents",
+      "name": "Derm Incident"
+    },
+    {
+      "description": "for Surgical Incidents",
+      "name": "Surg Incident"
+    },
+    {
+      "description": "for fire incidents",
+      "name": "Fire Incident"
+    },
+    {
+      "description": "for Emergency Room Physician incidents",
+      "name": "ERP Incident"
     }
   ]
 }`))
@@ -1139,14 +1875,64 @@ func init() {
   "info": {
     "description": "This is test server for GIRC app",
     "title": "GIRC App API",
-    "version": "2.0.0"
+    "version": "3.0.0"
   },
-  "host": "TODO",
+  "host": "girc.app",
   "basePath": "/",
   "paths": {
     "/v2/incident": {
+      "get": {
+        "description": "Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "incident"
+        ],
+        "summary": "Get incidents",
+        "operationId": "getIncidents",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "contains user id",
+            "name": "User",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetIncidentsGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "userid not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
       "post": {
         "description": "use this to create an incident for a userId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1158,18 +1944,17 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "Creates an incident and returns the created incident",
             "name": "incident",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateIncident"
+              "$ref": "#/definitions/Incident"
             }
           }
         ],
@@ -1177,7 +1962,7 @@ func init() {
           "200": {
             "description": "successful operation, only returns token if not using OAuth",
             "schema": {
-              "$ref": "#/definitions/CreateIncidentGoodResponse"
+              "$ref": "#/definitions/GoodResponse"
             },
             "headers": {
               "Authentication": {
@@ -1186,8 +1971,8 @@ func init() {
               }
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
               "$ref": "#/definitions/CreateIncidentInvalidIncidentResponse"
             }
@@ -1202,6 +1987,9 @@ func init() {
       },
       "delete": {
         "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
@@ -1213,7 +2001,200 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidents"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v2/user": {
+      "get": {
+        "description": "Get a user's information.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user's information.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUserGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "register a user with his information",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "register a user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "a user's information",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "400": {
+            "description": "database error while creating user",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "deletes a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "summary": "unregisters a user, for testing only will be removed in production",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user with requested userid not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/corincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Coroner Incident"
+        ],
+        "summary": "create coroner incident",
+        "operationId": "createCorIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1234,28 +2215,39 @@ func init() {
               "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
           "404": {
             "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/DeleteIncidentIncidentIdNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
-      },
-      "patch": {
-        "description": "Use this to update an incident by incidentId. Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
+      }
+    },
+    "/v3/dermincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "incident"
+          "Derm Incident"
         ],
-        "summary": "Update incident",
-        "operationId": "updateIncidents",
+        "summary": "create coroner incident",
+        "operationId": "createDermIncident",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -1265,7 +2257,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UpdateIncident"
+              "$ref": "#/definitions/DeleteIncident"
             }
           }
         ],
@@ -1273,50 +2265,52 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/UpdateIncidentGoodResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
-          "400": {
-            "description": "invalid incident data",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
-              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
             "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/UpdateIncidentIncidentIdNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
       }
     },
-    "/v2/user": {
-      "get": {
-        "description": "Get a user's information.",
+    "/v3/emtincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "EMT Incident"
         ],
-        "summary": "Get user's information.",
-        "operationId": "getUser",
+        "summary": "create Emergency Medical Technician Incident",
+        "operationId": "createEMTIncident",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "object that contains userId of user you want to get",
-            "name": "user",
+            "name": "incident",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/GetUser"
+              "$ref": "#/definitions/CreateENTIncident"
             }
           }
         ],
@@ -1324,127 +2318,373 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/GetUserGoodResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
-            "description": "user not found",
+            "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/GetUserBadResponse"
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/entincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "ENT Incident"
+        ],
+        "summary": "create ENT Incident",
+        "operationId": "createENTIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateENTIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/erpincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "ERP Incident"
+        ],
+        "summary": "create create Emergency Room Physician incident",
+        "operationId": "createERPIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/expert": {
+      "get": {
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "register expert",
+        "operationId": "getExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "if using google oauth, set that token here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
             }
           }
         }
       },
       "post": {
-        "description": "register a user with his information",
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "Medical Expert"
         ],
-        "summary": "register a user",
-        "operationId": "createUser",
+        "summary": "register expert",
+        "operationId": "registerExpert",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "if using google oauth, set that token here",
             "name": "Authorization",
             "in": "header",
             "required": true
-          },
-          {
-            "description": "a user's information",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CreateUser"
-            }
           }
         ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/CreateUserGoodResponse"
-            }
-          },
-          "400": {
-            "description": "user not created",
-            "schema": {
-              "$ref": "#/definitions/CreateUserBadResponse"
+              "$ref": "#/definitions/GoodResponse"
             }
           }
         }
       },
       "delete": {
-        "description": "deletes a user",
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "Medical Expert"
         ],
-        "summary": "unregisters a user, for testing only will be removed in production",
-        "operationId": "deleteUser",
+        "summary": "register expert",
+        "operationId": "deleteExpert",
         "parameters": [
           {
-            "description": "deletes user with the requested userID",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteUser"
-            }
+            "type": "string",
+            "description": "if using google oauth, set that token here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/DeleteUserGoodResponse"
-            }
-          },
-          "400": {
-            "description": "invalid userId supplied",
-            "schema": {
-              "$ref": "#/definitions/DeleteUserBadResponse"
-            }
-          },
-          "404": {
-            "description": "user with requested userid not found",
-            "schema": {
-              "$ref": "#/definitions/DeleteUserBadResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           }
         }
       },
       "patch": {
-        "description": "Update a user's info",
+        "description": "Use this to register a expert",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
-          "user"
+          "Medical Expert"
         ],
-        "summary": "Update user",
-        "operationId": "updateUser",
+        "summary": "register expert",
+        "operationId": "updateExpert",
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains firebase ID token",
+            "description": "if using google oauth, set that token here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/expert/login": {
+      "get": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "login expert",
+        "operationId": "loginExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/expert/logout": {
+      "get": {
+        "description": "Use this tto login an expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "login expert",
+        "operationId": "logoutExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/fireincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Fire Incident"
+        ],
+        "operationId": "createFireIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
             "name": "Authorization",
             "in": "header",
             "required": true
           },
           {
-            "description": "Only fields with non-empty strings are updated. If a field is not to be updated, set the value to equal an empty string",
-            "name": "user",
+            "name": "incident",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UpdateUser"
+              "$ref": "#/definitions/DeleteIncident"
             }
           }
         ],
@@ -1452,36 +2692,98 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/UpdateUserGoodResponse"
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
             }
           },
-          "400": {
-            "description": "Invalid user supplied",
+          "401": {
+            "description": "bad authorization token",
             "schema": {
-              "$ref": "#/definitions/UpdateUserInvalidResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
-            "description": "User not found",
+            "description": "incident not found",
             "schema": {
-              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
       }
     },
-    "/v2/verify": {
+    "/v3/surgincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Surg Incident"
+        ],
+        "operationId": "createSurgIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/verify": {
       "patch": {
         "description": "verified field is true to verify, false to unverify",
+        "consumes": [
+          "application/json"
+        ],
         "produces": [
           "application/json"
         ],
         "tags": [
           "verify"
         ],
-        "summary": "use this to verify or unverify a user, for testing only",
-        "operationId": "verify",
+        "summary": "use this to verify or unverify a Medcal Expert, for testing only",
+        "operationId": "verifyExpert",
         "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
           {
             "description": "verified field is true to verify, false to unverify",
             "name": "verified",
@@ -1496,13 +2798,71 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/UpdateUserGoodResponse"
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           },
           "404": {
             "description": "userid not found",
             "schema": {
-              "$ref": "#/definitions/UpdateUserNotFoundResponse"
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/vetincident": {
+      "post": {
+        "description": "Use this to delete an incident by incidentId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Vet Incident"
+        ],
+        "operationId": "createVetIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header contains bearer token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteIncident"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
@@ -1510,50 +2870,126 @@ func init() {
     }
   },
   "definitions": {
-    "CreateIncident": {
+    "BadResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateENTIncident": {
       "type": "object",
       "required": [
         "ID"
       ],
       "properties": {
-        "Anterior": {
+        "Age": {
+          "type": "integer"
+        },
+        "Anesthesia": {
+          "type": "integer"
+        },
+        "Complications": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "Country": {
           "type": "string"
         },
-        "Approximate_Patient_Age": {
-          "type": "string"
+        "CustomComplications": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
-        "Date_of_Incident": {
-          "type": "string"
+        "CustomImaging": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "CustomProcedures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "CustomSymptoms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Date": {
+          "type": "integer"
         },
         "Gender": {
-          "type": "string"
+          "type": "integer"
         },
         "ID": {
           "type": "string"
         },
-        "Incident_Description": {
+        "Imaging": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "Info": {
           "type": "string"
         },
-        "Largest_Length": {
+        "Procedures": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "Prognosis": {
+          "type": "integer"
+        },
+        "RemovalSetting": {
+          "type": "integer"
+        },
+        "SwallowedObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateSwallowedObject"
+          }
+        },
+        "SymptomSeverity": {
+          "type": "integer"
+        },
+        "Symptoms": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "TimeUntilRemoval": {
+          "type": "integer"
+        }
+      }
+    },
+    "CreateExpert": {
+      "type": "object",
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
           "type": "string"
         },
-        "Location_of_object": {
+        "Expertise": {
+          "type": "number"
+        },
+        "Password": {
           "type": "string"
         },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
+        "Verified": {
+          "type": "boolean"
         }
       }
     },
@@ -1600,6 +3036,9 @@ func init() {
           "type": "string"
         },
         "The_object_is": {
+          "type": "string"
+        },
+        "UserID": {
           "type": "string"
         },
         "What_material_is_the_object_made_of": {
@@ -1709,10 +3148,82 @@ func init() {
         }
       }
     },
+    "CreateIncidents": {
+      "type": "object",
+      "required": [
+        "userId"
+      ],
+      "properties": {
+        "incidents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Incident"
+          }
+        },
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateSwallowedObject": {
+      "type": "object",
+      "properties": {
+        "AnteriorPhoto": {
+          "type": "string"
+        },
+        "Consistency": {
+          "type": "string"
+        },
+        "CustomMaterials": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "CustomShape": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "IncidentID": {
+          "type": "string"
+        },
+        "LaterialPhoto": {
+          "type": "string"
+        },
+        "Location": {
+          "type": "integer"
+        },
+        "LongestDepth": {
+          "type": "number"
+        },
+        "LongestHeight": {
+          "type": "number"
+        },
+        "LongestWidth": {
+          "type": "number"
+        },
+        "Materials": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "PosteriorPhoto": {
+          "type": "string"
+        },
+        "RemovalDifficulty": {
+          "type": "integer"
+        },
+        "Shape": {
+          "type": "integer"
+        }
+      }
+    },
     "CreateUser": {
       "type": "object",
       "required": [
-        "userId",
         "name",
         "email",
         "degree",
@@ -1725,13 +3236,13 @@ func init() {
         "email": {
           "type": "string"
         },
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
         "specialty": {
-          "type": "string"
-        },
-        "userId": {
           "type": "string"
         }
       }
@@ -1767,6 +3278,7 @@ func init() {
     "CreateUserGoodResponse": {
       "type": "object",
       "required": [
+        "userId",
         "created"
       ],
       "properties": {
@@ -1831,13 +3343,13 @@ func init() {
         }
       }
     },
-    "DeleteUser": {
+    "DeleteIncidents": {
       "type": "object",
       "required": [
-        "userId"
+        "userID"
       ],
       "properties": {
-        "userId": {
+        "userID": {
           "type": "string"
         }
       }
@@ -1861,7 +3373,6 @@ func init() {
     "DeleteUserGoodResponse": {
       "type": "object",
       "required": [
-        "userId",
         "deleted"
       ],
       "properties": {
@@ -1873,7 +3384,30 @@ func init() {
         }
       }
     },
-    "GetIncidents": {
+    "GetExpertResponse": {
+      "type": "object",
+      "properties": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Expertise": {
+          "type": "number"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "Verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GetIncidentsBadRequestResponse": {
       "type": "object",
       "required": [
         "userId"
@@ -1893,7 +3427,7 @@ func init() {
         "incidents": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CreateIncident"
+            "$ref": "#/definitions/Incident"
           }
         },
         "userId": {
@@ -1912,7 +3446,7 @@ func init() {
         }
       }
     },
-    "GetUser": {
+    "GetUserBadResponse": {
       "type": "object",
       "required": [
         "userId"
@@ -1922,9 +3456,6 @@ func init() {
           "type": "string"
         }
       }
-    },
-    "GetUserBadResponse": {
-      "type": "object"
     },
     "GetUserGoodResponse": {
       "type": "object",
@@ -1958,258 +3489,167 @@ func init() {
         }
       }
     },
-    "UpdateIncident": {
+    "GoodResponse": {
       "type": "object",
-      "required": [
-        "ID"
-      ],
       "properties": {
-        "Anterior": {
-          "type": "string"
-        },
-        "Approximate_Patient_Age": {
-          "type": "string"
-        },
-        "Date_of_Incident": {
-          "type": "string"
-        },
-        "Gender": {
-          "type": "string"
-        },
-        "ID": {
-          "type": "string"
-        },
-        "Incident_Description": {
-          "type": "string"
-        },
-        "Largest_Length": {
-          "type": "string"
-        },
-        "Location_of_object": {
-          "type": "string"
-        },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "What_material_is_the_object_made_of": {
+        "message": {
           "type": "string"
         }
       }
     },
-    "UpdateIncidentGoodResponse": {
+    "Incident": {
       "type": "object",
       "required": [
-        "ID"
+        "id"
       ],
       "properties": {
-        "Anterior": {
+        "aceticAcid": {
           "type": "string"
         },
-        "Approximate_Patient_Age": {
+        "additionalImagingAndSurgery": {
           "type": "string"
         },
-        "Date_of_Incident": {
+        "anesthesia": {
           "type": "string"
         },
-        "Gender": {
+        "anteriorPhoto": {
           "type": "string"
         },
-        "ID": {
+        "batteryImprintCode": {
           "type": "string"
         },
-        "Incident_Description": {
+        "batteryLocation": {
           "type": "string"
         },
-        "Largest_Length": {
+        "complications": {
           "type": "string"
         },
-        "Location_of_object": {
+        "customMagnetType": {
           "type": "string"
         },
-        "Long-term_prognosis": {
+        "dimensionality": {
           "type": "string"
         },
-        "Object_Basic_Shape": {
+        "easeOfRemoval": {
           "type": "string"
         },
-        "Object_Consistency": {
+        "gender": {
           "type": "string"
         },
-        "The_object_is": {
+        "honey": {
           "type": "string"
         },
-        "Updated": {
-          "type": "boolean",
-          "default": true
+        "id": {
+          "type": "string"
         },
-        "What_material_is_the_object_made_of": {
+        "incidentDescription": {
+          "type": "string"
+        },
+        "incidentYear": {
+          "type": "string"
+        },
+        "largestDepth": {
+          "type": "string"
+        },
+        "largestLength": {
+          "type": "string"
+        },
+        "largestWidth": {
+          "type": "string"
+        },
+        "lateralPhoto": {
+          "type": "string"
+        },
+        "lengthOfHospitalStay": {
+          "type": "string"
+        },
+        "lifeThreatening": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "locationOfObjects": {
+          "type": "string"
+        },
+        "longTermPrognosis": {
+          "type": "string"
+        },
+        "magnetType": {
+          "type": "string"
+        },
+        "magneticPoleDirection": {
+          "type": "string"
+        },
+        "numberOfObjects": {
+          "type": "string"
+        },
+        "numberOfPieces": {
+          "type": "string"
+        },
+        "objectBasicShape": {
+          "type": "string"
+        },
+        "objectCharacteristics": {
+          "type": "string"
+        },
+        "objectConsistency": {
+          "type": "string"
+        },
+        "objectMaterial": {
+          "type": "string"
+        },
+        "objectsIntact": {
+          "type": "string"
+        },
+        "other": {
+          "type": "string"
+        },
+        "otherShape": {
+          "type": "string"
+        },
+        "patientAge": {
+          "type": "string"
+        },
+        "posteriorPhoto": {
+          "type": "string"
+        },
+        "removalStrategy": {
+          "type": "string"
+        },
+        "settingOfRemoval": {
+          "type": "string"
+        },
+        "sucralfate": {
+          "type": "string"
+        },
+        "symptomSeverity": {
+          "type": "string"
+        },
+        "symptomsPresent": {
+          "type": "string"
+        },
+        "timeUntilRemoval": {
+          "type": "string"
+        },
+        "xrayOpacity": {
           "type": "string"
         }
       }
     },
-    "UpdateIncidentIncidentIdNotFoundResponse": {
+    "UpdateExpert": {
       "type": "object",
-      "required": [
-        "ID"
-      ],
       "properties": {
-        "Anterior": {
+        "Degree": {
+          "type": "number"
+        },
+        "Email": {
           "type": "string"
         },
-        "Approximate_Patient_Age": {
-          "type": "string"
+        "Expertise": {
+          "type": "number"
         },
-        "Date_of_Incident": {
-          "type": "string"
-        },
-        "Gender": {
-          "type": "string"
-        },
-        "ID": {
-          "type": "string"
-        },
-        "Incident_Description": {
-          "type": "string"
-        },
-        "Largest_Length": {
-          "type": "string"
-        },
-        "Location_of_object": {
-          "type": "string"
-        },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "Updated": {
-          "type": "boolean",
-          "default": false
-        },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
-        }
-      }
-    },
-    "UpdateUser": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "specialty": {
-          "type": "string"
-        },
-        "userId": {
-          "type": "string"
-        }
-      }
-    },
-    "UpdateUserGoodResponse": {
-      "type": "object",
-      "required": [
-        "userId",
-        "verified",
-        "name",
-        "degree",
-        "updated",
-        "email",
-        "specialty"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "specialty": {
-          "type": "string"
-        },
-        "updated": {
-          "type": "boolean"
-        },
-        "userId": {
-          "type": "string"
-        },
-        "verified": {
-          "type": "boolean",
-          "default": false
-        }
-      }
-    },
-    "UpdateUserInvalidResponse": {
-      "type": "object",
-      "required": [
-        "verified",
-        "name",
-        "degree",
-        "specialty",
-        "updated",
-        "email"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "specialty": {
-          "type": "string"
-        },
-        "updated": {
-          "type": "boolean",
-          "example": false
-        },
-        "verified": {
-          "type": "boolean",
-          "example": false
-        }
-      }
-    },
-    "UpdateUserNotFoundResponse": {
-      "type": "object",
-      "required": [
-        "userId"
-      ],
-      "properties": {
-        "updated": {
-          "type": "boolean",
-          "default": false
-        },
-        "userId": {
+        "Password": {
           "type": "string"
         }
       }
@@ -2217,13 +3657,9 @@ func init() {
     "Verify": {
       "type": "object",
       "required": [
-        "userId",
         "verified"
       ],
       "properties": {
-        "userId": {
-          "type": "string"
-        },
         "verified": {
           "type": "boolean"
         }
@@ -2232,7 +3668,7 @@ func init() {
   },
   "tags": [
     {
-      "description": "to create, update, and delete incidents",
+      "description": "to create, update, and delete incidents using old app",
       "name": "incident"
     },
     {
@@ -2242,6 +3678,42 @@ func init() {
     {
       "description": "only used for testing and will be removed in production",
       "name": "verify"
+    },
+    {
+      "description": "for Medical Experts",
+      "name": "Medical Expert"
+    },
+    {
+      "description": "for Otolaryngology Incidents",
+      "name": "ENT Incident"
+    },
+    {
+      "description": "for Vet Incidents",
+      "name": "Vet Incident"
+    },
+    {
+      "description": "for Emergency Medical Technician Incidents",
+      "name": "EMT Incident"
+    },
+    {
+      "description": "for Coroner Incidents",
+      "name": "Coroner Incident"
+    },
+    {
+      "description": "for Dermatologist Incidents",
+      "name": "Derm Incident"
+    },
+    {
+      "description": "for Surgical Incidents",
+      "name": "Surg Incident"
+    },
+    {
+      "description": "for fire incidents",
+      "name": "Fire Incident"
+    },
+    {
+      "description": "for Emergency Room Physician incidents",
+      "name": "ERP Incident"
     }
   ]
 }`))

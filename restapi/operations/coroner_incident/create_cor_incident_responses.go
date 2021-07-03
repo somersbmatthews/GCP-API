@@ -69,7 +69,7 @@ type CreateCorIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateCorIncidentUnauthorized creates CreateCorIncidentUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewCreateCorIncidentUnauthorized() *CreateCorIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create cor incident unauthorized response
-func (o *CreateCorIncidentUnauthorized) WithPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) *CreateCorIncidentUnauthorized {
+func (o *CreateCorIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateCorIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create cor incident unauthorized response
-func (o *CreateCorIncidentUnauthorized) SetPayload(payload *models.UpdateIncidentIncidentIDNotFoundResponse) {
+func (o *CreateCorIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type CreateCorIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentIncidentIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateCorIncidentNotFound creates CreateCorIncidentNotFound with default headers values
@@ -123,13 +123,13 @@ func NewCreateCorIncidentNotFound() *CreateCorIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create cor incident not found response
-func (o *CreateCorIncidentNotFound) WithPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) *CreateCorIncidentNotFound {
+func (o *CreateCorIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateCorIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create cor incident not found response
-func (o *CreateCorIncidentNotFound) SetPayload(payload *models.DeleteIncidentIncidentIDNotFoundResponse) {
+func (o *CreateCorIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

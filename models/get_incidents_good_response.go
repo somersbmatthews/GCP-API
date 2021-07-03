@@ -21,7 +21,7 @@ import (
 type GetIncidentsGoodResponse struct {
 
 	// incidents
-	Incidents []*CreateIncident `json:"incidents"`
+	Incidents []*Incident `json:"incidents"`
 
 	// user Id
 	// Required: true

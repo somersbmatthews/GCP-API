@@ -25,7 +25,7 @@ type VerifyExpertOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateUserGoodResponse `json:"body,omitempty"`
+	Payload *models.GoodResponse `json:"body,omitempty"`
 }
 
 // NewVerifyExpertOK creates VerifyExpertOK with default headers values
@@ -35,13 +35,13 @@ func NewVerifyExpertOK() *VerifyExpertOK {
 }
 
 // WithPayload adds the payload to the verify expert o k response
-func (o *VerifyExpertOK) WithPayload(payload *models.UpdateUserGoodResponse) *VerifyExpertOK {
+func (o *VerifyExpertOK) WithPayload(payload *models.GoodResponse) *VerifyExpertOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the verify expert o k response
-func (o *VerifyExpertOK) SetPayload(payload *models.UpdateUserGoodResponse) {
+func (o *VerifyExpertOK) SetPayload(payload *models.GoodResponse) {
 	o.Payload = payload
 }
 
@@ -69,7 +69,7 @@ type VerifyExpertUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateUserNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewVerifyExpertUnauthorized creates VerifyExpertUnauthorized with default headers values
@@ -79,13 +79,13 @@ func NewVerifyExpertUnauthorized() *VerifyExpertUnauthorized {
 }
 
 // WithPayload adds the payload to the verify expert unauthorized response
-func (o *VerifyExpertUnauthorized) WithPayload(payload *models.UpdateUserNotFoundResponse) *VerifyExpertUnauthorized {
+func (o *VerifyExpertUnauthorized) WithPayload(payload *models.BadResponse) *VerifyExpertUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the verify expert unauthorized response
-func (o *VerifyExpertUnauthorized) SetPayload(payload *models.UpdateUserNotFoundResponse) {
+func (o *VerifyExpertUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -113,7 +113,7 @@ type VerifyExpertNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.UpdateUserNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewVerifyExpertNotFound creates VerifyExpertNotFound with default headers values
@@ -123,13 +123,13 @@ func NewVerifyExpertNotFound() *VerifyExpertNotFound {
 }
 
 // WithPayload adds the payload to the verify expert not found response
-func (o *VerifyExpertNotFound) WithPayload(payload *models.UpdateUserNotFoundResponse) *VerifyExpertNotFound {
+func (o *VerifyExpertNotFound) WithPayload(payload *models.BadResponse) *VerifyExpertNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the verify expert not found response
-func (o *VerifyExpertNotFound) SetPayload(payload *models.UpdateUserNotFoundResponse) {
+func (o *VerifyExpertNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
