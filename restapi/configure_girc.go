@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gircapp/api/fba"
+	"github.com/gircapp/api/auth"
 	"github.com/gircapp/api/models"
 	"github.com/gircapp/api/pg"
 	"github.com/gircapp/api/restapi/operations"
@@ -21,6 +21,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
+// ./cloud_sql_proxy -instances=gircapp:us-central1:gircapppostgres=tcp:5432
 //go:generate swagger generate server --target ../../gircapp2 --name Girc --spec ../swagger.yaml --principal interface{}
 // swagger generate server -f ./swagger/swagger5.yaml --exclude-main -A girc
 func configureFlags(api *operations.GircAPI) {
@@ -49,7 +50,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 
 		tokenStr := params.Authorization
 
-		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		ok := auth.VerifyOldDataToken(tokenStr)
 		if !ok {
 			response := user.NewCreateUserUnauthorized()
 
@@ -57,7 +58,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			return response
 		}
 		newUser := pg.User{
-			UserID:    userID,
+			UserID:    *params.User.ID,
 			Email:     *params.User.Email,
 			Specialty: *params.User.Specialty,
 			Degree:    *params.User.Degree,
@@ -69,44 +70,45 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			response := user.NewCreateUserBadRequest()
 
 			response.WithPayload(&models.BadResponse{
-				Message: fmt.Sprint("couldn't create user with user id: %s", userID),
+				Message: fmt.Sprint("couldn't create user with user id: %s", params.User.ID),
 			})
 			return response
 		}
 		response := user.NewCreateUserOK()
 		response.WithPayload(&models.GoodResponse{
-			Message: fmt.Sprintf("successfully create user with user id: %s", userID),
+			Message: fmt.Sprintf("successfully create user with user id: %s", params.User.ID),
 		})
 		return response
 	})
 
-	api.UserGetUserHandler = user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
-		ctx := context.Background()
-		tokenStr := params.Authorization
-		userID, ok := fba.VerifyToken(ctx, tokenStr)
-		if !ok {
-			return middleware.Error(401, models.BadResponse{
-				Message: "Validation of firebase idToken failed.",
-			})
-		}
-		payload, ok := pg.GetUser(ctx, userID)
-		if !ok {
-			response := user.NewGetUserNotFound()
+	// api.UserGetUserHandler = user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
+	// 	ctx := context.Background()
+	// 	tokenStr := params.Authorization
+	// 	ok := auth.VerifyOldDataToken(tokenStr)
+	// 	if !ok {
+	// 		return middleware.Error(401, models.BadResponse{
+	// 			Message: "Validation of firebase idToken failed.",
+	// 		})
+	// 	}
+	// 	payload, ok := pg.GetUser(ctx, userID)
+	// 	if !ok {
+	// 		response := user.NewGetUserNotFound()
 
-			response.WithPayload(&models.BadResponse{
-				Message: fmt.Sprintf("user could not be created with user id: %s", userID),
-			})
-			return response
-		}
-		response := user.NewGetUserOK()
-		response.WithPayload(payload)
-		return response
-	})
+	// 		response.WithPayload(&models.BadResponse{
+	// 			Message: fmt.Sprintf("user could not be created with user id: %s", userID),
+	// 		})
+	// 		return response
+	// 	}
+	// 	response := user.NewGetUserOK()
+	// 	response.WithPayload(payload)
+	// 	return response
+	// })
 
 	api.UserDeleteUserHandler = user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		userID := params.User
+		ok := auth.VerifyOldDataToken(tokenStr)
 		booleanFalse := false
 		if !ok {
 			return middleware.Error(401, models.BadResponse{
@@ -152,14 +154,19 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.IncidentCreateIncidentHandler = incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		ok := auth.VerifyOldDataToken(tokenStr)
 		// booleanFalse := false
 		if !ok {
 			return middleware.Error(401, models.BadResponse{
 				Message: "Validation of firebase idToken failed.",
 			})
 		}
-		payload := pg.CreateIncident(ctx, *params.Incident, userID)
+		payload, ok := pg.CreateIncidents(ctx, params.Incident.Incidents, params.Incident.UserID)
+		if !ok {
+			return middleware.Error(409, models.BadResponse{
+				Message: fmt.Sprintf("could not create incidents for userId: %s", params.Incident.UserID),
+			})
+		}
 		response := incident.NewCreateIncidentOK()
 		response.WithPayload(payload)
 		return response
@@ -168,7 +175,8 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.IncidentGetIncidentsHandler = incident.GetIncidentsHandlerFunc(func(params incident.GetIncidentsParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		userID := params.User
+		ok := auth.VerifyOldDataToken(tokenStr)
 		if !ok {
 			return middleware.Error(401, models.BadResponse{
 				Message: "Validation of firebase idToken failed.",
@@ -176,11 +184,10 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		}
 		payload, ok := pg.GetIncidents(ctx, userID)
 		if !ok {
-			response := incident.NewGetIncidentsNotFound()
-			response.WithPayload(&models.BadResponse{
+			//	response := incident.NewGetIncidentsNotFound()
+			return middleware.Error(404, &models.BadResponse{
 				Message: fmt.Sprintf("Incidents could not be found for user id : %s", params.User),
 			})
-			return response
 		}
 		response := incident.NewGetIncidentsOK()
 		response.WithPayload(payload)
@@ -223,26 +230,28 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.IncidentDeleteIncidentsHandler = incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		_, ok := fba.VerifyToken(ctx, tokenStr)
+		userID := params.User
+		ok := auth.VerifyOldDataToken(tokenStr)
 
 		if !ok {
 			return middleware.Error(401, models.BadResponse{
 				Message: "could not authenticate request",
 			})
 		}
-		_, ok = pg.DeleteIncidents(ctx, *params.Incident.UserID)
+		_, ok = pg.DeleteIncidents(ctx, userID)
 		if !ok {
 			return middleware.Error(404, models.BadResponse{
 				Message: "could not delete incidents with that user id",
 			})
 		}
 		payload := models.GoodResponse{
-			Message: fmt.Sprintf("incidents for user id: %s", *params.Incident.UserID),
+			Message: fmt.Sprintf("incidents for user id: %s", userID),
 		}
 		response := incident.NewDeleteIncidentsOK()
 		response.WithPayload(&payload)
 		return response
 	})
+
 	api.PreServerShutdown = func() {}
 	api.ServerShutdown = func() {}
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))

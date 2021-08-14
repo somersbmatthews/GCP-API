@@ -45,7 +45,7 @@ type CreateIncidentParams struct {
 	  Required: true
 	  In: body
 	*/
-	Incident *models.Incident
+	Incident *models.CreateIncidents
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -63,7 +63,7 @@ func (o *CreateIncidentParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.Incident
+		var body models.CreateIncidents
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			if err == io.EOF {
 				res = append(res, errors.Required("incident", "body", ""))

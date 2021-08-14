@@ -12,7 +12,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // CreateIncidents create incidents
@@ -24,8 +23,7 @@ type CreateIncidents struct {
 	Incidents []*Incident `json:"incidents"`
 
 	// user Id
-	// Required: true
-	UserID *string `json:"userId"`
+	UserID string `json:"userId,omitempty"`
 }
 
 // Validate validates this create incidents
@@ -33,10 +31,6 @@ func (m *CreateIncidents) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateIncidents(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -65,15 +59,6 @@ func (m *CreateIncidents) validateIncidents(formats strfmt.Registry) error {
 			}
 		}
 
-	}
-
-	return nil
-}
-
-func (m *CreateIncidents) validateUserID(formats strfmt.Registry) error {
-
-	if err := validate.Required("userId", "body", m.UserID); err != nil {
-		return err
 	}
 
 	return nil

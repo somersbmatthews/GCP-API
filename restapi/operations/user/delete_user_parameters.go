@@ -36,6 +36,11 @@ type DeleteUserParams struct {
 	  In: header
 	*/
 	Authorization string
+	/*contains user id
+	  Required: true
+	  In: header
+	*/
+	User string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -48,6 +53,10 @@ func (o *DeleteUserParams) BindRequest(r *http.Request, route *middleware.Matche
 	o.HTTPRequest = r
 
 	if err := o.bindAuthorization(r.Header[http.CanonicalHeaderKey("Authorization")], true, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.bindUser(r.Header[http.CanonicalHeaderKey("User")], true, route.Formats); err != nil {
 		res = append(res, err)
 	}
 	if len(res) > 0 {
@@ -72,6 +81,26 @@ func (o *DeleteUserParams) bindAuthorization(rawData []string, hasKey bool, form
 		return err
 	}
 	o.Authorization = raw
+
+	return nil
+}
+
+// bindUser binds and validates parameter User from header.
+func (o *DeleteUserParams) bindUser(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("User", "header", rawData)
+	}
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: true
+
+	if err := validate.RequiredString("User", "header", raw); err != nil {
+		return err
+	}
+	o.User = raw
 
 	return nil
 }

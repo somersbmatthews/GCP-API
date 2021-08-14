@@ -104,7 +104,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Incident"
+              "$ref": "#/definitions/CreateIncidents"
             }
           }
         ],
@@ -157,12 +157,11 @@ func init() {
             "required": true
           },
           {
-            "name": "incident",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteIncidents"
-            }
+            "type": "string",
+            "description": "contains user id",
+            "name": "User",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -301,6 +300,13 @@ func init() {
             "type": "string",
             "description": "authorization token",
             "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "contains user id",
+            "name": "User",
             "in": "header",
             "required": true
           }
@@ -1300,9 +1306,6 @@ func init() {
     },
     "CreateIncidents": {
       "type": "object",
-      "required": [
-        "userId"
-      ],
       "properties": {
         "incidents": {
           "type": "array",
@@ -1374,6 +1377,7 @@ func init() {
     "CreateUser": {
       "type": "object",
       "required": [
+        "id",
         "name",
         "email",
         "degree",
@@ -1649,9 +1653,6 @@ func init() {
     },
     "Incident": {
       "type": "object",
-      "required": [
-        "id"
-      ],
       "properties": {
         "aceticAcid": {
           "type": "string"
@@ -1954,7 +1955,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Incident"
+              "$ref": "#/definitions/CreateIncidents"
             }
           }
         ],
@@ -2007,12 +2008,11 @@ func init() {
             "required": true
           },
           {
-            "name": "incident",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteIncidents"
-            }
+            "type": "string",
+            "description": "contains user id",
+            "name": "User",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -2151,6 +2151,13 @@ func init() {
             "type": "string",
             "description": "authorization token",
             "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "contains user id",
+            "name": "User",
             "in": "header",
             "required": true
           }
@@ -3150,9 +3157,6 @@ func init() {
     },
     "CreateIncidents": {
       "type": "object",
-      "required": [
-        "userId"
-      ],
       "properties": {
         "incidents": {
           "type": "array",
@@ -3224,6 +3228,7 @@ func init() {
     "CreateUser": {
       "type": "object",
       "required": [
+        "id",
         "name",
         "email",
         "degree",
@@ -3499,9 +3504,6 @@ func init() {
     },
     "Incident": {
       "type": "object",
-      "required": [
-        "id"
-      ],
       "properties": {
         "aceticAcid": {
           "type": "string"

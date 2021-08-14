@@ -6,17 +6,12 @@ package incident
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
-	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
-
-	"github.com/gircapp/api/models"
 )
 
 // NewDeleteIncidentsParams creates a new DeleteIncidentsParams object
@@ -41,11 +36,11 @@ type DeleteIncidentsParams struct {
 	  In: header
 	*/
 	Authorization string
-	/*
+	/*contains user id
 	  Required: true
-	  In: body
+	  In: header
 	*/
-	Incident *models.DeleteIncidents
+	User string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -61,32 +56,8 @@ func (o *DeleteIncidentsParams) BindRequest(r *http.Request, route *middleware.M
 		res = append(res, err)
 	}
 
-	if runtime.HasBody(r) {
-		defer r.Body.Close()
-		var body models.DeleteIncidents
-		if err := route.Consumer.Consume(r.Body, &body); err != nil {
-			if err == io.EOF {
-				res = append(res, errors.Required("incident", "body", ""))
-			} else {
-				res = append(res, errors.NewParseError("incident", "body", "", err))
-			}
-		} else {
-			// validate body object
-			if err := body.Validate(route.Formats); err != nil {
-				res = append(res, err)
-			}
-
-			ctx := validate.WithOperationRequest(context.Background())
-			if err := body.ContextValidate(ctx, route.Formats); err != nil {
-				res = append(res, err)
-			}
-
-			if len(res) == 0 {
-				o.Incident = &body
-			}
-		}
-	} else {
-		res = append(res, errors.Required("incident", "body", ""))
+	if err := o.bindUser(r.Header[http.CanonicalHeaderKey("User")], true, route.Formats); err != nil {
+		res = append(res, err)
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
@@ -110,6 +81,26 @@ func (o *DeleteIncidentsParams) bindAuthorization(rawData []string, hasKey bool,
 		return err
 	}
 	o.Authorization = raw
+
+	return nil
+}
+
+// bindUser binds and validates parameter User from header.
+func (o *DeleteIncidentsParams) bindUser(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("User", "header", rawData)
+	}
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: true
+
+	if err := validate.RequiredString("User", "header", raw); err != nil {
+		return err
+	}
+	o.User = raw
 
 	return nil
 }

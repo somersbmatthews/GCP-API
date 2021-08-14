@@ -28,7 +28,8 @@ type CreateUser struct {
 	Email *string `json:"email"`
 
 	// id
-	ID string `json:"id,omitempty"`
+	// Required: true
+	ID *string `json:"id"`
 
 	// name
 	// Required: true
@@ -48,6 +49,10 @@ func (m *CreateUser) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateEmail(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,6 +82,15 @@ func (m *CreateUser) validateDegree(formats strfmt.Registry) error {
 func (m *CreateUser) validateEmail(formats strfmt.Registry) error {
 
 	if err := validate.Required("email", "body", m.Email); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *CreateUser) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
 	}
 

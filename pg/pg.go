@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"regexp"
+	"strings"
 	"time"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
@@ -15,14 +17,14 @@ import (
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 
 	// LOCAL TESTING: uncomment cloud-sql proxy postgres
-	// _ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
+	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	UserID    string `gorm: "unique"`
+	UserID    string `gorm:"unique"`
 	Email     string
 	Name      string
 	Specialty string
@@ -32,7 +34,7 @@ type User struct {
 
 type Incident struct {
 	CreatedAt                   int64
-	ID                          string `gorm: "unique"`
+	ID                          string `gorm:"unique"`
 	EncryptedUserID             string `gorm:"type:bytea"`
 	Location                    string
 	LocationOfObjects           string
@@ -163,8 +165,9 @@ func initTCPConnectionPool() (*sql.DB, error) {
 	var (
 		dbUser    = "gorm"
 		dbTcpHost = "10.88.176.3"
-		dbPort    = "5432"
-		dbName    = "postgres"
+		// dbTcpHost = "127.0.0.1"
+		dbPort = "5432"
+		dbName = "postgres"
 	)
 	var dbURI string
 	dbURI = fmt.Sprintf("host=%s user=%s password=%s port=%s database=%s", dbTcpHost, dbUser, postgrespassword, dbPort, dbName)
@@ -183,6 +186,7 @@ func configureConnectionPool(dbPool *sql.DB) {
 }
 
 func Open() (*gorm.DB, *sql.DB) {
+	//sqlDB, err := initSocketConnectionPool()
 	sqlDB, err := initTCPConnectionPool()
 	if err != nil {
 		errMsg := fmt.Sprintf("%v,::: %v", err, render.Render(sqlDB))
@@ -210,7 +214,7 @@ func Open() (*gorm.DB, *sql.DB) {
 	return db, conn
 }
 
-func CreateIncident(ctx context.Context, incident models.Incident, userID string) *models.GoodResponse {
+func CreateIncidents(ctx context.Context, incidents []*models.Incident, userID string) (*models.GoodResponse, bool) {
 	db, conn := Open()
 	defer conn.Close()
 	encryptedUserID, err := encryptUserID(userID)
@@ -219,63 +223,65 @@ func CreateIncident(ctx context.Context, incident models.Incident, userID string
 	}
 
 	bytea := getByteaFromString(encryptedUserID)
+	for _, incident := range incidents {
+		incidentModel := Incident{
+			CreatedAt:                   time.Now().UnixNano(),
+			ID:                          getIDFromPhotoURL(incident.AnteriorPhoto),
+			EncryptedUserID:             bytea,
+			Location:                    incident.Location,
+			LocationOfObjects:           incident.LocationOfObjects,
+			LongTermPrognosis:           incident.LongTermPrognosis,
+			SymptomsPresent:             incident.SymptomsPresent,
+			AnteriorPhoto:               incident.AnteriorPhoto,
+			LateralPhoto:                incident.LateralPhoto,
+			PosteriorPhoto:              incident.PosteriorPhoto,
+			IncidentYear:                incident.IncidentYear,
+			ObjectConsistency:           incident.ObjectConsistency,
+			Gender:                      incident.Gender,
+			PatientAge:                  incident.PatientAge,
+			LargestLength:               incident.LargestLength,
+			RemovalStrategy:             incident.RemovalStrategy,
+			SettingOfRemoval:            incident.SettingOfRemoval,
+			LengthOfHospitalStay:        incident.LengthOfHospitalStay,
+			LifeThreatening:             incident.LifeThreatening,
+			IncidentDescription:         incident.IncidentDescription,
+			TimeUntilRemoval:            incident.TimeUntilRemoval,
+			EaseOfRemoval:               incident.EaseOfRemoval,
+			ObjectMaterial:              incident.ObjectMaterial,
+			ObjectBasicShape:            incident.ObjectBasicShape,
+			Anesthesia:                  incident.Anesthesia,
+			SymptomSeverity:             incident.SymptomSeverity,
+			XrayOpacity:                 incident.XrayOpacity,
+			AceticAcid:                  incident.AceticAcid,
+			Other:                       incident.Other,
+			Dimensionality:              incident.Dimensionality,
+			AdditionalImagingAndSurgery: incident.AdditionalImagingAndSurgery,
+			NumberOfPieces:              incident.NumberOfPieces,
+			ObjectsIntact:               incident.ObjectsIntact,
+			ObjectCharacteristics:       incident.ObjectCharacteristics,
+			BatteryLocation:             incident.BatteryLocation,
+			MagneticPoleDirection:       incident.MagneticPoleDirection,
+			Complications:               incident.Complications,
+			LargestDepth:                incident.LargestDepth,
+			Sucralfate:                  incident.Sucralfate,
+			BatteryImprintCode:          incident.BatteryImprintCode,
+			OtherShape:                  incident.OtherShape,
+			LargestWidth:                incident.LargestWidth,
+			MagnetType:                  incident.MagnetType,
+			NumberOfObjects:             incident.NumberOfObjects,
+			CustomMagnetType:            incident.CustomMagnetType,
+			Honey:                       incident.Honey,
+		}
+		_ = db.Create(incidentModel).Error
+		// if err != nil {
+		// 	return nil, false
+		// }
+	}
 
-	incidentModel := Incident{
-		CreatedAt:                   time.Now().UnixNano(),
-		ID:                          *incident.ID,
-		EncryptedUserID:             bytea,
-		Location:                    incident.Location,
-		LocationOfObjects:           incident.LocationOfObjects,
-		LongTermPrognosis:           incident.LongTermPrognosis,
-		SymptomsPresent:             incident.SymptomsPresent,
-		AnteriorPhoto:               incident.AnteriorPhoto,
-		LateralPhoto:                incident.LateralPhoto,
-		PosteriorPhoto:              incident.PosteriorPhoto,
-		IncidentYear:                incident.IncidentYear,
-		ObjectConsistency:           incident.ObjectConsistency,
-		Gender:                      incident.Gender,
-		PatientAge:                  incident.PatientAge,
-		LargestLength:               incident.LargestLength,
-		RemovalStrategy:             incident.RemovalStrategy,
-		SettingOfRemoval:            incident.SettingOfRemoval,
-		LengthOfHospitalStay:        incident.LengthOfHospitalStay,
-		LifeThreatening:             incident.LifeThreatening,
-		IncidentDescription:         incident.IncidentDescription,
-		TimeUntilRemoval:            incident.TimeUntilRemoval,
-		EaseOfRemoval:               incident.EaseOfRemoval,
-		ObjectMaterial:              incident.ObjectMaterial,
-		ObjectBasicShape:            incident.ObjectBasicShape,
-		Anesthesia:                  incident.Anesthesia,
-		SymptomSeverity:             incident.SymptomSeverity,
-		XrayOpacity:                 incident.XrayOpacity,
-		AceticAcid:                  incident.AceticAcid,
-		Other:                       incident.Other,
-		Dimensionality:              incident.Dimensionality,
-		AdditionalImagingAndSurgery: incident.AdditionalImagingAndSurgery,
-		NumberOfPieces:              incident.NumberOfPieces,
-		ObjectsIntact:               incident.ObjectsIntact,
-		ObjectCharacteristics:       incident.ObjectCharacteristics,
-		BatteryLocation:             incident.BatteryLocation,
-		MagneticPoleDirection:       incident.MagneticPoleDirection,
-		Complications:               incident.Complications,
-		LargestDepth:                incident.LargestDepth,
-		Sucralfate:                  incident.Sucralfate,
-		BatteryImprintCode:          incident.BatteryImprintCode,
-		OtherShape:                  incident.OtherShape,
-		LargestWidth:                incident.LargestWidth,
-		MagnetType:                  incident.MagnetType,
-		NumberOfObjects:             incident.NumberOfObjects,
-		CustomMagnetType:            incident.CustomMagnetType,
-		Honey:                       incident.Honey,
-	}
-	err = db.Create(incidentModel).Error
-	if err != nil {
-		panic(err)
-	}
 	response := models.GoodResponse{
-		Message: fmt.Sprintf("incident created with id: %s", *incident.ID),
+		Message: fmt.Sprintf("incidents created for user id: %s", userID),
 	}
-	return &response
+	return &response, true
 }
 
 func CreateUser(ctx context.Context, user User) (*models.CreateUserGoodResponse, bool) {
@@ -331,8 +337,9 @@ func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodR
 	incidentResponses := []*models.Incident{}
 
 	for _, incident := range incidents {
+
 		incidentResponses = append(incidentResponses, &models.Incident{
-			ID:                          &incident.ID,
+			ID:                          incident.ID,
 			Location:                    incident.Location,
 			LocationOfObjects:           incident.LocationOfObjects,
 			LongTermPrognosis:           incident.LongTermPrognosis,
@@ -445,7 +452,7 @@ func DeleteIncidents(ctx context.Context, userID string) (*models.GoodResponse, 
 
 	incidents := []Incident{}
 	// TODO CHANGE TO DELETE
-	sql := "SELECT * FROM incidents WHERE encrypted_user_id = ? ORDER BY created_at DESC"
+	sql := "DELETE FROM incidents WHERE encrypted_user_id = ?"
 	//err := db.Where(&Incident{}, "id = ?", incidentID).Delete(Incident{}).Error
 	err = db.Raw(sql, bytea).Scan(&incidents).Error
 	if err == gorm.ErrRecordNotFound {
@@ -596,4 +603,17 @@ func getStringFromBytea(bytea string) string {
 	str := string(bytes[:])
 
 	return str
+}
+
+func getIDFromPhotoURL(url string) string {
+	const regex = `[^\/]+$`
+	var unformattedString = `\/v0\/b\/chd-backend.appspot.com\/o\/image-uploads\/D7FE3971-1270-4894-979E-D28D085B69E8.jpg`
+	re := regexp.MustCompile(regex)
+	formattedStringSlice := re.FindStringSubmatch(unformattedString)
+	//	fmt.Println(formattedStringSlice)
+	formattedString := strings.Join(formattedStringSlice, "")
+	// fmt.Println(formattedString)
+	withoutjpeg := strings.TrimSuffix(formattedString, ".jpg")
+	// fmt.Println(withoutjpeg)
+	return withoutjpeg
 }
