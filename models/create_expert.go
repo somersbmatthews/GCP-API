@@ -18,13 +18,13 @@ import (
 type CreateExpert struct {
 
 	// degree
-	Degree float64 `json:"Degree,omitempty"`
+	Degree string `json:"Degree,omitempty"`
 
 	// email
 	Email string `json:"Email,omitempty"`
 
 	// expertise
-	Expertise float64 `json:"Expertise,omitempty"`
+	Expertise string `json:"Expertise,omitempty"`
 
 	// password
 	Password string `json:"Password,omitempty"`

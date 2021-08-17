@@ -23,6 +23,8 @@ import (
 
 // ./cloud_sql_proxy -instances=gircapp:us-central1:gircapppostgres=tcp:5432
 //go:generate swagger generate server --target ../../gircapp2 --name Girc --spec ../swagger.yaml --principal interface{}
+
+// USE THIS ONE, THIS IS THE UPDATED COMMAND:
 // swagger generate server -f ./swagger/swagger5.yaml --exclude-main -A girc
 func configureFlags(api *operations.GircAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }

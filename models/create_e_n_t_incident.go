@@ -21,7 +21,7 @@ import (
 type CreateENTIncident struct {
 
 	// age
-	Age int64 `json:"Age,omitempty"`
+	Age string `json:"Age,omitempty"`
 
 	// anesthesia
 	Anesthesia int64 `json:"Anesthesia,omitempty"`
@@ -35,9 +35,6 @@ type CreateENTIncident struct {
 	// custom complications
 	CustomComplications []string `json:"CustomComplications"`
 
-	// custom imaging
-	CustomImaging []string `json:"CustomImaging"`
-
 	// custom procedures
 	CustomProcedures []string `json:"CustomProcedures"`
 
@@ -45,17 +42,14 @@ type CreateENTIncident struct {
 	CustomSymptoms []string `json:"CustomSymptoms"`
 
 	// date
-	Date int64 `json:"Date,omitempty"`
+	Date string `json:"Date,omitempty"`
 
 	// gender
-	Gender int64 `json:"Gender,omitempty"`
+	Gender string `json:"Gender,omitempty"`
 
 	// ID
 	// Required: true
 	ID *string `json:"ID"`
-
-	// imaging
-	Imaging []int64 `json:"Imaging"`
 
 	// info
 	Info string `json:"Info,omitempty"`
@@ -64,10 +58,10 @@ type CreateENTIncident struct {
 	Procedures []int64 `json:"Procedures"`
 
 	// prognosis
-	Prognosis int64 `json:"Prognosis,omitempty"`
+	Prognosis string `json:"Prognosis,omitempty"`
 
 	// removal setting
-	RemovalSetting int64 `json:"RemovalSetting,omitempty"`
+	RemovalSetting string `json:"RemovalSetting,omitempty"`
 
 	// swallowed objects
 	SwallowedObjects []*CreateSwallowedObject `json:"SwallowedObjects"`

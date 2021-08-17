@@ -18,22 +18,22 @@ import (
 type GetExpertResponse struct {
 
 	// degree
-	Degree float64 `json:"Degree,omitempty"`
+	Degree string `json:"Degree,omitempty"`
+
+	// director verified
+	DirectorVerified bool `json:"DirectorVerified,omitempty"`
 
 	// email
 	Email string `json:"Email,omitempty"`
 
 	// expertise
-	Expertise float64 `json:"Expertise,omitempty"`
+	Expertise string `json:"Expertise,omitempty"`
 
 	// ID
 	ID string `json:"ID,omitempty"`
 
-	// password
-	Password string `json:"Password,omitempty"`
-
-	// verified
-	Verified bool `json:"Verified,omitempty"`
+	// name
+	Name string `json:"Name,omitempty"`
 }
 
 // Validate validates this get expert response

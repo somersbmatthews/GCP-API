@@ -814,6 +814,51 @@ func init() {
         }
       }
     },
+    "/v3/expert/verify": {
+      "post": {
+        "description": "Use this to director verify a medical expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "login expert",
+        "operationId": "verifyExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Authorization contains google sign in token from admin app",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "expert not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/fireincident": {
       "post": {
         "description": "Use this to delete an incident by incidentId",
@@ -918,60 +963,6 @@ func init() {
         }
       }
     },
-    "/v3/verify": {
-      "patch": {
-        "description": "verified field is true to verify, false to unverify",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "verify"
-        ],
-        "summary": "use this to verify or unverify a Medcal Expert, for testing only",
-        "operationId": "verifyExpert",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "description": "verified field is true to verify, false to unverify",
-            "name": "verified",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Verify"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/GoodResponse"
-            }
-          },
-          "401": {
-            "description": "bad authorization token",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          },
-          "404": {
-            "description": "userid not found",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          }
-        }
-      }
-    },
     "/v3/vetincident": {
       "post": {
         "description": "Use this to delete an incident by incidentId",
@@ -1041,7 +1032,7 @@ func init() {
       ],
       "properties": {
         "Age": {
-          "type": "integer"
+          "type": "string"
         },
         "Anesthesia": {
           "type": "integer"
@@ -1061,12 +1052,6 @@ func init() {
             "type": "string"
           }
         },
-        "CustomImaging": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "CustomProcedures": {
           "type": "array",
           "items": {
@@ -1080,19 +1065,13 @@ func init() {
           }
         },
         "Date": {
-          "type": "integer"
+          "type": "string"
         },
         "Gender": {
-          "type": "integer"
+          "type": "string"
         },
         "ID": {
           "type": "string"
-        },
-        "Imaging": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
         },
         "Info": {
           "type": "string"
@@ -1104,10 +1083,10 @@ func init() {
           }
         },
         "Prognosis": {
-          "type": "integer"
+          "type": "string"
         },
         "RemovalSetting": {
-          "type": "integer"
+          "type": "string"
         },
         "SwallowedObjects": {
           "type": "array",
@@ -1133,13 +1112,13 @@ func init() {
       "type": "object",
       "properties": {
         "Degree": {
-          "type": "number"
+          "type": "string"
         },
         "Email": {
           "type": "string"
         },
         "Expertise": {
-          "type": "number"
+          "type": "string"
         },
         "Password": {
           "type": "string"
@@ -1542,22 +1521,22 @@ func init() {
       "type": "object",
       "properties": {
         "Degree": {
-          "type": "number"
+          "type": "string"
+        },
+        "DirectorVerified": {
+          "type": "boolean"
         },
         "Email": {
           "type": "string"
         },
         "Expertise": {
-          "type": "number"
+          "type": "string"
         },
         "ID": {
           "type": "string"
         },
-        "Password": {
+        "Name": {
           "type": "string"
-        },
-        "Verified": {
-          "type": "boolean"
         }
       }
     },
@@ -1792,15 +1771,15 @@ func init() {
       "type": "object",
       "properties": {
         "Degree": {
-          "type": "number"
+          "type": "string"
         },
         "Email": {
           "type": "string"
         },
         "Expertise": {
-          "type": "number"
+          "type": "string"
         },
-        "Password": {
+        "Name": {
           "type": "string"
         }
       }
@@ -2665,6 +2644,51 @@ func init() {
         }
       }
     },
+    "/v3/expert/verify": {
+      "post": {
+        "description": "Use this to director verify a medical expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Medical Expert"
+        ],
+        "summary": "login expert",
+        "operationId": "verifyExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Authorization contains google sign in token from admin app",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "expert not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/fireincident": {
       "post": {
         "description": "Use this to delete an incident by incidentId",
@@ -2769,60 +2793,6 @@ func init() {
         }
       }
     },
-    "/v3/verify": {
-      "patch": {
-        "description": "verified field is true to verify, false to unverify",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "verify"
-        ],
-        "summary": "use this to verify or unverify a Medcal Expert, for testing only",
-        "operationId": "verifyExpert",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "description": "verified field is true to verify, false to unverify",
-            "name": "verified",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Verify"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/GoodResponse"
-            }
-          },
-          "401": {
-            "description": "bad authorization token",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          },
-          "404": {
-            "description": "userid not found",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          }
-        }
-      }
-    },
     "/v3/vetincident": {
       "post": {
         "description": "Use this to delete an incident by incidentId",
@@ -2892,7 +2862,7 @@ func init() {
       ],
       "properties": {
         "Age": {
-          "type": "integer"
+          "type": "string"
         },
         "Anesthesia": {
           "type": "integer"
@@ -2912,12 +2882,6 @@ func init() {
             "type": "string"
           }
         },
-        "CustomImaging": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "CustomProcedures": {
           "type": "array",
           "items": {
@@ -2931,19 +2895,13 @@ func init() {
           }
         },
         "Date": {
-          "type": "integer"
+          "type": "string"
         },
         "Gender": {
-          "type": "integer"
+          "type": "string"
         },
         "ID": {
           "type": "string"
-        },
-        "Imaging": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
         },
         "Info": {
           "type": "string"
@@ -2955,10 +2913,10 @@ func init() {
           }
         },
         "Prognosis": {
-          "type": "integer"
+          "type": "string"
         },
         "RemovalSetting": {
-          "type": "integer"
+          "type": "string"
         },
         "SwallowedObjects": {
           "type": "array",
@@ -2984,13 +2942,13 @@ func init() {
       "type": "object",
       "properties": {
         "Degree": {
-          "type": "number"
+          "type": "string"
         },
         "Email": {
           "type": "string"
         },
         "Expertise": {
-          "type": "number"
+          "type": "string"
         },
         "Password": {
           "type": "string"
@@ -3393,22 +3351,22 @@ func init() {
       "type": "object",
       "properties": {
         "Degree": {
-          "type": "number"
+          "type": "string"
+        },
+        "DirectorVerified": {
+          "type": "boolean"
         },
         "Email": {
           "type": "string"
         },
         "Expertise": {
-          "type": "number"
+          "type": "string"
         },
         "ID": {
           "type": "string"
         },
-        "Password": {
+        "Name": {
           "type": "string"
-        },
-        "Verified": {
-          "type": "boolean"
         }
       }
     },
@@ -3643,15 +3601,15 @@ func init() {
       "type": "object",
       "properties": {
         "Degree": {
-          "type": "number"
+          "type": "string"
         },
         "Email": {
           "type": "string"
         },
         "Expertise": {
-          "type": "number"
+          "type": "string"
         },
-        "Password": {
+        "Name": {
           "type": "string"
         }
       }

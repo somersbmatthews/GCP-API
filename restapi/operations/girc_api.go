@@ -29,7 +29,6 @@ import (
 	"github.com/gircapp/api/restapi/operations/medical_expert"
 	"github.com/gircapp/api/restapi/operations/surg_incident"
 	"github.com/gircapp/api/restapi/operations/user"
-	"github.com/gircapp/api/restapi/operations/verify"
 	"github.com/gircapp/api/restapi/operations/vet_incident"
 )
 
@@ -115,8 +114,8 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		MedicalExpertUpdateExpertHandler: medical_expert.UpdateExpertHandlerFunc(func(params medical_expert.UpdateExpertParams) middleware.Responder {
 			return middleware.NotImplemented("operation medical_expert.UpdateExpert has not yet been implemented")
 		}),
-		VerifyVerifyExpertHandler: verify.VerifyExpertHandlerFunc(func(params verify.VerifyExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation verify.VerifyExpert has not yet been implemented")
+		MedicalExpertVerifyExpertHandler: medical_expert.VerifyExpertHandlerFunc(func(params medical_expert.VerifyExpertParams) middleware.Responder {
+			return middleware.NotImplemented("operation medical_expert.VerifyExpert has not yet been implemented")
 		}),
 	}
 }
@@ -194,8 +193,8 @@ type GircAPI struct {
 	MedicalExpertRegisterExpertHandler medical_expert.RegisterExpertHandler
 	// MedicalExpertUpdateExpertHandler sets the operation handler for the update expert operation
 	MedicalExpertUpdateExpertHandler medical_expert.UpdateExpertHandler
-	// VerifyVerifyExpertHandler sets the operation handler for the verify expert operation
-	VerifyVerifyExpertHandler verify.VerifyExpertHandler
+	// MedicalExpertVerifyExpertHandler sets the operation handler for the verify expert operation
+	MedicalExpertVerifyExpertHandler medical_expert.VerifyExpertHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -333,8 +332,8 @@ func (o *GircAPI) Validate() error {
 	if o.MedicalExpertUpdateExpertHandler == nil {
 		unregistered = append(unregistered, "medical_expert.UpdateExpertHandler")
 	}
-	if o.VerifyVerifyExpertHandler == nil {
-		unregistered = append(unregistered, "verify.VerifyExpertHandler")
+	if o.MedicalExpertVerifyExpertHandler == nil {
+		unregistered = append(unregistered, "medical_expert.VerifyExpertHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -504,10 +503,10 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["PATCH"] = make(map[string]http.Handler)
 	}
 	o.handlers["PATCH"]["/v3/expert"] = medical_expert.NewUpdateExpert(o.context, o.MedicalExpertUpdateExpertHandler)
-	if o.handlers["PATCH"] == nil {
-		o.handlers["PATCH"] = make(map[string]http.Handler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["PATCH"]["/v3/verify"] = verify.NewVerifyExpert(o.context, o.VerifyVerifyExpertHandler)
+	o.handlers["POST"]["/v3/expert/verify"] = medical_expert.NewVerifyExpert(o.context, o.MedicalExpertVerifyExpertHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

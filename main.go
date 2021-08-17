@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"text/template"
 
 	"github.com/gircapp/api/restapi"
 	"github.com/gircapp/api/restapi/operations"
@@ -35,11 +36,15 @@ func main() {
 	api := operations.NewGircAPI(swaggerSpec)
 	server := restapi.NewServer(api)
 
+	// wg := new(sync.WaitGroup)
+
 	//server.Port = 8080
 
 	defer server.Shutdown()
 	server.ConfigureFlags()
 	server.ConfigureAPI()
+
+	// wg.Add(2)
 
 	http.Handle("/", server.GetHandler())
 	fmt.Println("this is running")
@@ -49,11 +54,54 @@ func main() {
 		log.Printf("Defaulting to port %s", port)
 	}
 	//	port := "8080"
+
+	// go func() {
+	// 	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	// 		fmt.Println(err)
+	// 		log.Fatal(err)
+	// 		wg.Done()
+	// 	}
+	// }()
+
+	// localhost:8080/?key=hello%20golangcode.com
+	emailConfirmationTemplate := template.Must(template.ParseFiles("email_confirmation_template.html"))
+	http.HandleFunc("/confirmemail", func(w http.ResponseWriter, r *http.Request) {
+
+		keys, ok := r.URL.Query()["key"]
+
+		if !ok || len(keys[0]) < 1 {
+			log.Println("Url Param 'key' is missing")
+			return
+		}
+
+		key := keys[0]
+
+		log.Println("Url Param 'key' is: " + string(key))
+
+		// TODO: get user id from key
+
+		// data := TodoPageData{
+		// 	PageTitle: "My TODO list",
+		// 	Todos: []Todo{
+		// 		{Title: "Task 1", Done: false},
+		// 		{Title: "Task 2", Done: true},
+		// 		{Title: "Task 3", Done: true},
+		// 	},
+		// }
+		emailConfirmationTemplate.Execute(w, data)
+	})
 	fmt.Printf("Listening on port %s \n", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		fmt.Println(err)
 		log.Fatal(err)
+		// wg.Done()
 	}
+	// go func() {
+	// 	http.ListenAndServe(":80", nil)
+	// 	fmt.Println(err)
+	// 	log.Fatal(err)
+	// 	wg.Done()
+	// }()
 
 	// http.ListenAndServe(":8000", api.Serve(nil))
 
