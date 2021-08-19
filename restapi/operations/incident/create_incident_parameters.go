@@ -36,7 +36,7 @@ type CreateIncidentParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*authorization header contains bearer token
+	/*authorization header contains firebase Id token
 	  Required: true
 	  In: header
 	*/

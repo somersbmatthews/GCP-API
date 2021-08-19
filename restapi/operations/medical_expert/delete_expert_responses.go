@@ -25,7 +25,7 @@ type DeleteExpertOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentGoodResponse `json:"body,omitempty"`
+	Payload *models.GoodResponse `json:"body,omitempty"`
 }
 
 // NewDeleteExpertOK creates DeleteExpertOK with default headers values
@@ -35,13 +35,13 @@ func NewDeleteExpertOK() *DeleteExpertOK {
 }
 
 // WithPayload adds the payload to the delete expert o k response
-func (o *DeleteExpertOK) WithPayload(payload *models.DeleteIncidentGoodResponse) *DeleteExpertOK {
+func (o *DeleteExpertOK) WithPayload(payload *models.GoodResponse) *DeleteExpertOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the delete expert o k response
-func (o *DeleteExpertOK) SetPayload(payload *models.DeleteIncidentGoodResponse) {
+func (o *DeleteExpertOK) SetPayload(payload *models.GoodResponse) {
 	o.Payload = payload
 }
 
@@ -49,6 +49,94 @@ func (o *DeleteExpertOK) SetPayload(payload *models.DeleteIncidentGoodResponse) 
 func (o *DeleteExpertOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// DeleteExpertUnauthorizedCode is the HTTP code returned for type DeleteExpertUnauthorized
+const DeleteExpertUnauthorizedCode int = 401
+
+/*DeleteExpertUnauthorized bad authorization token
+
+swagger:response deleteExpertUnauthorized
+*/
+type DeleteExpertUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewDeleteExpertUnauthorized creates DeleteExpertUnauthorized with default headers values
+func NewDeleteExpertUnauthorized() *DeleteExpertUnauthorized {
+
+	return &DeleteExpertUnauthorized{}
+}
+
+// WithPayload adds the payload to the delete expert unauthorized response
+func (o *DeleteExpertUnauthorized) WithPayload(payload *models.BadResponse) *DeleteExpertUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete expert unauthorized response
+func (o *DeleteExpertUnauthorized) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteExpertUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// DeleteExpertNotFoundCode is the HTTP code returned for type DeleteExpertNotFound
+const DeleteExpertNotFoundCode int = 404
+
+/*DeleteExpertNotFound incident not found
+
+swagger:response deleteExpertNotFound
+*/
+type DeleteExpertNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewDeleteExpertNotFound creates DeleteExpertNotFound with default headers values
+func NewDeleteExpertNotFound() *DeleteExpertNotFound {
+
+	return &DeleteExpertNotFound{}
+}
+
+// WithPayload adds the payload to the delete expert not found response
+func (o *DeleteExpertNotFound) WithPayload(payload *models.BadResponse) *DeleteExpertNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete expert not found response
+func (o *DeleteExpertNotFound) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteExpertNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

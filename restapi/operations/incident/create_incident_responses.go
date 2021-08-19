@@ -21,10 +21,6 @@ const CreateIncidentOKCode int = 200
 swagger:response createIncidentOK
 */
 type CreateIncidentOK struct {
-	/*token
-
-	 */
-	Authentication string `json:"Authentication"`
 
 	/*
 	  In: Body
@@ -36,17 +32,6 @@ type CreateIncidentOK struct {
 func NewCreateIncidentOK() *CreateIncidentOK {
 
 	return &CreateIncidentOK{}
-}
-
-// WithAuthentication adds the authentication to the create incident o k response
-func (o *CreateIncidentOK) WithAuthentication(authentication string) *CreateIncidentOK {
-	o.Authentication = authentication
-	return o
-}
-
-// SetAuthentication sets the authentication to the create incident o k response
-func (o *CreateIncidentOK) SetAuthentication(authentication string) {
-	o.Authentication = authentication
 }
 
 // WithPayload adds the payload to the create incident o k response
@@ -62,13 +47,6 @@ func (o *CreateIncidentOK) SetPayload(payload *models.GoodResponse) {
 
 // WriteResponse to the client
 func (o *CreateIncidentOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	// response header Authentication
-
-	authentication := o.Authentication
-	if authentication != "" {
-		rw.Header().Set("Authentication", authentication)
-	}
 
 	rw.WriteHeader(200)
 	if o.Payload != nil {
@@ -91,7 +69,7 @@ type CreateIncidentUnauthorized struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.CreateIncidentInvalidIncidentResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateIncidentUnauthorized creates CreateIncidentUnauthorized with default headers values
@@ -101,13 +79,13 @@ func NewCreateIncidentUnauthorized() *CreateIncidentUnauthorized {
 }
 
 // WithPayload adds the payload to the create incident unauthorized response
-func (o *CreateIncidentUnauthorized) WithPayload(payload *models.CreateIncidentInvalidIncidentResponse) *CreateIncidentUnauthorized {
+func (o *CreateIncidentUnauthorized) WithPayload(payload *models.BadResponse) *CreateIncidentUnauthorized {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create incident unauthorized response
-func (o *CreateIncidentUnauthorized) SetPayload(payload *models.CreateIncidentInvalidIncidentResponse) {
+func (o *CreateIncidentUnauthorized) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 
@@ -135,7 +113,7 @@ type CreateIncidentNotFound struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.CreateIncidentUserIDNotFoundResponse `json:"body,omitempty"`
+	Payload *models.BadResponse `json:"body,omitempty"`
 }
 
 // NewCreateIncidentNotFound creates CreateIncidentNotFound with default headers values
@@ -145,13 +123,13 @@ func NewCreateIncidentNotFound() *CreateIncidentNotFound {
 }
 
 // WithPayload adds the payload to the create incident not found response
-func (o *CreateIncidentNotFound) WithPayload(payload *models.CreateIncidentUserIDNotFoundResponse) *CreateIncidentNotFound {
+func (o *CreateIncidentNotFound) WithPayload(payload *models.BadResponse) *CreateIncidentNotFound {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create incident not found response
-func (o *CreateIncidentNotFound) SetPayload(payload *models.CreateIncidentUserIDNotFoundResponse) {
+func (o *CreateIncidentNotFound) SetPayload(payload *models.BadResponse) {
 	o.Payload = payload
 }
 

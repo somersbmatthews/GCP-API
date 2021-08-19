@@ -33,7 +33,7 @@ func NewLogoutExpert(ctx *middleware.Context, handler LogoutExpertHandler) *Logo
 
 login expert
 
-Use this tto login an expert
+Use this to login an expert
 
 */
 type LogoutExpert struct {

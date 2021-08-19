@@ -56,3 +56,91 @@ func (o *RegisterExpertOK) WriteResponse(rw http.ResponseWriter, producer runtim
 		}
 	}
 }
+
+// RegisterExpertUnauthorizedCode is the HTTP code returned for type RegisterExpertUnauthorized
+const RegisterExpertUnauthorizedCode int = 401
+
+/*RegisterExpertUnauthorized bad authorization token
+
+swagger:response registerExpertUnauthorized
+*/
+type RegisterExpertUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewRegisterExpertUnauthorized creates RegisterExpertUnauthorized with default headers values
+func NewRegisterExpertUnauthorized() *RegisterExpertUnauthorized {
+
+	return &RegisterExpertUnauthorized{}
+}
+
+// WithPayload adds the payload to the register expert unauthorized response
+func (o *RegisterExpertUnauthorized) WithPayload(payload *models.BadResponse) *RegisterExpertUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the register expert unauthorized response
+func (o *RegisterExpertUnauthorized) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *RegisterExpertUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// RegisterExpertNotFoundCode is the HTTP code returned for type RegisterExpertNotFound
+const RegisterExpertNotFoundCode int = 404
+
+/*RegisterExpertNotFound incident not found
+
+swagger:response registerExpertNotFound
+*/
+type RegisterExpertNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewRegisterExpertNotFound creates RegisterExpertNotFound with default headers values
+func NewRegisterExpertNotFound() *RegisterExpertNotFound {
+
+	return &RegisterExpertNotFound{}
+}
+
+// WithPayload adds the payload to the register expert not found response
+func (o *RegisterExpertNotFound) WithPayload(payload *models.BadResponse) *RegisterExpertNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the register expert not found response
+func (o *RegisterExpertNotFound) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *RegisterExpertNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}

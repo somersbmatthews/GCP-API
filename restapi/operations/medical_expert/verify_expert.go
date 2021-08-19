@@ -29,11 +29,11 @@ func NewVerifyExpert(ctx *middleware.Context, handler VerifyExpertHandler) *Veri
 	return &VerifyExpert{Context: ctx, Handler: handler}
 }
 
-/* VerifyExpert swagger:route POST /v3/expert/verify Medical Expert verifyExpert
+/* VerifyExpert swagger:route POST /v3/expert/verifyexpert Medical Expert verifyExpert
 
-login expert
+Register a Medical Expert
 
-Use this to director verify a medical expert
+use this to director verify an expert
 
 */
 type VerifyExpert struct {

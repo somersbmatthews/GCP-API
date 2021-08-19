@@ -30,57 +30,57 @@ const badUserID string = "1234567790"
 // 		t.Errorf("error getting string from bytea \n %v \n does not equal \n %v \n", encryptedUserID, encryptedUserIDFromBytea)
 // 	}
 // }
-func TestCreateUser(t *testing.T) {
-	ctx := context.Background()
+// func TestCreateUser(t *testing.T) {
+// 	ctx := context.Background()
 
-	user := User{
-		UserID:    testUserID,
-		Email:     "DrJimBob@jimbobclinic.com",
-		Name:      "Jim Bob",
-		Specialty: "Otolaryngologist",
-		Degree:    "MD",
-		Verified:  false,
-	}
-	payload, ok := CreateUser(ctx, user)
-	if !ok {
-		t.Errorf("postgres create user \n %v \n failed", user)
-	}
+// 	user := User{
+// 		UserID:    testUserID,
+// 		Email:     "DrJimBob@jimbobclinic.com",
+// 		Name:      "Jim Bob",
+// 		Specialty: "Otolaryngologist",
+// 		Degree:    "MD",
+// 		Verified:  false,
+// 	}
+// 	payload, ok := CreateUser(ctx, user)
+// 	if !ok {
+// 		t.Errorf("postgres create user \n %v \n failed", user)
+// 	}
 
-	if payload.Degree != user.Degree ||
-		payload.Name != user.Name ||
-		payload.Email != user.Email ||
-		*payload.UserID != testUserID ||
-		payload.Specialty != user.Specialty {
-		t.Errorf("postgres create user failed, \n payload %v \n does not match user \n %v", render.Render(payload), render.Render(user))
-	}
-}
+// 	if payload.Degree != user.Degree ||
+// 		payload.Name != user.Name ||
+// 		payload.Email != user.Email ||
+// 		*payload.UserID != testUserID ||
+// 		payload.Specialty != user.Specialty {
+// 		t.Errorf("postgres create user failed, \n payload %v \n does not match user \n %v", render.Render(payload), render.Render(user))
+// 	}
+// }
 
-func TestGetUser(t *testing.T) {
+// func TestGetUser(t *testing.T) {
 
-	user := User{
-		UserID:    "",
-		Email:     "DrJimBob@jimbobclinic.com",
-		Name:      "Jim Bob",
-		Specialty: "Otolaryngologist",
-		Degree:    "MD",
-		Verified:  false,
-	}
+// 	user := User{
+// 		UserID:    "",
+// 		Email:     "DrJimBob@jimbobclinic.com",
+// 		Name:      "Jim Bob",
+// 		Specialty: "Otolaryngologist",
+// 		Degree:    "MD",
+// 		Verified:  false,
+// 	}
 
-	ctx := context.Background()
+// 	ctx := context.Background()
 
-	payload, ok := GetUser(ctx, testUserID)
+// 	payload, ok := GetUser(ctx, testUserID)
 
-	if !ok {
-		t.Errorf("postgres get user by user id: %v failed", testUserID)
-	}
-	if *payload.Degree != user.Degree ||
-		*payload.Name != user.Name ||
-		*payload.Email != user.Email ||
-		*payload.UserID != testUserID ||
-		*payload.Specialty != user.Specialty {
-		t.Errorf("postgres get user failed, \n payload %v \n does not match user \n %v", render.Render(payload), render.Render(user))
-	}
-}
+// 	if !ok {
+// 		t.Errorf("postgres get user by user id: %v failed", testUserID)
+// 	}
+// 	if *payload.Degree != user.Degree ||
+// 		*payload.Name != user.Name ||
+// 		*payload.Email != user.Email ||
+// 		*payload.UserID != testUserID ||
+// 		*payload.Specialty != user.Specialty {
+// 		t.Errorf("postgres get user failed, \n payload %v \n does not match user \n %v", render.Render(payload), render.Render(user))
+// 	}
+// }
 
 // func TestUpdateUser(t *testing.T) {
 // 	ctx := context.Background()
@@ -191,19 +191,19 @@ func TestGetUser(t *testing.T) {
 
 // }
 
-func TestDeleteUser(t *testing.T) {
+// func TestDeleteUser(t *testing.T) {
 
-	ctx := context.Background()
-	_, ok := DeleteUser(ctx, testUserID)
-	if !ok {
-		t.Error("error deleted user")
-	}
+// 	ctx := context.Background()
+// 	_, ok := DeleteUser(ctx, testUserID)
+// 	if !ok {
+// 		t.Error("error deleted user")
+// 	}
 
-	_, ok = GetUser(ctx, testUserID)
-	if ok {
-		t.Error("expected get deleted user to have failed, but it succeeded")
-	}
-}
+// 	_, ok = GetUser(ctx, testUserID)
+// 	if ok {
+// 		t.Error("expected get deleted user to have failed, but it succeeded")
+// 	}
+// }
 
 var ID = "1234567890"
 var ID2 = "1234567790"

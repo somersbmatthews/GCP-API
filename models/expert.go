@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// GetExpertResponse get expert response
+// Expert expert
 //
-// swagger:model GetExpertResponse
-type GetExpertResponse struct {
+// swagger:model Expert
+type Expert struct {
 
 	// degree
 	// Required: true
@@ -31,19 +31,13 @@ type GetExpertResponse struct {
 	// Required: true
 	Expertise *string `json:"expertise"`
 
-	// id
-	ID string `json:"id,omitempty"`
-
 	// name
 	// Required: true
 	Name *string `json:"name"`
-
-	// verified
-	Verified bool `json:"verified,omitempty"`
 }
 
-// Validate validates this get expert response
-func (m *GetExpertResponse) Validate(formats strfmt.Registry) error {
+// Validate validates this expert
+func (m *Expert) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDegree(formats); err != nil {
@@ -68,7 +62,7 @@ func (m *GetExpertResponse) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetExpertResponse) validateDegree(formats strfmt.Registry) error {
+func (m *Expert) validateDegree(formats strfmt.Registry) error {
 
 	if err := validate.Required("degree", "body", m.Degree); err != nil {
 		return err
@@ -77,7 +71,7 @@ func (m *GetExpertResponse) validateDegree(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetExpertResponse) validateEmail(formats strfmt.Registry) error {
+func (m *Expert) validateEmail(formats strfmt.Registry) error {
 
 	if err := validate.Required("email", "body", m.Email); err != nil {
 		return err
@@ -86,7 +80,7 @@ func (m *GetExpertResponse) validateEmail(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetExpertResponse) validateExpertise(formats strfmt.Registry) error {
+func (m *Expert) validateExpertise(formats strfmt.Registry) error {
 
 	if err := validate.Required("expertise", "body", m.Expertise); err != nil {
 		return err
@@ -95,7 +89,7 @@ func (m *GetExpertResponse) validateExpertise(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetExpertResponse) validateName(formats strfmt.Registry) error {
+func (m *Expert) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -104,13 +98,13 @@ func (m *GetExpertResponse) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this get expert response based on context it is used
-func (m *GetExpertResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this expert based on context it is used
+func (m *Expert) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *GetExpertResponse) MarshalBinary() ([]byte, error) {
+func (m *Expert) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -118,8 +112,8 @@ func (m *GetExpertResponse) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *GetExpertResponse) UnmarshalBinary(b []byte) error {
-	var res GetExpertResponse
+func (m *Expert) UnmarshalBinary(b []byte) error {
+	var res Expert
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

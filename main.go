@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	"github.com/gircapp/api/restapi"
 	"github.com/gircapp/api/restapi/operations"
@@ -46,25 +45,8 @@ func main() {
 
 	// wg.Add(2)
 
-	http.Handle("/", server.GetHandler())
-	fmt.Println("this is running")
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-		log.Printf("Defaulting to port %s", port)
-	}
-	//	port := "8080"
-
-	// go func() {
-	// 	if err := http.ListenAndServe(":"+port, nil); err != nil {
-	// 		fmt.Println(err)
-	// 		log.Fatal(err)
-	// 		wg.Done()
-	// 	}
-	// }()
-
 	// localhost:8080/?key=hello%20golangcode.com
-	emailConfirmationTemplate := template.Must(template.ParseFiles("email_confirmation_template.html"))
+	//	emailConfirmationTemplate := template.Must(template.ParseFiles("email_confirmation_template.html"))
 	http.HandleFunc("/confirmemail", func(w http.ResponseWriter, r *http.Request) {
 
 		keys, ok := r.URL.Query()["key"]
@@ -88,8 +70,26 @@ func main() {
 		// 		{Title: "Task 3", Done: true},
 		// 	},
 		// }
-		emailConfirmationTemplate.Execute(w, data)
+		//	emailConfirmationTemplate.Execute(w, data)
 	})
+
+	http.Handle("/", server.GetHandler())
+	fmt.Println("this is running")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+	//	port := "8080"
+
+	// go func() {
+	// 	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	// 		fmt.Println(err)
+	// 		log.Fatal(err)
+	// 		wg.Done()
+	// 	}
+	// }()
+
 	fmt.Printf("Listening on port %s \n", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		fmt.Println(err)

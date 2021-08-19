@@ -25,7 +25,7 @@ type UpdateExpertOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentGoodResponse `json:"body,omitempty"`
+	Payload *models.GoodResponse `json:"body,omitempty"`
 }
 
 // NewUpdateExpertOK creates UpdateExpertOK with default headers values
@@ -35,13 +35,13 @@ func NewUpdateExpertOK() *UpdateExpertOK {
 }
 
 // WithPayload adds the payload to the update expert o k response
-func (o *UpdateExpertOK) WithPayload(payload *models.DeleteIncidentGoodResponse) *UpdateExpertOK {
+func (o *UpdateExpertOK) WithPayload(payload *models.GoodResponse) *UpdateExpertOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the update expert o k response
-func (o *UpdateExpertOK) SetPayload(payload *models.DeleteIncidentGoodResponse) {
+func (o *UpdateExpertOK) SetPayload(payload *models.GoodResponse) {
 	o.Payload = payload
 }
 
@@ -49,6 +49,94 @@ func (o *UpdateExpertOK) SetPayload(payload *models.DeleteIncidentGoodResponse) 
 func (o *UpdateExpertOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// UpdateExpertUnauthorizedCode is the HTTP code returned for type UpdateExpertUnauthorized
+const UpdateExpertUnauthorizedCode int = 401
+
+/*UpdateExpertUnauthorized bad authorization token
+
+swagger:response updateExpertUnauthorized
+*/
+type UpdateExpertUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewUpdateExpertUnauthorized creates UpdateExpertUnauthorized with default headers values
+func NewUpdateExpertUnauthorized() *UpdateExpertUnauthorized {
+
+	return &UpdateExpertUnauthorized{}
+}
+
+// WithPayload adds the payload to the update expert unauthorized response
+func (o *UpdateExpertUnauthorized) WithPayload(payload *models.BadResponse) *UpdateExpertUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the update expert unauthorized response
+func (o *UpdateExpertUnauthorized) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *UpdateExpertUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// UpdateExpertNotFoundCode is the HTTP code returned for type UpdateExpertNotFound
+const UpdateExpertNotFoundCode int = 404
+
+/*UpdateExpertNotFound incident not found
+
+swagger:response updateExpertNotFound
+*/
+type UpdateExpertNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewUpdateExpertNotFound creates UpdateExpertNotFound with default headers values
+func NewUpdateExpertNotFound() *UpdateExpertNotFound {
+
+	return &UpdateExpertNotFound{}
+}
+
+// WithPayload adds the payload to the update expert not found response
+func (o *UpdateExpertNotFound) WithPayload(payload *models.BadResponse) *UpdateExpertNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the update expert not found response
+func (o *UpdateExpertNotFound) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *UpdateExpertNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
 	if o.Payload != nil {
 		payload := o.Payload
 		if err := producer.Produce(rw, payload); err != nil {

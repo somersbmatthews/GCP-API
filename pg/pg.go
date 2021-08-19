@@ -318,26 +318,26 @@ func DeleteIncidents(ctx context.Context, userID string) (*models.GoodResponse, 
 		true
 }
 
-func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, bool) {
+// func GetUser(ctx context.Context, userId string) (*models.GetUserGoodResponse, bool) {
 
-	model := User{}
-	err := db.First(&model, "user_id = ?", userId).Error
-	if err == gorm.ErrRecordNotFound {
-		return &models.GetUserGoodResponse{}, false
-	} else if err != nil {
-		panic(err)
-	}
+// 	model := User{}
+// 	err := db.First(&model, "user_id = ?", userId).Error
+// 	if err == gorm.ErrRecordNotFound {
+// 		return &models.GetUserGoodResponse{}, false
+// 	} else if err != nil {
+// 		panic(err)
+// 	}
 
-	return &models.GetUserGoodResponse{
-			Name:      &model.Name,
-			Degree:    &model.Degree,
-			Verified:  &model.Verified,
-			Email:     &model.Email,
-			Specialty: &model.Specialty,
-			UserID:    &model.UserID,
-		},
-		true
-}
+// 	return &models.GetUserGoodResponse{
+// 			Name:      &model.Name,
+// 			Degree:    &model.Degree,
+// 			Verified:  &model.Verified,
+// 			Email:     &model.Email,
+// 			Specialty: &model.Specialty,
+// 			UserID:    &model.UserID,
+// 		},
+// 		true
+// }
 
 // func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
 // 	db, conn := Open()

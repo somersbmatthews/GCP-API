@@ -27,13 +27,13 @@ type GetUserGoodResponse struct {
 	// Required: true
 	Email *string `json:"email"`
 
+	// expertise
+	// Required: true
+	Expertise *string `json:"expertise"`
+
 	// name
 	// Required: true
 	Name *string `json:"name"`
-
-	// specialty
-	// Required: true
-	Specialty *string `json:"specialty"`
 
 	// user Id
 	// Required: true
@@ -57,11 +57,11 @@ func (m *GetUserGoodResponse) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateName(formats); err != nil {
+	if err := m.validateExpertise(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateSpecialty(formats); err != nil {
+	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -97,18 +97,18 @@ func (m *GetUserGoodResponse) validateEmail(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *GetUserGoodResponse) validateName(formats strfmt.Registry) error {
+func (m *GetUserGoodResponse) validateExpertise(formats strfmt.Registry) error {
 
-	if err := validate.Required("name", "body", m.Name); err != nil {
+	if err := validate.Required("expertise", "body", m.Expertise); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *GetUserGoodResponse) validateSpecialty(formats strfmt.Registry) error {
+func (m *GetUserGoodResponse) validateName(formats strfmt.Registry) error {
 
-	if err := validate.Required("specialty", "body", m.Specialty); err != nil {
+	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
 	}
 
