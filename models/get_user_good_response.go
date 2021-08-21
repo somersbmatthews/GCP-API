@@ -27,6 +27,10 @@ type GetUserGoodResponse struct {
 	// Required: true
 	Email *string `json:"email"`
 
+	// email confirmed
+	// Example: false
+	EmailConfirmed bool `json:"emailConfirmed,omitempty"`
+
 	// expertise
 	// Required: true
 	Expertise *string `json:"expertise"`

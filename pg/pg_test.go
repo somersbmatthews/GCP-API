@@ -16,20 +16,21 @@ const testUserID string = "1234567890"
 
 const badUserID string = "1234567790"
 
-// func TestBytea(t *testing.T) {
-// 	encryptedUserID, err := encryptUserID(testUserID)
-// 	if err != nil {
-// 		panic(err)
-// 	}
+func TestBytea(t *testing.T) {
+	encryptedUserID, err := encryptUserID(testUserID)
+	if err != nil {
+		panic(err)
+	}
 
-// 	bytea := getByteaFromString(encryptedUserID)
+	bytea := getByteaFromString(encryptedUserID)
 
-// 	encryptedUserIDFromBytea := getStringFromBytea(bytea)
+	encryptedUserIDFromBytea := getStringFromBytea(bytea)
 
-// 	if encryptedUserID != encryptedUserIDFromBytea {
-// 		t.Errorf("error getting string from bytea \n %v \n does not equal \n %v \n", encryptedUserID, encryptedUserIDFromBytea)
-// 	}
-// }
+	if encryptedUserID != encryptedUserIDFromBytea {
+		t.Errorf("error getting string from bytea \n %v \n does not equal \n %v \n", encryptedUserID, encryptedUserIDFromBytea)
+	}
+}
+
 // func TestCreateUser(t *testing.T) {
 // 	ctx := context.Background()
 

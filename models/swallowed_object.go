@@ -8,8 +8,10 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // SwallowedObject swallowed object
@@ -17,54 +19,575 @@ import (
 // swagger:model SwallowedObject
 type SwallowedObject struct {
 
+	// acetic acid
+	// Required: true
+	AceticAcid *bool `json:"aceticAcid"`
+
+	// anterior longest length
+	// Required: true
+	AnteriorLongestLength *string `json:"anteriorLongestLength"`
+
 	// anterior photo
-	AnteriorPhoto string `json:"AnteriorPhoto,omitempty"`
+	// Required: true
+	AnteriorPhoto *string `json:"anteriorPhoto"`
 
-	// consistency
-	Consistency string `json:"Consistency,omitempty"`
+	// battery imprint code
+	// Required: true
+	BatteryImprintCode *string `json:"batteryImprintCode"`
 
-	// custom materials
-	CustomMaterials []string `json:"CustomMaterials"`
+	// battery type
+	// Required: true
+	BatteryType *string `json:"batteryType"`
 
-	// custom shape
-	CustomShape string `json:"CustomShape,omitempty"`
+	// custom battery type
+	// Required: true
+	CustomBatteryType *string `json:"customBatteryType"`
 
-	// laterial photo
-	LaterialPhoto string `json:"LaterialPhoto,omitempty"`
+	// custom magnet type
+	// Required: true
+	CustomMagnetType *string `json:"customMagnetType"`
 
-	// location
-	Location int64 `json:"Location,omitempty"`
+	// custom material
+	// Required: true
+	CustomMaterial *string `json:"customMaterial"`
 
-	// longest depth
-	LongestDepth float64 `json:"LongestDepth,omitempty"`
+	// custom mitigating features
+	// Required: true
+	CustomMitigatingFeatures []string `json:"customMitigatingFeatures"`
 
-	// longest height
-	LongestHeight float64 `json:"LongestHeight,omitempty"`
+	// device type
+	// Required: true
+	DeviceType *string `json:"deviceType"`
 
-	// longest width
-	LongestWidth float64 `json:"LongestWidth,omitempty"`
-
-	// materials
-	Materials []int64 `json:"Materials"`
-
-	// posterior photo
-	PosteriorPhoto string `json:"PosteriorPhoto,omitempty"`
-
-	// removal difficulty
-	RemovalDifficulty int64 `json:"RemovalDifficulty,omitempty"`
-
-	// shape
-	Shape int64 `json:"Shape,omitempty"`
+	// honey
+	// Required: true
+	Honey *bool `json:"honey"`
 
 	// id
-	ID string `json:"id,omitempty"`
+	// Required: true
+	ID *string `json:"id"`
 
-	// incident ID
-	IncidentID string `json:"incidentID,omitempty"`
+	// imaging
+	// Required: true
+	Imaging *string `json:"imaging"`
+
+	// is battery or magnet
+	// Required: true
+	IsBatteryOrMagnet *string `json:"isBatteryOrMagnet"`
+
+	// lateral longest length
+	// Required: true
+	LateralLongestLength *string `json:"lateralLongestLength"`
+
+	// lateral photo
+	// Required: true
+	LateralPhoto *string `json:"lateralPhoto"`
+
+	// magnet type
+	// Required: true
+	MagnetType *string `json:"magnetType"`
+
+	// material
+	// Required: true
+	Material *string `json:"material"`
+
+	// mitigating features
+	// Required: true
+	MitigatingFeatures []string `json:"mitigatingFeatures"`
+
+	// negative pole direction
+	// Required: true
+	NegativePoleDirection *string `json:"negativePoleDirection"`
+
+	// number of pieces
+	// Required: true
+	NumberOfPieces *string `json:"numberOfPieces"`
+
+	// number of this object
+	// Required: true
+	NumberOfThisObject *string `json:"numberOfThisObject"`
+
+	// object custom shape
+	// Required: true
+	ObjectCustomShape *string `json:"objectCustomShape"`
+
+	// object description
+	// Required: true
+	ObjectDescription *string `json:"objectDescription"`
+
+	// object dimensionality
+	// Required: true
+	ObjectDimensionality *string `json:"objectDimensionality"`
+
+	// object intact
+	// Required: true
+	ObjectIntact *string `json:"objectIntact"`
+
+	// object location
+	// Required: true
+	ObjectLocation *string `json:"objectLocation"`
+
+	// object shape
+	// Required: true
+	ObjectShape *string `json:"objectShape"`
+
+	// other characteristics
+	// Required: true
+	OtherCharacteristics []string `json:"otherCharacteristics"`
+
+	// posterior longest length
+	// Required: true
+	PosteriorLongestLength *string `json:"posteriorLongestLength"`
+
+	// posterior photo
+	// Required: true
+	PosteriorPhoto *string `json:"posteriorPhoto"`
+
+	// radio opacity
+	// Required: true
+	RadioOpacity *string `json:"radioOpacity"`
+
+	// sucralfate
+	// Required: true
+	Sucralfate *bool `json:"sucralfate"`
 }
 
 // Validate validates this swallowed object
 func (m *SwallowedObject) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateAceticAcid(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAnteriorLongestLength(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAnteriorPhoto(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateBatteryImprintCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateBatteryType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateCustomBatteryType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateCustomMagnetType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateCustomMaterial(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateCustomMitigatingFeatures(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDeviceType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateHoney(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateImaging(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateIsBatteryOrMagnet(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLateralLongestLength(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLateralPhoto(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMagnetType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMaterial(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMitigatingFeatures(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateNegativePoleDirection(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateNumberOfPieces(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateNumberOfThisObject(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateObjectCustomShape(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateObjectDescription(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateObjectDimensionality(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateObjectIntact(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateObjectLocation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateObjectShape(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateOtherCharacteristics(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePosteriorLongestLength(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePosteriorPhoto(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRadioOpacity(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSucralfate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *SwallowedObject) validateAceticAcid(formats strfmt.Registry) error {
+
+	if err := validate.Required("aceticAcid", "body", m.AceticAcid); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateAnteriorLongestLength(formats strfmt.Registry) error {
+
+	if err := validate.Required("anteriorLongestLength", "body", m.AnteriorLongestLength); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateAnteriorPhoto(formats strfmt.Registry) error {
+
+	if err := validate.Required("anteriorPhoto", "body", m.AnteriorPhoto); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateBatteryImprintCode(formats strfmt.Registry) error {
+
+	if err := validate.Required("batteryImprintCode", "body", m.BatteryImprintCode); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateBatteryType(formats strfmt.Registry) error {
+
+	if err := validate.Required("batteryType", "body", m.BatteryType); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateCustomBatteryType(formats strfmt.Registry) error {
+
+	if err := validate.Required("customBatteryType", "body", m.CustomBatteryType); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateCustomMagnetType(formats strfmt.Registry) error {
+
+	if err := validate.Required("customMagnetType", "body", m.CustomMagnetType); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateCustomMaterial(formats strfmt.Registry) error {
+
+	if err := validate.Required("customMaterial", "body", m.CustomMaterial); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateCustomMitigatingFeatures(formats strfmt.Registry) error {
+
+	if err := validate.Required("customMitigatingFeatures", "body", m.CustomMitigatingFeatures); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateDeviceType(formats strfmt.Registry) error {
+
+	if err := validate.Required("deviceType", "body", m.DeviceType); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateHoney(formats strfmt.Registry) error {
+
+	if err := validate.Required("honey", "body", m.Honey); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateImaging(formats strfmt.Registry) error {
+
+	if err := validate.Required("imaging", "body", m.Imaging); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateIsBatteryOrMagnet(formats strfmt.Registry) error {
+
+	if err := validate.Required("isBatteryOrMagnet", "body", m.IsBatteryOrMagnet); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateLateralLongestLength(formats strfmt.Registry) error {
+
+	if err := validate.Required("lateralLongestLength", "body", m.LateralLongestLength); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateLateralPhoto(formats strfmt.Registry) error {
+
+	if err := validate.Required("lateralPhoto", "body", m.LateralPhoto); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateMagnetType(formats strfmt.Registry) error {
+
+	if err := validate.Required("magnetType", "body", m.MagnetType); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateMaterial(formats strfmt.Registry) error {
+
+	if err := validate.Required("material", "body", m.Material); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateMitigatingFeatures(formats strfmt.Registry) error {
+
+	if err := validate.Required("mitigatingFeatures", "body", m.MitigatingFeatures); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateNegativePoleDirection(formats strfmt.Registry) error {
+
+	if err := validate.Required("negativePoleDirection", "body", m.NegativePoleDirection); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateNumberOfPieces(formats strfmt.Registry) error {
+
+	if err := validate.Required("numberOfPieces", "body", m.NumberOfPieces); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateNumberOfThisObject(formats strfmt.Registry) error {
+
+	if err := validate.Required("numberOfThisObject", "body", m.NumberOfThisObject); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateObjectCustomShape(formats strfmt.Registry) error {
+
+	if err := validate.Required("objectCustomShape", "body", m.ObjectCustomShape); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateObjectDescription(formats strfmt.Registry) error {
+
+	if err := validate.Required("objectDescription", "body", m.ObjectDescription); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateObjectDimensionality(formats strfmt.Registry) error {
+
+	if err := validate.Required("objectDimensionality", "body", m.ObjectDimensionality); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateObjectIntact(formats strfmt.Registry) error {
+
+	if err := validate.Required("objectIntact", "body", m.ObjectIntact); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateObjectLocation(formats strfmt.Registry) error {
+
+	if err := validate.Required("objectLocation", "body", m.ObjectLocation); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateObjectShape(formats strfmt.Registry) error {
+
+	if err := validate.Required("objectShape", "body", m.ObjectShape); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateOtherCharacteristics(formats strfmt.Registry) error {
+
+	if err := validate.Required("otherCharacteristics", "body", m.OtherCharacteristics); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validatePosteriorLongestLength(formats strfmt.Registry) error {
+
+	if err := validate.Required("posteriorLongestLength", "body", m.PosteriorLongestLength); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validatePosteriorPhoto(formats strfmt.Registry) error {
+
+	if err := validate.Required("posteriorPhoto", "body", m.PosteriorPhoto); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateRadioOpacity(formats strfmt.Registry) error {
+
+	if err := validate.Required("radioOpacity", "body", m.RadioOpacity); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateSucralfate(formats strfmt.Registry) error {
+
+	if err := validate.Required("sucralfate", "body", m.Sucralfate); err != nil {
+		return err
+	}
+
 	return nil
 }
 

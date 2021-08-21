@@ -19,9 +19,15 @@ import (
 // swagger:model Expert
 type Expert struct {
 
+	// f c m token
+	FCMToken string `json:"FCMToken,omitempty"`
+
 	// degree
 	// Required: true
 	Degree *string `json:"degree"`
+
+	// device type
+	DeviceType string `json:"deviceType,omitempty"`
 
 	// email
 	// Required: true

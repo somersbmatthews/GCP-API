@@ -15,7 +15,7 @@ import (
 )
 
 type User struct {
-	UserID    string `gorm:"unique"`
+	UserID    string `gorm:"unique; not null"`
 	Email     string
 	Name      string
 	Specialty string
@@ -25,7 +25,7 @@ type User struct {
 
 type Incident struct {
 	CreatedAt                   int64
-	ID                          string `gorm:"unique"`
+	ID                          string `gorm:"unique; not null"`
 	EncryptedUserID             string `gorm:"type:bytea"`
 	Location                    string
 	LocationOfObjects           string

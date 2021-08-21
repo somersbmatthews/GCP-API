@@ -3,21 +3,28 @@ package pg
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/gircapp/api/models"
 	"gorm.io/gorm"
 )
 
 type Expert struct {
-	ID               string `gorm:"unique"`
-	Email            string
-	Name             string
-	Expertise        string
-	Degree           string
-	DirectorVerified bool
-	EmailVerified    bool
-	RegisteredDevice string
-	Banned           bool
+	ID                                           string `gorm:"unique; not null"`
+	Email                                        string
+	Name                                         string
+	Expertise                                    string
+	Degree                                       string
+	DirectorVerified                             bool
+	Registered                                   bool
+	EmailConfirmed                               bool // perhaps remove depending on email confirmation strategy
+	DeviceType                                   string
+	FCMToken                                     string
+	RegistrationAttempts                         int
+	LastRegisterationAttemptTimeAfterMaxAttempts int64
+	LastOpeningAppTime                           int64
+	RegistrationTime                             int64
+	Banned                                       bool
 }
 
 func CreateExpertWithAutoDirectorAndEmailVerification(ctx context.Context, expertRequestObject *models.Expert, userID string) (*models.GoodResponse, bool) {
@@ -29,7 +36,11 @@ func CreateExpertWithAutoDirectorAndEmailVerification(ctx context.Context, exper
 		Expertise:        *expertRequestObject.Expertise,
 		Degree:           *expertRequestObject.Degree,
 		DirectorVerified: true,
-		EmailVerified:    true,
+		Registered:       true,
+		EmailConfirmed:   true,
+		DeviceType:       expertRequestObject.DeviceType,
+		Banned:           false,
+		RegistrationTime: time.Now().Unix(),
 	}
 
 	err := db.Create(expert).Error
@@ -51,7 +62,11 @@ func CreateExpertWithAutoDirectorWithoutEmailVerification(ctx context.Context, e
 		Expertise:        *expertRequestObject.Expertise,
 		Degree:           *expertRequestObject.Degree,
 		DirectorVerified: true,
-		EmailVerified:    false,
+		Registered:       true,
+		EmailConfirmed:   false,
+		DeviceType:       expertRequestObject.DeviceType,
+		Banned:           false,
+		RegistrationTime: time.Now().Unix(),
 	}
 
 	err := db.Create(expert).Error
@@ -66,17 +81,21 @@ func CreateExpertWithAutoDirectorWithoutEmailVerification(ctx context.Context, e
 
 func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Expert, userID string) (*models.GoodResponse, bool) {
 
-	model := Expert{
+	expert := Expert{
 		ID:               userID,
 		Email:            *expertRequestObject.Email,
 		Name:             *expertRequestObject.Name,
 		Expertise:        *expertRequestObject.Expertise,
 		Degree:           *expertRequestObject.Degree,
 		DirectorVerified: false,
-		EmailVerified:    false,
+		Registered:       true,
+		EmailConfirmed:   false,
+		DeviceType:       expertRequestObject.DeviceType,
+		Banned:           false,
+		RegistrationTime: time.Now().Unix(),
 	}
 
-	err := db.Create(model).Error
+	err := db.Create(expert).Error
 	if err != nil {
 		return nil, false
 	}
@@ -103,20 +122,101 @@ func ConfirmEmail(ctx context.Context, email string, userID string) (*models.Goo
 
 func GetMedicalExpert(ctx context.Context, userID string) (*models.GetExpertResponse, bool) {
 	model := Expert{}
-	err := db.First(&model, "user_id = ?", userID).Error
+	err := db.First(&model, "id = ?", userID).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
 		panic(err)
 	}
 	return &models.GetExpertResponse{
-		Name:      &model.Name,
-		Degree:    &model.Degree,
-		Expertise: &model.Expertise,
-		Email:     &model.Email,
-		Verified:  model.DirectorVerified,
+		Name:           &model.Name,
+		Degree:         &model.Degree,
+		Expertise:      &model.Expertise,
+		Email:          &model.Email,
+		Verified:       &model.DirectorVerified,
+		EmailConfirmed: &model.EmailConfirmed,
 	}, true
 
+}
+
+func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert, userId string) (*models.GoodResponse, bool) {
+	expert := Expert{
+		// TODO: fill in stuff from expertRequestObject here
+	}
+
+	err := db.First(&Expert{}, "id = ?", userId).Updates(expert).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	message := fmt.Sprintf("Medical Expert with id %s", userId)
+	return &models.GoodResponse{
+			Message: message,
+		},
+		true
+
+}
+
+func UpdateFCMToken(ctx context.Context, FCMRequestObject models.FCMToken, userId string) (*models.GoodResponse, bool) {
+
+	err := db.First(&Expert{}, "id = ?", userId).Update("FCMToken", FCMRequestObject.FCMToken).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	message := fmt.Sprintf("FCMToken Updated for Medical Expert with %s", userId)
+	return &models.GoodResponse{
+		Message: message,
+	}, true
+}
+
+func VerifyExpert(ctx context.Context, VerifyRequestObject models.Verify, userId string) (*models.GoodResponse, bool) {
+
+	err := db.First(&Expert{}, "id = ?", userId).Update("director_verfied", VerifyRequestObject.Verified).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	message := fmt.Sprintf("Medical Expert with id %s is verfied or unverified", userId)
+	return &models.GoodResponse{
+		Message: message,
+	}
+}
+
+func BanExpert(ctx context.Context, BanRequestObject models.Ban, userId string) (*models.GoodResponse, bool) {
+
+	err := db.First(&Expert{}, "id = ?", userId).Update("banned", BanRequestObject.Banned).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	message := fmt.Sprintf("Medical Expert with id %s is banned or unbanned", userId)
+	return &models.GoodResponse{
+		Message: message,
+	}, true
+}
+
+func DeleteMedicalExpert(ctx context.Context, userId string) (*models.GoodResponse, bool) {
+
+	err := db.First(&Expert{}, "id = ?", userId).Delete(&Expert{}).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	message := fmt.Sprintf("Medical Expert with id %s is deleted", userId)
+	return &models.GoodResponse{
+		Message: message,
+	}, true
 }
 
 // func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {

@@ -31,6 +31,8 @@ func NewGetENTIncidents(ctx *middleware.Context, handler GetENTIncidentsHandler)
 
 /* GetENTIncidents swagger:route GET /v3/entincident ENT Incident getENTIncidents
 
+get all medical experts entincidents
+
 use this to get all of a users entIncidents
 
 */

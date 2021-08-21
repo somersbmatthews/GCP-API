@@ -25,7 +25,7 @@ func NewVerifyExpertParams() VerifyExpertParams {
 // VerifyExpertParams contains all the bound params for the verify expert operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters verify expert
+// swagger:parameters verifyExpert
 type VerifyExpertParams struct {
 
 	// HTTP Request Object

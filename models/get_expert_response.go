@@ -27,6 +27,11 @@ type GetExpertResponse struct {
 	// Required: true
 	Email *string `json:"email"`
 
+	// email confirmed
+	// Example: false
+	// Required: true
+	EmailConfirmed *bool `json:"emailConfirmed"`
+
 	// expertise
 	// Required: true
 	Expertise *string `json:"expertise"`
@@ -39,7 +44,8 @@ type GetExpertResponse struct {
 	Name *string `json:"name"`
 
 	// verified
-	Verified bool `json:"verified,omitempty"`
+	// Required: true
+	Verified *bool `json:"verified"`
 }
 
 // Validate validates this get expert response
@@ -54,11 +60,19 @@ func (m *GetExpertResponse) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateEmailConfirmed(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateExpertise(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateVerified(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -86,6 +100,15 @@ func (m *GetExpertResponse) validateEmail(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *GetExpertResponse) validateEmailConfirmed(formats strfmt.Registry) error {
+
+	if err := validate.Required("emailConfirmed", "body", m.EmailConfirmed); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *GetExpertResponse) validateExpertise(formats strfmt.Registry) error {
 
 	if err := validate.Required("expertise", "body", m.Expertise); err != nil {
@@ -98,6 +121,15 @@ func (m *GetExpertResponse) validateExpertise(formats strfmt.Registry) error {
 func (m *GetExpertResponse) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetExpertResponse) validateVerified(formats strfmt.Registry) error {
+
+	if err := validate.Required("verified", "body", m.Verified); err != nil {
 		return err
 	}
 

@@ -327,6 +327,101 @@ func init() {
         }
       }
     },
+    "/v3/admin/ban": {
+      "patch": {
+        "description": "Use this to ban a medical expert.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Ban Medical Expert",
+        "operationId": "banMedicalExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header Firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "FCMToken",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FCMToken"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/admin/verifyexpert": {
+      "patch": {
+        "description": "use this to director verify an expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Register a Medical Expert",
+        "operationId": "verifyExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Firebase Id token goes here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token"
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/entincident": {
       "get": {
         "description": "use this to get all of a users entIncidents",
@@ -339,6 +434,7 @@ func init() {
         "tags": [
           "ENT Incident"
         ],
+        "summary": "get all medical experts entincidents",
         "operationId": "getENTIncidents",
         "parameters": [
           {
@@ -386,6 +482,18 @@ func init() {
             "schema": {
               "$ref": "#/definitions/GoodResponse"
             }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
           }
         }
       },
@@ -417,6 +525,49 @@ func init() {
             "schema": {
               "$ref": "#/definitions/ENTIncident"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this to delete an ENT incident",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "ENT Incident"
+        ],
+        "summary": "Delete ENT Incident",
+        "operationId": "deleteENTIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -632,7 +783,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains token",
+            "description": "authorization header Firebase id token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -713,9 +864,9 @@ func init() {
         }
       }
     },
-    "/v3/expert/verifyexpert": {
-      "post": {
-        "description": "use this to director verify an expert",
+    "/v3/expert/updatefcmtoken": {
+      "patch": {
+        "description": "use this to update FCM token",
         "consumes": [
           "application/json"
         ],
@@ -725,8 +876,8 @@ func init() {
         "tags": [
           "Medical Expert"
         ],
-        "summary": "Register a Medical Expert",
-        "operationId": "verify expert",
+        "summary": "Update FCM Token",
+        "operationId": "updateFCMtoken",
         "parameters": [
           {
             "type": "string",
@@ -734,53 +885,13 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation"
-          },
-          "401": {
-            "description": "bad authorization token"
-          },
-          "404": {
-            "description": "user not found",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v3/verify": {
-      "patch": {
-        "description": "verified field is true to verify, false to unverify",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "verify"
-        ],
-        "summary": "use this to verify or unverify a Medcal Expert, for testing only",
-        "operationId": "verifyExpert",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
           },
           {
-            "description": "verified field is true to verify, false to unverify",
-            "name": "verified",
+            "name": "FCMToken",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Verify"
+              "$ref": "#/definitions/FCMToken"
             }
           }
         ],
@@ -798,7 +909,7 @@ func init() {
             }
           },
           "404": {
-            "description": "userid not found",
+            "description": "user not found",
             "schema": {
               "$ref": "#/definitions/BadResponse"
             }
@@ -816,56 +927,14 @@ func init() {
         }
       }
     },
-    "CreateIncidentGoodResponse": {
+    "Ban": {
       "type": "object",
       "required": [
-        "ID"
+        "banned"
       ],
       "properties": {
-        "Anterior": {
-          "type": "string"
-        },
-        "Approximate_Patient_Age": {
-          "type": "string"
-        },
-        "Created": {
+        "banned": {
           "type": "boolean"
-        },
-        "Date_of_Incident": {
-          "type": "string"
-        },
-        "Gender": {
-          "type": "string"
-        },
-        "ID": {
-          "type": "string"
-        },
-        "Incident_Description": {
-          "type": "string"
-        },
-        "Largest_Length": {
-          "type": "string"
-        },
-        "Location_of_object": {
-          "type": "string"
-        },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "UserID": {
-          "type": "string"
-        },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
         }
       }
     },
@@ -965,14 +1034,39 @@ func init() {
     "ENTIncident": {
       "type": "object",
       "required": [
-        "id"
+        "id",
+        "country",
+        "year",
+        "ageYears",
+        "ageMonths",
+        "gender",
+        "incidentDescription",
+        "daysUntilRemoval",
+        "hoursUntilRemoval",
+        "minutesUntilRemoval",
+        "removalStrategy",
+        "openSurgery",
+        "wasIncidentLifeThreatening",
+        "symptoms",
+        "customSymptoms",
+        "symptomSeverity",
+        "complications",
+        "customComplications",
+        "anesthesia",
+        "prognosis",
+        "hospitalStay",
+        "deviceType",
+        "swallowedObjects"
       ],
       "properties": {
-        "age": {
+        "ageMonths": {
+          "type": "string"
+        },
+        "ageYears": {
           "type": "string"
         },
         "anesthesia": {
-          "type": "integer"
+          "type": "string"
         },
         "complications": {
           "type": "array",
@@ -989,38 +1083,47 @@ func init() {
             "type": "string"
           }
         },
-        "customProcedures": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "customSymptoms": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
+        "daysUntilRemoval": {
+          "type": "number"
+        },
+        "deviceType": {
+          "type": "string"
+        },
+        "easeOfRemoval": {
+          "type": "string"
+        },
         "gender": {
           "type": "string"
+        },
+        "hospitalStay": {
+          "type": "string"
+        },
+        "hoursUntilRemoval": {
+          "type": "number"
         },
         "id": {
           "type": "string"
         },
-        "minutesUntilRemoval": {
+        "incidentDescription": {
           "type": "string"
         },
-        "procedures": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "minutesUntilRemoval": {
+          "type": "number"
+        },
+        "openSurgery": {
+          "type": "string"
         },
         "prognosis": {
           "type": "string"
         },
-        "removalSetting": {
-          "type": "string"
+        "removalStrategy": {
+          "type": "number"
         },
         "swallowedObjects": {
           "type": "array",
@@ -1036,6 +1139,12 @@ func init() {
           "items": {
             "type": "string"
           }
+        },
+        "wasIncidentLifeThreatening": {
+          "type": "string"
+        },
+        "year": {
+          "type": "string"
         }
       }
     },
@@ -1048,7 +1157,13 @@ func init() {
         "degree"
       ],
       "properties": {
+        "FCMToken": {
+          "type": "string"
+        },
         "degree": {
+          "type": "string"
+        },
+        "deviceType": {
           "type": "string"
         },
         "email": {
@@ -1058,6 +1173,17 @@ func init() {
           "type": "string"
         },
         "name": {
+          "type": "string"
+        }
+      }
+    },
+    "FCMToken": {
+      "type": "object",
+      "required": [
+        "FCMToken"
+      ],
+      "properties": {
+        "FCMToken": {
           "type": "string"
         }
       }
@@ -1079,7 +1205,9 @@ func init() {
         "name",
         "email",
         "expertise",
-        "degree"
+        "degree",
+        "verified",
+        "emailConfirmed"
       ],
       "properties": {
         "degree": {
@@ -1087,6 +1215,10 @@ func init() {
         },
         "email": {
           "type": "string"
+        },
+        "emailConfirmed": {
+          "type": "boolean",
+          "example": false
         },
         "expertise": {
           "type": "string"
@@ -1135,6 +1267,10 @@ func init() {
         },
         "email": {
           "type": "string"
+        },
+        "emailConfirmed": {
+          "type": "boolean",
+          "example": false
         },
         "expertise": {
           "type": "string"
@@ -1298,57 +1434,149 @@ func init() {
     },
     "SwallowedObject": {
       "type": "object",
+      "required": [
+        "id",
+        "radioOpacity",
+        "imaging",
+        "anteriorPhoto",
+        "posteriorPhoto",
+        "lateralPhoto",
+        "anteriorLongestLength",
+        "posteriorLongestLength",
+        "lateralLongestLength",
+        "objectLocation",
+        "numberOfThisObject",
+        "objectIntact",
+        "numberOfPieces",
+        "objectDescription",
+        "objectShape",
+        "objectCustomShape",
+        "objectDimensionality",
+        "otherCharacteristics",
+        "material",
+        "customMaterial",
+        "isBatteryOrMagnet",
+        "batteryType",
+        "customBatteryType",
+        "batteryImprintCode",
+        "mitigatingFeatures",
+        "customMitigatingFeatures",
+        "negativePoleDirection",
+        "honey",
+        "sucralfate",
+        "aceticAcid",
+        "magnetType",
+        "customMagnetType",
+        "deviceType"
+      ],
       "properties": {
-        "AnteriorPhoto": {
+        "aceticAcid": {
+          "type": "boolean"
+        },
+        "anteriorLongestLength": {
           "type": "string"
         },
-        "Consistency": {
+        "anteriorPhoto": {
           "type": "string"
         },
-        "CustomMaterials": {
+        "batteryImprintCode": {
+          "type": "string"
+        },
+        "batteryType": {
+          "type": "string"
+        },
+        "customBatteryType": {
+          "type": "string"
+        },
+        "customMagnetType": {
+          "type": "string"
+        },
+        "customMaterial": {
+          "type": "string"
+        },
+        "customMitigatingFeatures": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "CustomShape": {
+        "deviceType": {
           "type": "string"
         },
-        "LaterialPhoto": {
-          "type": "string"
-        },
-        "Location": {
-          "type": "integer"
-        },
-        "LongestDepth": {
-          "type": "number"
-        },
-        "LongestHeight": {
-          "type": "number"
-        },
-        "LongestWidth": {
-          "type": "number"
-        },
-        "Materials": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
-        },
-        "PosteriorPhoto": {
-          "type": "string"
-        },
-        "RemovalDifficulty": {
-          "type": "integer"
-        },
-        "Shape": {
-          "type": "integer"
+        "honey": {
+          "type": "boolean"
         },
         "id": {
           "type": "string"
         },
-        "incidentID": {
+        "imaging": {
           "type": "string"
+        },
+        "isBatteryOrMagnet": {
+          "type": "string"
+        },
+        "lateralLongestLength": {
+          "type": "string"
+        },
+        "lateralPhoto": {
+          "type": "string"
+        },
+        "magnetType": {
+          "type": "string"
+        },
+        "material": {
+          "type": "string"
+        },
+        "mitigatingFeatures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "negativePoleDirection": {
+          "type": "string"
+        },
+        "numberOfPieces": {
+          "type": "string"
+        },
+        "numberOfThisObject": {
+          "type": "string"
+        },
+        "objectCustomShape": {
+          "type": "string"
+        },
+        "objectDescription": {
+          "type": "string"
+        },
+        "objectDimensionality": {
+          "type": "string"
+        },
+        "objectIntact": {
+          "type": "string"
+        },
+        "objectLocation": {
+          "type": "string"
+        },
+        "objectShape": {
+          "type": "string"
+        },
+        "otherCharacteristics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "posteriorLongestLength": {
+          "type": "string"
+        },
+        "posteriorPhoto": {
+          "type": "string"
+        },
+        "radioOpacity": {
+          "type": "string"
+        },
+        "sucralfate": {
+          "type": "boolean"
         }
       }
     },
@@ -1392,6 +1620,10 @@ func init() {
     {
       "description": "for Vet Incidents",
       "name": "Vet Incident"
+    },
+    {
+      "description": "for admin app operations",
+      "name": "Admin"
     }
   ]
 }`))
@@ -1705,6 +1937,101 @@ func init() {
         }
       }
     },
+    "/v3/admin/ban": {
+      "patch": {
+        "description": "Use this to ban a medical expert.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Ban Medical Expert",
+        "operationId": "banMedicalExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header Firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "FCMToken",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FCMToken"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v3/admin/verifyexpert": {
+      "patch": {
+        "description": "use this to director verify an expert",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Register a Medical Expert",
+        "operationId": "verifyExpert",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Firebase Id token goes here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token"
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/entincident": {
       "get": {
         "description": "use this to get all of a users entIncidents",
@@ -1717,6 +2044,7 @@ func init() {
         "tags": [
           "ENT Incident"
         ],
+        "summary": "get all medical experts entincidents",
         "operationId": "getENTIncidents",
         "parameters": [
           {
@@ -1764,6 +2092,18 @@ func init() {
             "schema": {
               "$ref": "#/definitions/GoodResponse"
             }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
           }
         }
       },
@@ -1795,6 +2135,49 @@ func init() {
             "schema": {
               "$ref": "#/definitions/ENTIncident"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Use this to delete an ENT incident",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "ENT Incident"
+        ],
+        "summary": "Delete ENT Incident",
+        "operationId": "deleteENTIncident",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -2010,7 +2393,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "authorization header contains token",
+            "description": "authorization header Firebase id token",
             "name": "Authorization",
             "in": "header",
             "required": true
@@ -2091,9 +2474,9 @@ func init() {
         }
       }
     },
-    "/v3/expert/verifyexpert": {
-      "post": {
-        "description": "use this to director verify an expert",
+    "/v3/expert/updatefcmtoken": {
+      "patch": {
+        "description": "use this to update FCM token",
         "consumes": [
           "application/json"
         ],
@@ -2103,8 +2486,8 @@ func init() {
         "tags": [
           "Medical Expert"
         ],
-        "summary": "Register a Medical Expert",
-        "operationId": "verify expert",
+        "summary": "Update FCM Token",
+        "operationId": "updateFCMtoken",
         "parameters": [
           {
             "type": "string",
@@ -2112,53 +2495,13 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation"
-          },
-          "401": {
-            "description": "bad authorization token"
-          },
-          "404": {
-            "description": "user not found",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          }
-        }
-      }
-    },
-    "/v3/verify": {
-      "patch": {
-        "description": "verified field is true to verify, false to unverify",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "verify"
-        ],
-        "summary": "use this to verify or unverify a Medcal Expert, for testing only",
-        "operationId": "verifyExpert",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "authorization header contains token",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
           },
           {
-            "description": "verified field is true to verify, false to unverify",
-            "name": "verified",
+            "name": "FCMToken",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Verify"
+              "$ref": "#/definitions/FCMToken"
             }
           }
         ],
@@ -2176,7 +2519,7 @@ func init() {
             }
           },
           "404": {
-            "description": "userid not found",
+            "description": "user not found",
             "schema": {
               "$ref": "#/definitions/BadResponse"
             }
@@ -2194,56 +2537,14 @@ func init() {
         }
       }
     },
-    "CreateIncidentGoodResponse": {
+    "Ban": {
       "type": "object",
       "required": [
-        "ID"
+        "banned"
       ],
       "properties": {
-        "Anterior": {
-          "type": "string"
-        },
-        "Approximate_Patient_Age": {
-          "type": "string"
-        },
-        "Created": {
+        "banned": {
           "type": "boolean"
-        },
-        "Date_of_Incident": {
-          "type": "string"
-        },
-        "Gender": {
-          "type": "string"
-        },
-        "ID": {
-          "type": "string"
-        },
-        "Incident_Description": {
-          "type": "string"
-        },
-        "Largest_Length": {
-          "type": "string"
-        },
-        "Location_of_object": {
-          "type": "string"
-        },
-        "Long-term_prognosis": {
-          "type": "string"
-        },
-        "Object_Basic_Shape": {
-          "type": "string"
-        },
-        "Object_Consistency": {
-          "type": "string"
-        },
-        "The_object_is": {
-          "type": "string"
-        },
-        "UserID": {
-          "type": "string"
-        },
-        "What_material_is_the_object_made_of": {
-          "type": "string"
         }
       }
     },
@@ -2343,14 +2644,39 @@ func init() {
     "ENTIncident": {
       "type": "object",
       "required": [
-        "id"
+        "id",
+        "country",
+        "year",
+        "ageYears",
+        "ageMonths",
+        "gender",
+        "incidentDescription",
+        "daysUntilRemoval",
+        "hoursUntilRemoval",
+        "minutesUntilRemoval",
+        "removalStrategy",
+        "openSurgery",
+        "wasIncidentLifeThreatening",
+        "symptoms",
+        "customSymptoms",
+        "symptomSeverity",
+        "complications",
+        "customComplications",
+        "anesthesia",
+        "prognosis",
+        "hospitalStay",
+        "deviceType",
+        "swallowedObjects"
       ],
       "properties": {
-        "age": {
+        "ageMonths": {
+          "type": "string"
+        },
+        "ageYears": {
           "type": "string"
         },
         "anesthesia": {
-          "type": "integer"
+          "type": "string"
         },
         "complications": {
           "type": "array",
@@ -2367,38 +2693,47 @@ func init() {
             "type": "string"
           }
         },
-        "customProcedures": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "customSymptoms": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
+        "daysUntilRemoval": {
+          "type": "number"
+        },
+        "deviceType": {
+          "type": "string"
+        },
+        "easeOfRemoval": {
+          "type": "string"
+        },
         "gender": {
           "type": "string"
+        },
+        "hospitalStay": {
+          "type": "string"
+        },
+        "hoursUntilRemoval": {
+          "type": "number"
         },
         "id": {
           "type": "string"
         },
-        "minutesUntilRemoval": {
+        "incidentDescription": {
           "type": "string"
         },
-        "procedures": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "minutesUntilRemoval": {
+          "type": "number"
+        },
+        "openSurgery": {
+          "type": "string"
         },
         "prognosis": {
           "type": "string"
         },
-        "removalSetting": {
-          "type": "string"
+        "removalStrategy": {
+          "type": "number"
         },
         "swallowedObjects": {
           "type": "array",
@@ -2414,6 +2749,12 @@ func init() {
           "items": {
             "type": "string"
           }
+        },
+        "wasIncidentLifeThreatening": {
+          "type": "string"
+        },
+        "year": {
+          "type": "string"
         }
       }
     },
@@ -2426,7 +2767,13 @@ func init() {
         "degree"
       ],
       "properties": {
+        "FCMToken": {
+          "type": "string"
+        },
         "degree": {
+          "type": "string"
+        },
+        "deviceType": {
           "type": "string"
         },
         "email": {
@@ -2436,6 +2783,17 @@ func init() {
           "type": "string"
         },
         "name": {
+          "type": "string"
+        }
+      }
+    },
+    "FCMToken": {
+      "type": "object",
+      "required": [
+        "FCMToken"
+      ],
+      "properties": {
+        "FCMToken": {
           "type": "string"
         }
       }
@@ -2457,7 +2815,9 @@ func init() {
         "name",
         "email",
         "expertise",
-        "degree"
+        "degree",
+        "verified",
+        "emailConfirmed"
       ],
       "properties": {
         "degree": {
@@ -2465,6 +2825,10 @@ func init() {
         },
         "email": {
           "type": "string"
+        },
+        "emailConfirmed": {
+          "type": "boolean",
+          "example": false
         },
         "expertise": {
           "type": "string"
@@ -2513,6 +2877,10 @@ func init() {
         },
         "email": {
           "type": "string"
+        },
+        "emailConfirmed": {
+          "type": "boolean",
+          "example": false
         },
         "expertise": {
           "type": "string"
@@ -2676,57 +3044,149 @@ func init() {
     },
     "SwallowedObject": {
       "type": "object",
+      "required": [
+        "id",
+        "radioOpacity",
+        "imaging",
+        "anteriorPhoto",
+        "posteriorPhoto",
+        "lateralPhoto",
+        "anteriorLongestLength",
+        "posteriorLongestLength",
+        "lateralLongestLength",
+        "objectLocation",
+        "numberOfThisObject",
+        "objectIntact",
+        "numberOfPieces",
+        "objectDescription",
+        "objectShape",
+        "objectCustomShape",
+        "objectDimensionality",
+        "otherCharacteristics",
+        "material",
+        "customMaterial",
+        "isBatteryOrMagnet",
+        "batteryType",
+        "customBatteryType",
+        "batteryImprintCode",
+        "mitigatingFeatures",
+        "customMitigatingFeatures",
+        "negativePoleDirection",
+        "honey",
+        "sucralfate",
+        "aceticAcid",
+        "magnetType",
+        "customMagnetType",
+        "deviceType"
+      ],
       "properties": {
-        "AnteriorPhoto": {
+        "aceticAcid": {
+          "type": "boolean"
+        },
+        "anteriorLongestLength": {
           "type": "string"
         },
-        "Consistency": {
+        "anteriorPhoto": {
           "type": "string"
         },
-        "CustomMaterials": {
+        "batteryImprintCode": {
+          "type": "string"
+        },
+        "batteryType": {
+          "type": "string"
+        },
+        "customBatteryType": {
+          "type": "string"
+        },
+        "customMagnetType": {
+          "type": "string"
+        },
+        "customMaterial": {
+          "type": "string"
+        },
+        "customMitigatingFeatures": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "CustomShape": {
+        "deviceType": {
           "type": "string"
         },
-        "LaterialPhoto": {
-          "type": "string"
-        },
-        "Location": {
-          "type": "integer"
-        },
-        "LongestDepth": {
-          "type": "number"
-        },
-        "LongestHeight": {
-          "type": "number"
-        },
-        "LongestWidth": {
-          "type": "number"
-        },
-        "Materials": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
-        },
-        "PosteriorPhoto": {
-          "type": "string"
-        },
-        "RemovalDifficulty": {
-          "type": "integer"
-        },
-        "Shape": {
-          "type": "integer"
+        "honey": {
+          "type": "boolean"
         },
         "id": {
           "type": "string"
         },
-        "incidentID": {
+        "imaging": {
           "type": "string"
+        },
+        "isBatteryOrMagnet": {
+          "type": "string"
+        },
+        "lateralLongestLength": {
+          "type": "string"
+        },
+        "lateralPhoto": {
+          "type": "string"
+        },
+        "magnetType": {
+          "type": "string"
+        },
+        "material": {
+          "type": "string"
+        },
+        "mitigatingFeatures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "negativePoleDirection": {
+          "type": "string"
+        },
+        "numberOfPieces": {
+          "type": "string"
+        },
+        "numberOfThisObject": {
+          "type": "string"
+        },
+        "objectCustomShape": {
+          "type": "string"
+        },
+        "objectDescription": {
+          "type": "string"
+        },
+        "objectDimensionality": {
+          "type": "string"
+        },
+        "objectIntact": {
+          "type": "string"
+        },
+        "objectLocation": {
+          "type": "string"
+        },
+        "objectShape": {
+          "type": "string"
+        },
+        "otherCharacteristics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "posteriorLongestLength": {
+          "type": "string"
+        },
+        "posteriorPhoto": {
+          "type": "string"
+        },
+        "radioOpacity": {
+          "type": "string"
+        },
+        "sucralfate": {
+          "type": "boolean"
         }
       }
     },
@@ -2770,6 +3230,10 @@ func init() {
     {
       "description": "for Vet Incidents",
       "name": "Vet Incident"
+    },
+    {
+      "description": "for admin app operations",
+      "name": "Admin"
     }
   ]
 }`))
