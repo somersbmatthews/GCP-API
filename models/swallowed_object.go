@@ -71,6 +71,9 @@ type SwallowedObject struct {
 	// Required: true
 	Imaging *string `json:"imaging"`
 
+	// incident ID
+	IncidentID string `json:"incidentID,omitempty"`
+
 	// is battery or magnet
 	// Required: true
 	IsBatteryOrMagnet *string `json:"isBatteryOrMagnet"`

@@ -519,6 +519,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ENTIncident"
+            }
           }
         ],
         "responses": {
@@ -613,6 +621,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteENTIncident"
+            }
           }
         ],
         "responses": {
@@ -961,6 +977,52 @@ func init() {
           }
         }
       }
+    },
+    "/v3/swallowedObject": {
+      "delete": {
+        "description": "use this to delete swallowed object",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Swallowed Object"
+        ],
+        "summary": "Delete Swallowed Object",
+        "operationId": "deleteSwallowedObject",
+        "parameters": [
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteSwallowedObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1028,6 +1090,17 @@ func init() {
         }
       }
     },
+    "DeleteENTIncident": {
+      "type": "object",
+      "required": [
+        "ENTIncidentID"
+      ],
+      "properties": {
+        "ENTIncidentID": {
+          "type": "string"
+        }
+      }
+    },
     "DeleteIncident": {
       "type": "object",
       "required": [
@@ -1076,6 +1149,17 @@ func init() {
       ],
       "properties": {
         "userID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteSwallowedObject": {
+      "type": "object",
+      "required": [
+        "SwallowedObjectID"
+      ],
+      "properties": {
+        "SwallowedObjectID": {
           "type": "string"
         }
       }
@@ -1143,7 +1227,7 @@ func init() {
           }
         },
         "daysUntilRemoval": {
-          "type": "number"
+          "type": "integer"
         },
         "deviceType": {
           "type": "string"
@@ -1158,13 +1242,13 @@ func init() {
           "type": "string"
         },
         "hoursUntilRemoval": {
-          "type": "number"
+          "type": "integer"
         },
         "incidentDescription": {
           "type": "string"
         },
         "minutesUntilRemoval": {
-          "type": "number"
+          "type": "integer"
         },
         "openSurgery": {
           "type": "string"
@@ -1173,7 +1257,7 @@ func init() {
           "type": "string"
         },
         "removalStrategy": {
-          "type": "number"
+          "type": "string"
         },
         "submitted": {
           "type": "boolean"
@@ -1570,6 +1654,9 @@ func init() {
           "type": "string"
         },
         "imaging": {
+          "type": "string"
+        },
+        "incidentID": {
           "type": "string"
         },
         "isBatteryOrMagnet": {
@@ -2192,6 +2279,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ENTIncident"
+            }
           }
         ],
         "responses": {
@@ -2286,6 +2381,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteENTIncident"
+            }
           }
         ],
         "responses": {
@@ -2634,6 +2737,52 @@ func init() {
           }
         }
       }
+    },
+    "/v3/swallowedObject": {
+      "delete": {
+        "description": "use this to delete swallowed object",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Swallowed Object"
+        ],
+        "summary": "Delete Swallowed Object",
+        "operationId": "deleteSwallowedObject",
+        "parameters": [
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteSwallowedObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -2701,6 +2850,17 @@ func init() {
         }
       }
     },
+    "DeleteENTIncident": {
+      "type": "object",
+      "required": [
+        "ENTIncidentID"
+      ],
+      "properties": {
+        "ENTIncidentID": {
+          "type": "string"
+        }
+      }
+    },
     "DeleteIncident": {
       "type": "object",
       "required": [
@@ -2749,6 +2909,17 @@ func init() {
       ],
       "properties": {
         "userID": {
+          "type": "string"
+        }
+      }
+    },
+    "DeleteSwallowedObject": {
+      "type": "object",
+      "required": [
+        "SwallowedObjectID"
+      ],
+      "properties": {
+        "SwallowedObjectID": {
           "type": "string"
         }
       }
@@ -2816,7 +2987,7 @@ func init() {
           }
         },
         "daysUntilRemoval": {
-          "type": "number"
+          "type": "integer"
         },
         "deviceType": {
           "type": "string"
@@ -2831,13 +3002,13 @@ func init() {
           "type": "string"
         },
         "hoursUntilRemoval": {
-          "type": "number"
+          "type": "integer"
         },
         "incidentDescription": {
           "type": "string"
         },
         "minutesUntilRemoval": {
-          "type": "number"
+          "type": "integer"
         },
         "openSurgery": {
           "type": "string"
@@ -2846,7 +3017,7 @@ func init() {
           "type": "string"
         },
         "removalStrategy": {
-          "type": "number"
+          "type": "string"
         },
         "submitted": {
           "type": "boolean"
@@ -3243,6 +3414,9 @@ func init() {
           "type": "string"
         },
         "imaging": {
+          "type": "string"
+        },
+        "incidentID": {
           "type": "string"
         },
         "isBatteryOrMagnet": {

@@ -41,9 +41,9 @@ func init() {
 	if !ok {
 		_ = db.AutoMigrate(&Expert{})
 	}
-	ok = db.Migrator().HasTable(&ENTSwallowedObject{})
+	ok = db.Migrator().HasTable(&SwallowedObject{})
 	if !ok {
-		_ = db.AutoMigrate(&ENTSwallowedObject{})
+		_ = db.AutoMigrate(&SwallowedObject{})
 	}
 	ok = db.Migrator().HasTable(&ENTIncident{})
 	if !ok {

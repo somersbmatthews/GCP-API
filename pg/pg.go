@@ -167,8 +167,6 @@ func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodR
 
 	sql := "SELECT * FROM incidents WHERE encrypted_user_id = ? ORDER BY created_at DESC"
 
-	// bytea := stringToBin(encryptedUserID)
-
 	bytea := getByteaFromString(encryptedUserID)
 
 	incidents := []Incident{}

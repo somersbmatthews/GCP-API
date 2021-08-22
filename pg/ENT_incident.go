@@ -2,134 +2,144 @@ package pg
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gircapp/api/models"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 type ENTIncident struct {
-	ID string `json:"ID"`
+	//CreatedAt int64
 
-	Country string `json:"country"`
+	ID string `gorm:"unique;not null;primary_key"`
 
-	Year string `json:"year"`
+	EncryptedExpertID string `gorm:"type:bytea"`
 
-	AgeYears string `json:"ageYears"`
+	Country string
 
-	AgeMonths string `json:"ageMonths"`
+	Year string
 
-	Gender string `json:"gender"`
+	AgeYears string
 
-	IncidentDescription string `json:"incidentDescription"`
+	AgeMonths string
 
-	DaysUntilRemoval float32 `json:"daysUntilRemoval"`
+	Gender string
 
-	HoursUntilRemoval float32 `json:"hoursUntilRemoval"`
+	IncidentDescription string
 
-	MinutesUntilRemoval float32 `json:"minutesUntilRemoval"`
+	DaysUntilRemoval int64
 
-	RemovalStrategy float32 `json:"removalStrategy"`
+	HoursUntilRemoval int64
 
-	OpenSurgery string `json:"openSurgery"`
+	MinutesUntilRemoval int64
 
-	EaseOfRemoval string `json:"easeOfRemoval"`
+	RemovalStrategy string
 
-	WasIncidentLifeThreatening string `json:"wasIncidentLifeThreatening"`
+	OpenSurgery string
 
-	Symptoms []string `json:"symptoms"`
+	EaseOfRemoval string
 
-	CustomSymptoms []string `json:"customSymptoms"`
+	WasIncidentLifeThreatening string
 
-	SymptomSeverity string `json:"symptomSeverity"`
+	Symptoms pq.StringArray `gorm:"type:text[]"`
 
-	Complications []string `json:"complications"`
+	CustomSymptoms pq.StringArray `gorm:"type:text[]"`
 
-	CustomComplications []string `json:"customComplications"`
+	SymptomSeverity string
 
-	Anesthesia string `json:"anesthesia"`
+	Complications pq.StringArray `gorm:"type:text[]"`
 
-	Prognosis string `json:"prognosis"`
+	CustomComplications pq.StringArray `gorm:"type:text[]"`
 
-	HospitalStay string `json:"hospitalStay"`
+	Anesthesia string
 
-	DeviceType string `json:"deviceType"`
+	Prognosis string
 
-	Submitted bool `json:"submitted,omitempty"`
+	HospitalStay string
 
-	SwallowedObjects []ENTSwallowedObject `json:"swallowedObjects"`
+	DeviceType string
+
+	Submitted bool
+
+	SwallowedObjects []SwallowedObject `gorm:"foreignKey:IncidentID;references:ID"`
 }
 
-type ENTSwallowedObject struct {
-	ID string `json:"ID"`
+// `gorm:"foreignkey:ID"`
 
-	RadioOpacity string `json:"radioOpacity"`
+type SwallowedObject struct {
+	ID string `gorm:"unique; not null"`
 
-	Imaging string `json:"imaging"`
+	IncidentID string `gorm:"not null"`
 
-	AnteriorPhoto string `json:"anteriorPhoto"`
+	RadioOpacity string
 
-	PosteriorPhoto string `json:"posteriorPhoto"`
+	Imaging string
 
-	LateralPhoto string `json:"lateralPhoto"`
+	AnteriorPhoto string
 
-	AnteriorLongestLength string `json:"anteriorLongestLength"`
+	PosteriorPhoto string
 
-	PosteriorLongestLength string `json:"posteriorLongestLength"`
+	LateralPhoto string
 
-	LateralLongestLength string `json:"lateralLongestLength"`
+	AnteriorLongestLength string
 
-	ObjectLocation string `json:"objectLocation"`
+	PosteriorLongestLength string
 
-	NumberOfThisObject string `json:"numberOfThisObject"`
+	LateralLongestLength string
 
-	ObjectIntact string `json:"objectIntact"`
+	ObjectLocation string
 
-	NumberOfPieces string `json:"numberOfPieces"`
+	NumberOfThisObject string
 
-	ObjectDescription string `json:"objectDescription"`
+	ObjectIntact string
 
-	ObjectShape string `json:"objectShape"`
+	NumberOfPieces string
 
-	ObjectCustomShape string `json:"objectCustomShape"`
+	ObjectDescription string
 
-	ObjectDimensionality string `json:"objectDimensionality"`
+	ObjectShape string
 
-	OtherCharacteristics []string `json:"otherCharacteristics"`
+	ObjectCustomShape string
 
-	Material string `json:"material"`
+	ObjectDimensionality string
 
-	CustomMaterial string `json:"customMaterial"`
+	OtherCharacteristics pq.StringArray `gorm:"type:text[]"`
 
-	IsBatteryOrMagnet string `json:"isBatteryOrMagnet"`
+	Material string
 
-	BatteryType string `json:"batteryType"`
+	CustomMaterial string
 
-	CustomBatteryType string `json:"customBatteryType"`
+	IsBatteryOrMagnet string
 
-	BatteryImprintCode string `json:"batteryImprintCode"`
+	BatteryType string
 
-	MitigatingFeatures []string `json:"mitigatingFeatures"`
+	CustomBatteryType string
 
-	CustomMitigatingFeatures []string `json:"customMitigatingFeatures"`
+	BatteryImprintCode string
 
-	NegativePoleDirection string `json:"negativePoleDirection"`
+	MitigatingFeatures pq.StringArray `gorm:"type:text[]"`
 
-	Honey string `json:"honey"`
+	CustomMitigatingFeatures pq.StringArray `gorm:"type:text[]"`
 
-	Sucralfate string `json:"sucralfate"`
+	NegativePoleDirection string
 
-	AceticAcid string `json:"aceticAcid"`
+	Honey string
 
-	MagnetType string `json:"magnetType"`
+	Sucralfate string
 
-	CustomMagnetType string `json:"customMagnetType"`
+	AceticAcid string
 
-	DeviceType string `json:"deviceType"`
+	MagnetType string
 
-	Submitted bool `json:"submitted,omitempty"`
+	CustomMagnetType string
+
+	DeviceType string
+
+	Submitted bool
 }
 
-func CreateENTIncident(ctx context.Context, incidentRequest *models.ENTIncident, userID string) (*models.GoodResponse, bool) {
+func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTIncident, userID string) (*models.GoodResponse, bool) {
 	encryptedUserID, err := encryptUserID(userID)
 	if err != nil {
 		panic(err)
@@ -137,13 +147,83 @@ func CreateENTIncident(ctx context.Context, incidentRequest *models.ENTIncident,
 
 	bytea := getByteaFromString(encryptedUserID)
 
-	// var swallowedObjects []ENTSwallowedObject
-	// for _, object := range incidentRequest.SwallowedObjects {
+	incidentRequest := incidentRequestObject
 
-	// }
-	incidentRequest.EncryptedExpertID = bytea
+	var swallowedObjects []SwallowedObject
+	for _, objectValue := range incidentRequest.SwallowedObjects {
+		object := objectValue
+		newObject := SwallowedObject{
+			ID:                       *object.ID,
+			IncidentID:               *incidentRequest.ID,
+			RadioOpacity:             *object.RadioOpacity,
+			Imaging:                  *object.Imaging,
+			AnteriorPhoto:            *object.AnteriorPhoto,
+			PosteriorPhoto:           *object.PosteriorPhoto,
+			LateralPhoto:             *object.LateralPhoto,
+			AnteriorLongestLength:    *object.AnteriorLongestLength,
+			PosteriorLongestLength:   *object.PosteriorLongestLength,
+			LateralLongestLength:     *object.LateralLongestLength,
+			ObjectLocation:           *object.ObjectLocation,
+			NumberOfThisObject:       *object.NumberOfThisObject,
+			ObjectIntact:             *object.ObjectIntact,
+			NumberOfPieces:           *object.NumberOfPieces,
+			ObjectDescription:        *object.ObjectDescription,
+			ObjectShape:              *object.ObjectShape,
+			ObjectCustomShape:        *object.ObjectCustomShape,
+			ObjectDimensionality:     *object.ObjectDimensionality,
+			OtherCharacteristics:     pq.StringArray(object.OtherCharacteristics),
+			Material:                 *object.Material,
+			CustomMaterial:           *object.CustomMaterial,
+			IsBatteryOrMagnet:        *object.IsBatteryOrMagnet,
+			BatteryType:              *object.BatteryType,
+			CustomBatteryType:        *object.CustomBatteryType,
+			BatteryImprintCode:       *object.BatteryImprintCode,
+			MitigatingFeatures:       pq.StringArray(object.MitigatingFeatures),
+			CustomMitigatingFeatures: pq.StringArray(object.CustomMitigatingFeatures),
+			NegativePoleDirection:    *object.NegativePoleDirection,
+			Honey:                    *object.Honey,
+			Sucralfate:               *object.Sucralfate,
+			AceticAcid:               *object.AceticAcid,
+			MagnetType:               *object.MagnetType,
+			CustomMagnetType:         *object.CustomMagnetType,
+			DeviceType:               *object.DeviceType,
+			Submitted:                object.Submitted,
+		}
 
-	err = db.Create(&incidentRequest).Error
+		swallowedObjects = append(swallowedObjects, newObject)
+	}
+
+	newIncident := &ENTIncident{
+		///	CreatedAt:                  time.Now().Unix(),
+		ID:                         *incidentRequest.ID,
+		EncryptedExpertID:          bytea,
+		Country:                    *incidentRequest.Country,
+		Year:                       *incidentRequest.Year,
+		AgeYears:                   *incidentRequest.AgeYears,
+		AgeMonths:                  *incidentRequest.AgeMonths,
+		Gender:                     *incidentRequest.Gender,
+		IncidentDescription:        *incidentRequest.IncidentDescription,
+		DaysUntilRemoval:           *incidentRequest.DaysUntilRemoval,
+		HoursUntilRemoval:          *incidentRequest.HoursUntilRemoval,
+		MinutesUntilRemoval:        *incidentRequest.MinutesUntilRemoval,
+		RemovalStrategy:            *incidentRequest.RemovalStrategy,
+		OpenSurgery:                *incidentRequest.OpenSurgery,
+		EaseOfRemoval:              *incidentRequest.EaseOfRemoval,
+		WasIncidentLifeThreatening: *incidentRequest.WasIncidentLifeThreatening,
+		Symptoms:                   pq.StringArray(incidentRequest.Symptoms),
+		CustomSymptoms:             pq.StringArray(incidentRequest.CustomSymptoms),
+		SymptomSeverity:            *incidentRequest.SymptomSeverity,
+		Complications:              pq.StringArray(incidentRequest.Complications),
+		CustomComplications:        pq.StringArray(incidentRequest.CustomComplications),
+		Anesthesia:                 *incidentRequest.Anesthesia,
+		Prognosis:                  *incidentRequest.Prognosis,
+		HospitalStay:               *incidentRequest.HospitalStay,
+		DeviceType:                 *incidentRequest.DeviceType,
+		Submitted:                  incidentRequest.Submitted,
+		SwallowedObjects:           swallowedObjects,
+	}
+
+	err = db.Create(newIncident).Error
 	if err != nil {
 		return nil, false
 	}
@@ -152,15 +232,145 @@ func CreateENTIncident(ctx context.Context, incidentRequest *models.ENTIncident,
 	}, true
 }
 
-func DeleteENTIncident(ctx context.Context, incidentID string) (*models.GoodResponse, bool) {
-	err := db.Delete(&models.ENTIncident{}, "id = ?", incidentID).Error
+func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncidentsGoodResponse, bool) {
+	encryptedUserID, err := encryptUserID(userID)
+	if err != nil {
+		panic(err)
+	}
+
+	ENTIncidents := []ENTIncident{}
+
+	// sql := "SELECT * FROM ent_incidents WHERE encrypted_expert_id = ? ORDER BY created_at DESC"
+	sql := "SELECT * FROM ent_incidents WHERE encrypted_expert_id = ?"
+
+	bytea := getByteaFromString(encryptedUserID)
+
+	err = db.Raw(sql, bytea).Scan(&ENTIncidents).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
 		panic(err)
 	}
 
+	incidentResponse := []*models.ENTIncident{}
+
+	for _, incidentValue := range ENTIncidents {
+		incident := incidentValue
+		var swallowedObjects []*models.SwallowedObject
+		var swallowedObjectsFromDB = []SwallowedObject{}
+		err = db.Find(&swallowedObjectsFromDB, "incident_id", incident.ID).Error
+		if err == gorm.ErrRecordNotFound {
+			return nil, false
+		} else if err != nil {
+			panic(err)
+		}
+		fmt.Println("this is running")
+		for _, objectValue := range swallowedObjectsFromDB {
+			fmt.Println("this is not")
+			object := objectValue
+			newSwallowedObject := models.SwallowedObject{
+				ID:                       &object.ID,
+				IncidentID:               incident.ID,
+				AceticAcid:               &object.AceticAcid,
+				AnteriorLongestLength:    &object.AnteriorLongestLength,
+				AnteriorPhoto:            &object.AnteriorPhoto,
+				BatteryImprintCode:       &object.BatteryImprintCode,
+				BatteryType:              &object.BatteryType,
+				CustomBatteryType:        &object.CustomBatteryType,
+				CustomMagnetType:         &object.CustomMagnetType,
+				CustomMaterial:           &object.CustomMaterial,
+				CustomMitigatingFeatures: convertPQToStringArray(object.CustomMitigatingFeatures),
+				DeviceType:               &object.DeviceType,
+				Honey:                    &object.Honey,
+				Imaging:                  &object.Imaging,
+				IsBatteryOrMagnet:        &object.IsBatteryOrMagnet,
+				LateralLongestLength:     &object.LateralLongestLength,
+				LateralPhoto:             &object.LateralPhoto,
+				MagnetType:               &object.MagnetType,
+				Material:                 &object.Material,
+				MitigatingFeatures:       convertPQToStringArray(object.MitigatingFeatures),
+				NegativePoleDirection:    &object.NegativePoleDirection,
+				NumberOfPieces:           &object.NumberOfPieces,
+				NumberOfThisObject:       &object.NumberOfThisObject,
+				ObjectCustomShape:        &object.ObjectCustomShape,
+				ObjectDescription:        &object.ObjectDescription,
+				ObjectDimensionality:     &object.ObjectDimensionality,
+				ObjectIntact:             &object.ObjectIntact,
+				ObjectLocation:           &object.ObjectLocation,
+				ObjectShape:              &object.ObjectShape,
+				OtherCharacteristics:     convertPQToStringArray(object.OtherCharacteristics),
+				PosteriorLongestLength:   &object.PosteriorLongestLength,
+				PosteriorPhoto:           &object.PosteriorPhoto,
+				RadioOpacity:             &object.RadioOpacity,
+				Submitted:                object.Submitted,
+				Sucralfate:               &object.Sucralfate,
+			}
+			swallowedObjects = append(swallowedObjects, &newSwallowedObject)
+		}
+
+		newIncident := models.ENTIncident{
+			ID:                         &incident.ID,
+			AgeMonths:                  &incident.AgeMonths,
+			AgeYears:                   &incident.AgeYears,
+			Anesthesia:                 &incident.Anesthesia,
+			Complications:              convertPQToStringArray(incident.Complications),
+			Country:                    &incident.Country,
+			CustomComplications:        convertPQToStringArray(incident.CustomComplications),
+			CustomSymptoms:             convertPQToStringArray(incident.CustomSymptoms),
+			DaysUntilRemoval:           &incident.DaysUntilRemoval,
+			DeviceType:                 &incident.DeviceType,
+			EaseOfRemoval:              &incident.EaseOfRemoval,
+			Gender:                     &incident.Gender,
+			HospitalStay:               &incident.HospitalStay,
+			HoursUntilRemoval:          &incident.HoursUntilRemoval,
+			IncidentDescription:        &incident.IncidentDescription,
+			MinutesUntilRemoval:        &incident.MinutesUntilRemoval,
+			OpenSurgery:                &incident.OpenSurgery,
+			Prognosis:                  &incident.Prognosis,
+			RemovalStrategy:            &incident.RemovalStrategy,
+			Submitted:                  incident.Submitted,
+			SwallowedObjects:           swallowedObjects,
+			SymptomSeverity:            &incident.SymptomSeverity,
+			Symptoms:                   convertPQToStringArray(incident.Symptoms),
+			WasIncidentLifeThreatening: &incident.WasIncidentLifeThreatening,
+			Year:                       &incident.Year,
+		}
+
+		incidentResponse = append(incidentResponse, &newIncident)
+
+	}
+
+	return &models.GetENTIncidentsGoodResponse{
+		Incidents: incidentResponse,
+	}, true
+}
+
+// func UpdateIncident()
+
+func DeleteENTIncident(ctx context.Context, incidentID string) (*models.GoodResponse, bool) {
+	err := db.Delete(&ENTIncident{}, "id = ?", incidentID).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+	err = db.Delete(&SwallowedObject{}, "incident_id = ?", incidentID).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
 	return &models.GoodResponse{
 		Message: "ENT Incident Created",
 	}, true
+}
+
+func convertPQToStringArray(strArray pq.StringArray) []string {
+	sliceOfStrings := []string(strArray)
+	fmt.Println(sliceOfStrings)
+	fmt.Printf("%v \n", len(sliceOfStrings))
+	// fmt.Printf("THIS IS STRING: %v \n", str)
+	// sliceOfStrings := strings.Split(str, ",")
+	// fmt.Printf("THIS IS SLICE OF STRINGS: %v \n", str)
+	return sliceOfStrings
 }

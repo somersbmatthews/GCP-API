@@ -54,7 +54,7 @@ type ENTIncident struct {
 
 	// days until removal
 	// Required: true
-	DaysUntilRemoval *float64 `json:"daysUntilRemoval"`
+	DaysUntilRemoval *int64 `json:"daysUntilRemoval"`
 
 	// device type
 	// Required: true
@@ -74,7 +74,7 @@ type ENTIncident struct {
 
 	// hours until removal
 	// Required: true
-	HoursUntilRemoval *float64 `json:"hoursUntilRemoval"`
+	HoursUntilRemoval *int64 `json:"hoursUntilRemoval"`
 
 	// incident description
 	// Required: true
@@ -82,7 +82,7 @@ type ENTIncident struct {
 
 	// minutes until removal
 	// Required: true
-	MinutesUntilRemoval *float64 `json:"minutesUntilRemoval"`
+	MinutesUntilRemoval *int64 `json:"minutesUntilRemoval"`
 
 	// open surgery
 	// Required: true
@@ -94,7 +94,7 @@ type ENTIncident struct {
 
 	// removal strategy
 	// Required: true
-	RemovalStrategy *float64 `json:"removalStrategy"`
+	RemovalStrategy *string `json:"removalStrategy"`
 
 	// submitted
 	Submitted bool `json:"submitted,omitempty"`

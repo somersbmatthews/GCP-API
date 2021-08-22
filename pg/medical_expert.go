@@ -148,8 +148,10 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 		Degree:    *expertRequestObject.Degree,
 		Expertise: *expertRequestObject.Expertise,
 	}
-	model := Expert{}
-	err := db.First(&model, "id = ?", userId).Updates(expert).Error
+	model := Expert{
+		ID: userId,
+	}
+	err := db.Model(model).Updates(expert).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -165,8 +167,10 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 }
 
 func UpdateFCMToken(ctx context.Context, FCMRequestObject models.FCMToken, userId string) (*models.GoodResponse, bool) {
-
-	err := db.First(&Expert{}, "id = ?", userId).Update("fcm_token", FCMRequestObject.FCMToken).Error
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Model(expert).Update("fcm_token", FCMRequestObject.FCMToken).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -180,8 +184,10 @@ func UpdateFCMToken(ctx context.Context, FCMRequestObject models.FCMToken, userI
 }
 
 func VerifyExpert(ctx context.Context, VerifyRequestObject models.Verify, userId string) (*models.GoodResponse, bool) {
-
-	err := db.First(&Expert{}, "id = ?", userId).Update("director_verified", VerifyRequestObject.Verified).Error
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Model(expert).Update("director_verified", VerifyRequestObject.Verified).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -195,8 +201,10 @@ func VerifyExpert(ctx context.Context, VerifyRequestObject models.Verify, userId
 }
 
 func BanExpert(ctx context.Context, BanRequestObject models.Ban, userId string) (*models.GoodResponse, bool) {
-
-	err := db.First(&Expert{}, "id = ?", userId).Update("banned", BanRequestObject.Banned).Error
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Model(expert).Update("banned", BanRequestObject.Banned).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -210,8 +218,10 @@ func BanExpert(ctx context.Context, BanRequestObject models.Ban, userId string) 
 }
 
 func DeleteMedicalExpert(ctx context.Context, userId string) (*models.GoodResponse, bool) {
-
-	err := db.First(&Expert{}, "id = ?", userId).Delete(&Expert{}).Error
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Delete(expert).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {

@@ -23,6 +23,7 @@ import (
 	"github.com/gircapp/api/restapi/operations/e_n_t_incident"
 	"github.com/gircapp/api/restapi/operations/incident"
 	"github.com/gircapp/api/restapi/operations/medical_expert"
+	"github.com/gircapp/api/restapi/operations/swallowed_object"
 	"github.com/gircapp/api/restapi/operations/user"
 )
 
@@ -71,6 +72,9 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		}),
 		IncidentDeleteIncidentsHandler: incident.DeleteIncidentsHandlerFunc(func(params incident.DeleteIncidentsParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.DeleteIncidents has not yet been implemented")
+		}),
+		SwallowedObjectDeleteSwallowedObjectHandler: swallowed_object.DeleteSwallowedObjectHandlerFunc(func(params swallowed_object.DeleteSwallowedObjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation swallowed_object.DeleteSwallowedObject has not yet been implemented")
 		}),
 		UserDeleteUserHandler: user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.DeleteUser has not yet been implemented")
@@ -160,6 +164,8 @@ type GircAPI struct {
 	MedicalExpertDeleteExpertHandler medical_expert.DeleteExpertHandler
 	// IncidentDeleteIncidentsHandler sets the operation handler for the delete incidents operation
 	IncidentDeleteIncidentsHandler incident.DeleteIncidentsHandler
+	// SwallowedObjectDeleteSwallowedObjectHandler sets the operation handler for the delete swallowed object operation
+	SwallowedObjectDeleteSwallowedObjectHandler swallowed_object.DeleteSwallowedObjectHandler
 	// UserDeleteUserHandler sets the operation handler for the delete user operation
 	UserDeleteUserHandler user.DeleteUserHandler
 	// EntIncidentGetENTIncidentsHandler sets the operation handler for the get e n t incidents operation
@@ -284,6 +290,9 @@ func (o *GircAPI) Validate() error {
 	}
 	if o.IncidentDeleteIncidentsHandler == nil {
 		unregistered = append(unregistered, "incident.DeleteIncidentsHandler")
+	}
+	if o.SwallowedObjectDeleteSwallowedObjectHandler == nil {
+		unregistered = append(unregistered, "swallowed_object.DeleteSwallowedObjectHandler")
 	}
 	if o.UserDeleteUserHandler == nil {
 		unregistered = append(unregistered, "user.DeleteUserHandler")
@@ -441,6 +450,10 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/v2/incident"] = incident.NewDeleteIncidents(o.context, o.IncidentDeleteIncidentsHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/v3/swallowedObject"] = swallowed_object.NewDeleteSwallowedObject(o.context, o.SwallowedObjectDeleteSwallowedObjectHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
