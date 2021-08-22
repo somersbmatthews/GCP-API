@@ -38,7 +38,7 @@ func CreateExpertWithAutoDirectorAndEmailVerification(ctx context.Context, exper
 		DirectorVerified: true,
 		Registered:       true,
 		EmailConfirmed:   true,
-		DeviceType:       expertRequestObject.DeviceType,
+		DeviceType:       *expertRequestObject.DeviceType,
 		Banned:           false,
 		RegistrationTime: time.Now().Unix(),
 	}
@@ -64,7 +64,7 @@ func CreateExpertWithAutoDirectorWithoutEmailVerification(ctx context.Context, e
 		DirectorVerified: true,
 		Registered:       true,
 		EmailConfirmed:   false,
-		DeviceType:       expertRequestObject.DeviceType,
+		DeviceType:       *expertRequestObject.DeviceType,
 		Banned:           false,
 		RegistrationTime: time.Now().Unix(),
 	}
@@ -90,7 +90,7 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 		DirectorVerified: false,
 		Registered:       true,
 		EmailConfirmed:   false,
-		DeviceType:       expertRequestObject.DeviceType,
+		DeviceType:       *expertRequestObject.DeviceType,
 		Banned:           false,
 		RegistrationTime: time.Now().Unix(),
 	}
@@ -129,22 +129,27 @@ func GetMedicalExpert(ctx context.Context, userID string) (*models.GetExpertResp
 		panic(err)
 	}
 	return &models.GetExpertResponse{
+		ID:             &model.ID,
 		Name:           &model.Name,
 		Degree:         &model.Degree,
 		Expertise:      &model.Expertise,
 		Email:          &model.Email,
 		Verified:       &model.DirectorVerified,
 		EmailConfirmed: &model.EmailConfirmed,
+		Banned:         &model.Banned,
 	}, true
 
 }
 
 func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert, userId string) (*models.GoodResponse, bool) {
 	expert := Expert{
-		// TODO: fill in stuff from expertRequestObject here
+		Name: *expertRequestObject.Name,
+		//Email: *expertRequestObject.Email, // email is updated via emailed link with jwt
+		Degree:    *expertRequestObject.Degree,
+		Expertise: *expertRequestObject.Expertise,
 	}
-
-	err := db.First(&Expert{}, "id = ?", userId).Updates(expert).Error
+	model := Expert{}
+	err := db.First(&model, "id = ?", userId).Updates(expert).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -161,7 +166,7 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 
 func UpdateFCMToken(ctx context.Context, FCMRequestObject models.FCMToken, userId string) (*models.GoodResponse, bool) {
 
-	err := db.First(&Expert{}, "id = ?", userId).Update("FCMToken", FCMRequestObject.FCMToken).Error
+	err := db.First(&Expert{}, "id = ?", userId).Update("fcm_token", FCMRequestObject.FCMToken).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -176,7 +181,7 @@ func UpdateFCMToken(ctx context.Context, FCMRequestObject models.FCMToken, userI
 
 func VerifyExpert(ctx context.Context, VerifyRequestObject models.Verify, userId string) (*models.GoodResponse, bool) {
 
-	err := db.First(&Expert{}, "id = ?", userId).Update("director_verfied", VerifyRequestObject.Verified).Error
+	err := db.First(&Expert{}, "id = ?", userId).Update("director_verified", VerifyRequestObject.Verified).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -186,7 +191,7 @@ func VerifyExpert(ctx context.Context, VerifyRequestObject models.Verify, userId
 	message := fmt.Sprintf("Medical Expert with id %s is verfied or unverified", userId)
 	return &models.GoodResponse{
 		Message: message,
-	}
+	}, true
 }
 
 func BanExpert(ctx context.Context, BanRequestObject models.Ban, userId string) (*models.GoodResponse, bool) {

@@ -20,6 +20,10 @@ import (
 // swagger:model ENTIncident
 type ENTIncident struct {
 
+	// ID
+	// Required: true
+	ID *string `json:"ID"`
+
 	// age months
 	// Required: true
 	AgeMonths *string `json:"ageMonths"`
@@ -57,7 +61,8 @@ type ENTIncident struct {
 	DeviceType *string `json:"deviceType"`
 
 	// ease of removal
-	EaseOfRemoval string `json:"easeOfRemoval,omitempty"`
+	// Required: true
+	EaseOfRemoval *string `json:"easeOfRemoval"`
 
 	// gender
 	// Required: true
@@ -70,10 +75,6 @@ type ENTIncident struct {
 	// hours until removal
 	// Required: true
 	HoursUntilRemoval *float64 `json:"hoursUntilRemoval"`
-
-	// id
-	// Required: true
-	ID *string `json:"id"`
 
 	// incident description
 	// Required: true
@@ -94,6 +95,9 @@ type ENTIncident struct {
 	// removal strategy
 	// Required: true
 	RemovalStrategy *float64 `json:"removalStrategy"`
+
+	// submitted
+	Submitted bool `json:"submitted,omitempty"`
 
 	// swallowed objects
 	// Required: true
@@ -119,6 +123,10 @@ type ENTIncident struct {
 // Validate validates this e n t incident
 func (m *ENTIncident) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateAgeMonths(formats); err != nil {
 		res = append(res, err)
@@ -156,6 +164,10 @@ func (m *ENTIncident) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateEaseOfRemoval(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateGender(formats); err != nil {
 		res = append(res, err)
 	}
@@ -165,10 +177,6 @@ func (m *ENTIncident) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateHoursUntilRemoval(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -215,6 +223,15 @@ func (m *ENTIncident) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *ENTIncident) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("ID", "body", m.ID); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -299,6 +316,15 @@ func (m *ENTIncident) validateDeviceType(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *ENTIncident) validateEaseOfRemoval(formats strfmt.Registry) error {
+
+	if err := validate.Required("easeOfRemoval", "body", m.EaseOfRemoval); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *ENTIncident) validateGender(formats strfmt.Registry) error {
 
 	if err := validate.Required("gender", "body", m.Gender); err != nil {
@@ -320,15 +346,6 @@ func (m *ENTIncident) validateHospitalStay(formats strfmt.Registry) error {
 func (m *ENTIncident) validateHoursUntilRemoval(formats strfmt.Registry) error {
 
 	if err := validate.Required("hoursUntilRemoval", "body", m.HoursUntilRemoval); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ENTIncident) validateID(formats strfmt.Registry) error {
-
-	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
 	}
 

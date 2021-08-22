@@ -16,9 +16,9 @@ func TestEncryption(t *testing.T) {
 	}
 	fmt.Println(encrypted)
 
-	for _, v := range encrypted {
-		fmt.Println(v)
-	}
+	// for _, v := range encrypted {
+	// 	fmt.Println(v)
+	// }
 
 	decrypted, err := decryptUserID(encrypted)
 	if err != nil {

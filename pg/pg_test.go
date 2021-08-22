@@ -12,24 +12,25 @@ import (
 	"gorm.io/gorm"
 )
 
-const testUserID string = "1234567890"
+var testUserID string = "1234567890"
 
-const badUserID string = "1234567790"
+var badUserID string = "1234567790"
 
-func TestBytea(t *testing.T) {
-	encryptedUserID, err := encryptUserID(testUserID)
-	if err != nil {
-		panic(err)
-	}
+// testing for this is done in encrypt_test.go
+// func TestBytea(t *testing.T) {
+// 	encryptedUserID, err := encryptUserID(testUserID)
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	bytea := getByteaFromString(encryptedUserID)
+// 	bytea := getByteaFromString(encryptedUserID)
 
-	encryptedUserIDFromBytea := getStringFromBytea(bytea)
+// 	encryptedUserIDFromBytea := getStringFromBytea(bytea)
 
-	if encryptedUserID != encryptedUserIDFromBytea {
-		t.Errorf("error getting string from bytea \n %v \n does not equal \n %v \n", encryptedUserID, encryptedUserIDFromBytea)
-	}
-}
+// 	if encryptedUserID != encryptedUserIDFromBytea {
+// 		t.Errorf("error getting string from bytea \n %v \n does not equal \n %v \n", encryptedUserID, encryptedUserIDFromBytea)
+// 	}
+// }
 
 // func TestCreateUser(t *testing.T) {
 // 	ctx := context.Background()
@@ -213,7 +214,7 @@ var incident1 = models.Incident{
 	AceticAcid:                  "no",
 	AdditionalImagingAndSurgery: "no",
 	Anesthesia:                  "no",
-	AnteriorPhoto:               "https://www.photourl.com/anterior",
+	AnteriorPhoto:               "https://www.photourl.com/anterior/1234567890.jpg",
 	BatteryImprintCode:          "12345",
 	BatteryLocation:             "throat",
 	Complications:               "death",
@@ -260,7 +261,7 @@ var incident2 = models.Incident{
 	AceticAcid:                  "yes",
 	AdditionalImagingAndSurgery: "yes",
 	Anesthesia:                  "yes",
-	AnteriorPhoto:               "https://www.photourl.com/anterior2",
+	AnteriorPhoto:               "https://www.photourl.com/anterior/1234567790.jpg",
 	BatteryImprintCode:          "1234567",
 	BatteryLocation:             "stomach",
 	Complications:               "choking",
@@ -364,8 +365,6 @@ func TestCreateIncidents(t *testing.T) {
 }
 
 func TestGetBytea(t *testing.T) {
-	db, conn := Open()
-	defer conn.Close()
 
 	encryptedUserID, err := encryptUserID(testUserID)
 	if err != nil {
@@ -404,20 +403,28 @@ func TestGetIncidents(t *testing.T) {
 		t.Errorf("userID's from get incidents do not match: \n %v \n %v", *incidents.UserID, testUserID)
 	}
 
-	ok = reflect.DeepEqual(incidents.Incidents[0], &incident2)
+	newestIncident := incidents.Incidents[0]
+	oldestIncident := incidents.Incidents[1]
+
+	ok = reflect.DeepEqual(*newestIncident, incident2)
 	if !ok {
-		fmt.Println("this is incident 1")
+		// fmt.Println("this is incident 1")
+		// fmt.Println(render.Render(incident1))
+		// fmt.Println("this is first incident printed from database")
+		fmt.Println("this is NEWEST INCIDENT from database")
+		fmt.Println(render.Render(*newestIncident))
+		fmt.Println("this is actual incident 2")
 		fmt.Println(render.Render(incident2))
-		fmt.Println("this is first incident printed from database")
-		fmt.Println(render.Render(incidents.Incidents[0]))
-		// fmt.Println("this is incident 2 from database")
-		// fmt.Println(render.Render(incident2))
-		t.Error("incident 1 does not match first incident retrieved")
+		t.Error("incident 2 does not match first incident retrieved")
 	}
 
-	ok = reflect.DeepEqual(incidents.Incidents[1], &incident1)
+	ok = reflect.DeepEqual(*oldestIncident, incident1)
 	if !ok {
-		t.Error("incident 2 does not match second incident retrieved")
+		fmt.Println("this is OLDEST INCIDENT from database")
+		fmt.Println(render.Render(*oldestIncident))
+		fmt.Println("this is actual incident 1")
+		fmt.Println(render.Render(incident1))
+		t.Error("incident 1 does not match second incident retrieved")
 	}
 
 }
@@ -509,9 +516,6 @@ func TestGetIncidents(t *testing.T) {
 
 func TestDeleteIncident(t *testing.T) {
 	ctx := context.Background()
-
-	db, conn := Open()
-	defer conn.Close()
 
 	// incidentID := "1234567890"
 	// incidentID2 := "1234567790"

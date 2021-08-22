@@ -25,7 +25,7 @@ type LogoutExpertOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.DeleteIncidentGoodResponse `json:"body,omitempty"`
+	Payload *models.GoodResponse `json:"body,omitempty"`
 }
 
 // NewLogoutExpertOK creates LogoutExpertOK with default headers values
@@ -35,13 +35,13 @@ func NewLogoutExpertOK() *LogoutExpertOK {
 }
 
 // WithPayload adds the payload to the logout expert o k response
-func (o *LogoutExpertOK) WithPayload(payload *models.DeleteIncidentGoodResponse) *LogoutExpertOK {
+func (o *LogoutExpertOK) WithPayload(payload *models.GoodResponse) *LogoutExpertOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the logout expert o k response
-func (o *LogoutExpertOK) SetPayload(payload *models.DeleteIncidentGoodResponse) {
+func (o *LogoutExpertOK) SetPayload(payload *models.GoodResponse) {
 	o.Payload = payload
 }
 

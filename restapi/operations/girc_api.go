@@ -93,6 +93,9 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		MedicalExpertRegisterExpertHandler: medical_expert.RegisterExpertHandlerFunc(func(params medical_expert.RegisterExpertParams) middleware.Responder {
 			return middleware.NotImplemented("operation medical_expert.RegisterExpert has not yet been implemented")
 		}),
+		AdminSendNotificationHandler: admin.SendNotificationHandlerFunc(func(params admin.SendNotificationParams) middleware.Responder {
+			return middleware.NotImplemented("operation admin.SendNotification has not yet been implemented")
+		}),
 		EntIncidentUpdateENTIncidentHandler: e_n_t_incident.UpdateENTIncidentHandlerFunc(func(params e_n_t_incident.UpdateENTIncidentParams) middleware.Responder {
 			return middleware.NotImplemented("operation e_n_t_incident.UpdateENTIncident has not yet been implemented")
 		}),
@@ -171,6 +174,8 @@ type GircAPI struct {
 	MedicalExpertLogoutExpertHandler medical_expert.LogoutExpertHandler
 	// MedicalExpertRegisterExpertHandler sets the operation handler for the register expert operation
 	MedicalExpertRegisterExpertHandler medical_expert.RegisterExpertHandler
+	// AdminSendNotificationHandler sets the operation handler for the send notification operation
+	AdminSendNotificationHandler admin.SendNotificationHandler
 	// EntIncidentUpdateENTIncidentHandler sets the operation handler for the update e n t incident operation
 	EntIncidentUpdateENTIncidentHandler e_n_t_incident.UpdateENTIncidentHandler
 	// MedicalExpertUpdateExpertHandler sets the operation handler for the update expert operation
@@ -300,6 +305,9 @@ func (o *GircAPI) Validate() error {
 	}
 	if o.MedicalExpertRegisterExpertHandler == nil {
 		unregistered = append(unregistered, "medical_expert.RegisterExpertHandler")
+	}
+	if o.AdminSendNotificationHandler == nil {
+		unregistered = append(unregistered, "admin.SendNotificationHandler")
 	}
 	if o.EntIncidentUpdateENTIncidentHandler == nil {
 		unregistered = append(unregistered, "e_n_t_incident.UpdateENTIncidentHandler")
@@ -461,6 +469,10 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/v3/expert"] = medical_expert.NewRegisterExpert(o.context, o.MedicalExpertRegisterExpertHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/v3/admin/sendnotification"] = admin.NewSendNotification(o.context, o.AdminSendNotificationHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

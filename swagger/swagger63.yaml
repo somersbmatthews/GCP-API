@@ -1,0 +1,1226 @@
+swagger: "2.0"
+info:
+  description: "This is test server for GIRC app"
+  version: "3.0.0"
+  title: "GIRC App API"
+  # termsOfService: "http://swagger.io/terms/"
+ # contact:
+   # email: "apiteam@swagger.io"
+#  license:
+  #  name: "Apache 2.0"
+  #  url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: girc.app
+basePath: "/"
+tags:
+- name: "incident"
+  description: "to create, update, and delete incidents using old app"
+- name: "user"
+  description: "for user registration and authentication"
+- name: verify
+  description: only used for testing and will be removed in production
+- name: Medical Expert
+  description: for Medical Experts
+- name: ENT Incident
+  description: for Otolaryngology Incidents
+- name: Vet Incident
+  description: for Vet Incidents
+- name: Admin
+  description: for admin app operations
+  
+#  externalDocs:
+ #   description: "Find out more about our store"
+ #   url: "http://swagger.io"
+schemes:
+- "https"
+paths:
+  /v2/user:
+    post:
+      tags:
+      - "user"
+      summary: "register a user"
+      description: "register a user with his information"
+      operationId: "createUser"
+      produces: 
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: header
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - name: "user"
+        in: "body"
+        required: true
+        description: "a user's information"
+        schema:
+          $ref: "#/definitions/CreateUser"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        "400":
+          description: database error while creating user
+          schema:
+            $ref: "#/definitions/BadResponse"
+        "401":
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+    get:
+      tags:
+      - "user"
+      summary: "Get user's information."
+      description: "Get a user's information."
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetUserGoodResponse"
+        401:
+          description: bad authorization token
+          schema: 
+            $ref: "#/definitions/BadResponse"
+        "404":
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/BadResponse"
+
+    delete:
+      tags:
+      - user
+      summary: unregisters a user, for testing only will be removed in production
+      description: deletes a user
+      operationId: deleteUser
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - name: "Authorization"
+        in: header
+        description: "authorization token"
+        type: string
+        required: true
+      - in: header
+        name: User
+        description: "contains user id"
+        type: string
+        required: true
+      responses:
+        200: 
+          description: "successful operation"
+          schema:
+            $ref: '#/definitions/GoodResponse'
+        401:
+          description: bad authorization token
+          schema:
+            $ref: '#/definitions/BadResponse'
+        404:
+          description: 'user with requested userid not found'
+          schema:
+            $ref: '#/definitions/BadResponse'
+          
+  /v2/incident:
+    post:
+      tags:
+      - "incident"
+      summary: "Create an incident"
+      description: "use this to create an incident for a userId"
+      operationId: "createIncident"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains firebase Id token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIncidents"
+      responses:
+        "200":
+          description: "successful operation, only returns token if not using OAuth"
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        "404":
+          description: "userId for this incident is not found"
+          schema:
+            $ref: "#/definitions/BadResponse"
+    get:
+      tags:
+      - "incident"
+      summary: "Get incidents"
+      description: "Use this to get all incidents created by a user. incidents are listed in array in order from newest to oldest created"
+      operationId: "getIncidents"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      #add parameter for user id so the backend can get all incidents for a user id CANNOT BE A BODY
+      - in: header
+        name: User
+        description: "contains user id"
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetIncidentsGoodResponse"
+            
+        401:
+          description: "bad authorization token"
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: "userid not found"
+          schema:
+            $ref:  "#/definitions/BadResponse"
+            
+    delete:
+      tags:
+      - "incident"
+      summary: "Delete incident"
+      description: "Use this to delete an incident by incidentId"
+      operationId: "deleteIncidents"
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: header
+        name: User
+        description: "contains user id"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+            
+  /v3/expert:
+    post:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: registerExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+    get:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: getExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GetExpertResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+            
+    patch:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: updateExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+    delete:
+      tags:
+        - Medical Expert
+      summary: register expert
+      description: Use this to register a expert
+      operationId: deleteExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "if using google oauth, set that token here"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+            
+  /v3/expert/register:
+    post:
+      tags:
+        - "Medical Expert"
+      summary: "Register a Medical Expert"
+      description: "use this to register/create a user"
+      operationId: "createExpert"
+      produces: 
+        - "application/json"
+      consumes:
+        - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "Firebase Id token goes here"
+        type: string
+        required: true
+      - in: body
+        name: expert
+        required: true
+        schema:
+          $ref: "#/definitions/Expert"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: "bad authorization token"
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: "userId for this incident is not found"
+          schema:
+            $ref: "#/definitions/BadResponse"
+      
+  
+  /v3/admin/verifyexpert:
+    patch:
+      tags:
+        - "Admin"
+      summary: "Register a Medical Expert"
+      description: "use this to director verify an expert"
+      operationId: "verifyExpert"
+      produces: 
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "Firebase Id token goes here"
+        type: string
+        required: true
+      responses:
+        200: 
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: "bad authorization token"
+        404:
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/BadResponse"
+            
+  /v3/expert/updatefcmtoken:
+    patch:
+      tags:
+        - "Medical Expert"
+      summary: "Update FCM Token"
+      description: "use this to update FCM token"
+      operationId: "updateFCMtoken"
+      produces: 
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        description: "Firebase Id token goes here"
+        type: string
+        required: true
+      - in: body
+        name: FCMToken
+        required: true
+        schema:
+          $ref: "#/definitions/FCMToken"
+      responses:
+        200: 
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: "bad authorization token"
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/BadResponse"
+            
+  /v3/admin/ban:
+    patch:
+      tags:
+        - "Admin"
+      summary: "Ban Medical Expert"
+      description: "Use this to ban a medical expert."
+      operationId: banMedicalExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header Firebase id token"
+        type: string
+        required: true
+      - in: body
+        name: FCMToken
+        required: true
+        schema:
+          $ref: "#/definitions/FCMToken"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: "bad authorization token"
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: "user not found"
+          schema:
+            $ref: "#/definitions/BadResponse"
+  
+  /v3/admin/sendnotification:
+    post:
+      tags:
+        - "Admin"
+      summary: "send notification to medical expert"
+      description: "use this to send notification to a medical expert with id"
+      operationId: sendNotification
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header Firebase id token"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+      
+  
+  
+ # /v3/expert/verifyemail
+ #   post:
+  #    tags:
+  #      - Medical Expert
+    
+  /v3/expert/logout:
+    get:
+      tags:
+        - Medical Expert
+      summary: login expert
+      description: "Use this to login an expert"
+      operationId: logoutExpert
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header Firebase id token"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+            
+      
+  /v3/entincident:
+    get:
+      tags:
+        - ENT Incident
+      summary: get all medical experts entincidents
+      description: use this to get all of a users entIncidents
+      operationId: "getENTIncidents"
+      produces:
+      - application/json
+      consumes:
+      - application/json  
+      parameters:
+      - in: header
+        name: Authorization
+        description: authorization header contains firebase id token
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GetENTIncidentsGoodResponse"
+        
+        
+      
+    post:
+      tags:
+        - ENT Incident
+      summary: create ENT Incident 
+      description: "Use this to delete an incident by incidentId"
+      operationId: "createENTIncident"
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "authorization header contains bearer token"
+        type: string
+        required: true
+      - in: body
+        name: incident
+        required: true
+        schema:
+          $ref: "#/definitions/ENTIncident"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+      
+    put:
+      tags:
+        - "ENT Incident"
+      summary: "update ENT Incident"
+      description: "Use this to update an ENT incident"
+      operationId: updateENTIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "firebase id token"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"    
+    delete:
+      tags:
+        - ENT Incident
+      summary: "Delete ENT Incident"
+      description: "Use this to delete an ENT incident"
+      operationId: deleteENTIncident
+      produces:
+      - "application/json"
+      consumes:
+      - application/json
+      parameters:
+      - in: header
+        name: Authorization
+        description: "firebase id token"
+        type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GoodResponse"
+        401:
+          description: bad authorization token
+          schema:
+            $ref: "#/definitions/BadResponse"
+        404:
+          description: incident not found
+          schema:
+            $ref: "#/definitions/BadResponse"
+        
+        
+
+      
+
+      
+
+  
+            
+  
+      
+definitions:
+  Expert:
+    type: object
+    required:
+      - name
+      - email
+      - expertise
+      - degree
+      - deviceType
+      - FCMToken
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      expertise:
+        type: string
+      degree:
+        type: string
+      deviceType:
+        type: string
+      FCMToken: 
+        type: string
+
+
+      
+        
+  
+
+        
+  BadResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        
+  GoodResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        
+  GetExpertResponse:
+    type: object
+    required:
+      - id
+      - name
+      - email
+      - expertise
+      - degree
+      - verified
+      - emailConfirmed
+      - banned
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      expertise:
+        type: string
+      degree:
+        type: string
+      verified:
+        type: boolean
+      banned:
+        type: boolean
+      emailConfirmed:
+        type: "boolean"
+        example: false
+        
+  ENTIncident:
+    type: object
+    required:
+      - id
+      - country
+      - year
+      - ageYears
+      - ageMonths
+      - gender
+      - incidentDescription
+      - daysUntilRemoval
+      - hoursUntilRemoval
+      - minutesUntilRemoval
+      - removalStrategy
+      - openSurgery
+      - wasIncidentLifeThreatening
+      - symptoms
+      - customSymptoms
+      - symptomSeverity
+      - complications
+      - customComplications
+      - anesthesia
+      - prognosis
+      - hospitalStay
+      - deviceType
+      - swallowedObjects
+    properties:
+      ID:
+        type: string
+      EncryptedID:
+        type: string
+      country:
+        type: string
+      year:
+        type: string
+      ageYears:
+        type: string
+      ageMonths:
+        type: string
+      gender:
+        type: string
+      incidentDescription:
+        type: string
+      daysUntilRemoval:
+        type: number
+      hoursUntilRemoval:
+        type: number
+      minutesUntilRemoval:
+        type: number
+      removalStrategy:
+        type: number
+      openSurgery:
+        type: string
+      easeOfRemoval:
+        type: string
+      wasIncidentLifeThreatening:
+        type: string
+      symptoms:
+        type: array
+        items:
+          type: string
+      customSymptoms:
+        type: array
+        items:
+          type: string
+      symptomSeverity:
+        type: string
+      complications:
+        type: array
+        items:
+          type: string
+      customComplications:
+        type: array
+        items:
+          type: string
+      anesthesia: 
+        type: string
+      prognosis:
+        type: string
+      hospitalStay:
+        type: string
+      deviceType:
+        type: string
+      swallowedObjects:
+        type: array
+        items:
+          $ref: "#/definitions/SwallowedObject"
+        
+        
+    
+  SwallowedObject:
+    type: object
+    required:
+      - id
+      - radioOpacity
+      - imaging
+      - anteriorPhoto
+      - posteriorPhoto
+      - lateralPhoto
+      - anteriorLongestLength
+      - posteriorLongestLength
+      - lateralLongestLength
+      - objectLocation
+      - numberOfThisObject
+      - objectIntact
+      - numberOfPieces
+      - objectDescription
+      - objectShape
+      - objectCustomShape
+      - objectDimensionality
+      - otherCharacteristics
+      - material
+      - customMaterial
+      - isBatteryOrMagnet
+      - batteryType
+      - customBatteryType
+      - batteryImprintCode
+      - mitigatingFeatures
+      - customMitigatingFeatures
+      - negativePoleDirection
+      - honey
+      - sucralfate
+      - aceticAcid
+      - magnetType
+      - customMagnetType
+      - deviceType
+    properties:
+      ID: 
+        type: string
+      radioOpacity:
+        type: string
+      imaging:
+        type: string
+      anteriorPhoto:
+        type: string
+      posteriorPhoto:
+        type: string
+      lateralPhoto:
+        type: string
+      anteriorLongestLength:
+        type: string
+      posteriorLongestLength:
+        type: string
+      lateralLongestLength:
+        type: string
+      objectLocation:
+        type: string
+      numberOfThisObject:
+        type: string
+      objectIntact:
+        type: string
+      numberOfPieces:
+        type: string
+      objectDescription:
+        type: string
+      objectShape:
+        type: string
+      objectCustomShape:
+        type: string
+      objectDimensionality:
+        type: string
+      otherCharacteristics:
+        type: array
+        items:
+          type: string
+      material:
+        type: string
+      customMaterial:
+        type: string
+      isBatteryOrMagnet:
+        type: string
+      batteryType:
+        type: string
+      customBatteryType:
+        type: string
+      batteryImprintCode:
+        type: string
+      mitigatingFeatures:
+        type: array
+        items:
+          type: string
+      customMitigatingFeatures:
+        type: array
+        items:
+          type: string
+      negativePoleDirection:
+        type: string
+      honey:
+        type: string
+      sucralfate:
+        type: string
+      aceticAcid:
+        type: string
+      magnetType:
+        type: string
+      customMagnetType: 
+        type: string
+      deviceType:
+        type: string
+      
+      
+      
+      
+
+  GetENTIncidentsGoodResponse:
+    type: object
+    properties:
+      incidents:
+        type: array
+        items:
+          $ref: "#/definitions/ENTIncident"
+          
+  CreateIncidents:
+    type: object
+    properties:
+      userId:
+        type: string
+      incidents:
+        type: array
+        items:
+          $ref: "#/definitions/Incident" 
+
+    
+      
+        
+# old incident
+  Incident:
+    type: "object"
+    properties:
+      id: 
+        type: string
+      location: # 1 obj 11
+        type: string
+      locationOfObjects: # 2 obj 4
+        type: string
+      longTermPrognosis: # 3 
+        type: "string"
+      symptomsPresent: # 4
+        type: string
+      anteriorPhoto: # 6 obj 5
+        type: "string"
+      lateralPhoto: # 7 obj 6
+        type: string
+      posteriorPhoto: # 8 obj 7
+        type: string
+      incidentYear:   # 9 
+        type: "string"
+      objectConsistency: # 10 obj 16
+        type: "string"
+      gender: # 11
+        type: "string"
+      patientAge: # 12
+        type: "string"
+      largestLength: # 13 obj 8
+        type: "string"
+      removalStrategy: # 14 obj 17
+        type: string
+      settingOfRemoval: # 15 obj 2
+        type: string
+      lengthOfHospitalStay: # 16 
+        type: string
+      lifeThreatening: # 17
+        type: string
+      incidentDescription: # 18
+        type: string
+      timeUntilRemoval: # 19 obj 15
+        type: string
+      easeOfRemoval: # 20 obj 1
+        type: string
+      objectMaterial: # 21 obj 18
+        type: string
+      objectBasicShape:  # 22 obj 3
+        type: string
+      anesthesia: # 23
+        type: string
+      symptomSeverity: # 24
+        type: string
+      xrayOpacity: # 25
+        type: string
+      aceticAcid: # 26
+        type: string
+      other: # 27
+        type: string
+      dimensionality: # 28 obj 19
+        type: string
+      additionalImagingAndSurgery: # 29
+        type: string
+      numberOfPieces: # 30
+        type: string
+      objectsIntact: # 31
+        type: string
+      objectCharacteristics:  # 32 obj 20
+        type: string
+      batteryLocation: # 33
+        type: string
+      magneticPoleDirection: # 34
+        type: string
+      complications: # 35
+        type: string
+      largestDepth:  # 36 obj 9
+        type: string
+      sucralfate: # 37
+        type: string
+      batteryImprintCode: # 38
+        type: string
+      otherShape: # 39 obj 12
+        type: string
+      largestWidth: # 40 obj 10
+        type: string
+      magnetType: # 41
+        type: string
+      numberOfObjects: # 42 obj 13
+        type: string 
+      customMagnetType: # 43
+        type: string
+      honey: # 44
+        type: string
+      # xrayPhoto # obj 14    
+        
+      
+
+
+      
+        
+  GetIncidentsGoodResponse:
+    type: "object"
+    required:
+      - userId
+    properties:
+      userId:
+        type: "string"
+      incidents:
+        type: array
+        items:
+          $ref: "#/definitions/Incident"
+  
+  DeleteIncidents:
+      type: "object"
+      required:
+        - userID
+      properties:
+        userID:
+          type: string
+          
+  DeleteIncident:
+    type: "object"
+    required:
+      - ID
+    properties:
+      ID:
+        type: string
+          
+  DeleteIncidentIncidentIdNotFoundResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+        Deleted:
+          type: boolean
+          default: true
+  
+  DeleteIncidentGoodResponse:
+      type: "object"
+      required:
+        - ID
+      properties:
+        ID:
+          type: string
+        Deleted:
+          type: boolean
+          default: true
+            
+  CreateUser:
+    type: object
+    required:
+      - id
+      - name
+      - email
+      - degree
+      - specialty
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      email: 
+        type: string
+      degree:
+        type: string
+      specialty:
+        type: string
+      
+
+  
+  GetUserGoodResponse:
+    type: "object"
+    required: 
+      - userId
+      - verified
+      - name
+      - degree
+      - expertise
+      - email
+    properties:
+      userId:
+        type: "string"
+      name:
+        type: "string"
+      degree:
+        type: "string"
+      expertise:
+        type: "string"
+      email:
+        type: "string"
+      verified:
+        type: "boolean"
+        example: false
+      emailConfirmed:
+        type: "boolean"
+        example: false
+
+  Verify:
+    type: "object"
+    required:
+      - verified
+      - userId
+    properties:
+      userId:
+        type: string
+      verified:
+        type: "boolean"
+
+  FCMToken:
+    type: object
+    required:
+      - FCMToken
+    properties:
+      FCMToken:
+        type: string
+    
+  Ban:
+    type: object
+    required:
+      - banned
+      - userId
+    properties:
+      userId:
+        type: string
+      banned:
+        type: boolean
+      
+
+        
+        
+        

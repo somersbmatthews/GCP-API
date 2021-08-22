@@ -19,9 +19,13 @@ import (
 // swagger:model SwallowedObject
 type SwallowedObject struct {
 
+	// ID
+	// Required: true
+	ID *string `json:"ID"`
+
 	// acetic acid
 	// Required: true
-	AceticAcid *bool `json:"aceticAcid"`
+	AceticAcid *string `json:"aceticAcid"`
 
 	// anterior longest length
 	// Required: true
@@ -61,11 +65,7 @@ type SwallowedObject struct {
 
 	// honey
 	// Required: true
-	Honey *bool `json:"honey"`
-
-	// id
-	// Required: true
-	ID *string `json:"id"`
+	Honey *string `json:"honey"`
 
 	// imaging
 	// Required: true
@@ -147,14 +147,21 @@ type SwallowedObject struct {
 	// Required: true
 	RadioOpacity *string `json:"radioOpacity"`
 
+	// submitted
+	Submitted bool `json:"submitted,omitempty"`
+
 	// sucralfate
 	// Required: true
-	Sucralfate *bool `json:"sucralfate"`
+	Sucralfate *string `json:"sucralfate"`
 }
 
 // Validate validates this swallowed object
 func (m *SwallowedObject) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateAceticAcid(formats); err != nil {
 		res = append(res, err)
@@ -197,10 +204,6 @@ func (m *SwallowedObject) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateHoney(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -291,6 +294,15 @@ func (m *SwallowedObject) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *SwallowedObject) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("ID", "body", m.ID); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -387,15 +399,6 @@ func (m *SwallowedObject) validateDeviceType(formats strfmt.Registry) error {
 func (m *SwallowedObject) validateHoney(formats strfmt.Registry) error {
 
 	if err := validate.Required("honey", "body", m.Honey); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *SwallowedObject) validateID(formats strfmt.Registry) error {
-
-	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
 	}
 

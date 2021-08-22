@@ -380,6 +380,51 @@ func init() {
         }
       }
     },
+    "/v3/admin/sendnotification": {
+      "post": {
+        "description": "use this to send notification to a medical expert with id",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "send notification to medical expert",
+        "operationId": "sendNotification",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header Firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/admin/verifyexpert": {
       "patch": {
         "description": "use this to director verify an expert",
@@ -793,7 +838,7 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+              "$ref": "#/definitions/GoodResponse"
             }
           },
           "401": {
@@ -930,11 +975,15 @@ func init() {
     "Ban": {
       "type": "object",
       "required": [
-        "banned"
+        "banned",
+        "userId"
       ],
       "properties": {
         "banned": {
           "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
         }
       }
     },
@@ -1034,7 +1083,7 @@ func init() {
     "ENTIncident": {
       "type": "object",
       "required": [
-        "id",
+        "ID",
         "country",
         "year",
         "ageYears",
@@ -1046,6 +1095,7 @@ func init() {
         "minutesUntilRemoval",
         "removalStrategy",
         "openSurgery",
+        "easeOfRemoval",
         "wasIncidentLifeThreatening",
         "symptoms",
         "customSymptoms",
@@ -1059,6 +1109,9 @@ func init() {
         "swallowedObjects"
       ],
       "properties": {
+        "ID": {
+          "type": "string"
+        },
         "ageMonths": {
           "type": "string"
         },
@@ -1107,9 +1160,6 @@ func init() {
         "hoursUntilRemoval": {
           "type": "number"
         },
-        "id": {
-          "type": "string"
-        },
         "incidentDescription": {
           "type": "string"
         },
@@ -1124,6 +1174,9 @@ func init() {
         },
         "removalStrategy": {
           "type": "number"
+        },
+        "submitted": {
+          "type": "boolean"
         },
         "swallowedObjects": {
           "type": "array",
@@ -1154,7 +1207,9 @@ func init() {
         "name",
         "email",
         "expertise",
-        "degree"
+        "degree",
+        "deviceType",
+        "FCMToken"
       ],
       "properties": {
         "FCMToken": {
@@ -1202,14 +1257,19 @@ func init() {
     "GetExpertResponse": {
       "type": "object",
       "required": [
+        "id",
         "name",
         "email",
         "expertise",
         "degree",
         "verified",
-        "emailConfirmed"
+        "emailConfirmed",
+        "banned"
       ],
       "properties": {
+        "banned": {
+          "type": "boolean"
+        },
         "degree": {
           "type": "string"
         },
@@ -1435,7 +1495,7 @@ func init() {
     "SwallowedObject": {
       "type": "object",
       "required": [
-        "id",
+        "ID",
         "radioOpacity",
         "imaging",
         "anteriorPhoto",
@@ -1470,8 +1530,11 @@ func init() {
         "deviceType"
       ],
       "properties": {
+        "ID": {
+          "type": "string"
+        },
         "aceticAcid": {
-          "type": "boolean"
+          "type": "string"
         },
         "anteriorLongestLength": {
           "type": "string"
@@ -1504,9 +1567,6 @@ func init() {
           "type": "string"
         },
         "honey": {
-          "type": "boolean"
-        },
-        "id": {
           "type": "string"
         },
         "imaging": {
@@ -1575,8 +1635,11 @@ func init() {
         "radioOpacity": {
           "type": "string"
         },
-        "sucralfate": {
+        "submitted": {
           "type": "boolean"
+        },
+        "sucralfate": {
+          "type": "string"
         }
       }
     },
@@ -1584,10 +1647,10 @@ func init() {
       "type": "object",
       "required": [
         "verified",
-        "userID"
+        "userId"
       ],
       "properties": {
-        "userID": {
+        "userId": {
           "type": "string"
         },
         "verified": {
@@ -1990,6 +2053,51 @@ func init() {
         }
       }
     },
+    "/v3/admin/sendnotification": {
+      "post": {
+        "description": "use this to send notification to a medical expert with id",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "send notification to medical expert",
+        "operationId": "sendNotification",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "authorization header Firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/admin/verifyexpert": {
       "patch": {
         "description": "use this to director verify an expert",
@@ -2403,7 +2511,7 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/DeleteIncidentGoodResponse"
+              "$ref": "#/definitions/GoodResponse"
             }
           },
           "401": {
@@ -2540,11 +2648,15 @@ func init() {
     "Ban": {
       "type": "object",
       "required": [
-        "banned"
+        "banned",
+        "userId"
       ],
       "properties": {
         "banned": {
           "type": "boolean"
+        },
+        "userId": {
+          "type": "string"
         }
       }
     },
@@ -2644,7 +2756,7 @@ func init() {
     "ENTIncident": {
       "type": "object",
       "required": [
-        "id",
+        "ID",
         "country",
         "year",
         "ageYears",
@@ -2656,6 +2768,7 @@ func init() {
         "minutesUntilRemoval",
         "removalStrategy",
         "openSurgery",
+        "easeOfRemoval",
         "wasIncidentLifeThreatening",
         "symptoms",
         "customSymptoms",
@@ -2669,6 +2782,9 @@ func init() {
         "swallowedObjects"
       ],
       "properties": {
+        "ID": {
+          "type": "string"
+        },
         "ageMonths": {
           "type": "string"
         },
@@ -2717,9 +2833,6 @@ func init() {
         "hoursUntilRemoval": {
           "type": "number"
         },
-        "id": {
-          "type": "string"
-        },
         "incidentDescription": {
           "type": "string"
         },
@@ -2734,6 +2847,9 @@ func init() {
         },
         "removalStrategy": {
           "type": "number"
+        },
+        "submitted": {
+          "type": "boolean"
         },
         "swallowedObjects": {
           "type": "array",
@@ -2764,7 +2880,9 @@ func init() {
         "name",
         "email",
         "expertise",
-        "degree"
+        "degree",
+        "deviceType",
+        "FCMToken"
       ],
       "properties": {
         "FCMToken": {
@@ -2812,14 +2930,19 @@ func init() {
     "GetExpertResponse": {
       "type": "object",
       "required": [
+        "id",
         "name",
         "email",
         "expertise",
         "degree",
         "verified",
-        "emailConfirmed"
+        "emailConfirmed",
+        "banned"
       ],
       "properties": {
+        "banned": {
+          "type": "boolean"
+        },
         "degree": {
           "type": "string"
         },
@@ -3045,7 +3168,7 @@ func init() {
     "SwallowedObject": {
       "type": "object",
       "required": [
-        "id",
+        "ID",
         "radioOpacity",
         "imaging",
         "anteriorPhoto",
@@ -3080,8 +3203,11 @@ func init() {
         "deviceType"
       ],
       "properties": {
+        "ID": {
+          "type": "string"
+        },
         "aceticAcid": {
-          "type": "boolean"
+          "type": "string"
         },
         "anteriorLongestLength": {
           "type": "string"
@@ -3114,9 +3240,6 @@ func init() {
           "type": "string"
         },
         "honey": {
-          "type": "boolean"
-        },
-        "id": {
           "type": "string"
         },
         "imaging": {
@@ -3185,8 +3308,11 @@ func init() {
         "radioOpacity": {
           "type": "string"
         },
-        "sucralfate": {
+        "submitted": {
           "type": "boolean"
+        },
+        "sucralfate": {
+          "type": "string"
         }
       }
     },
@@ -3194,10 +3320,10 @@ func init() {
       "type": "object",
       "required": [
         "verified",
-        "userID"
+        "userId"
       ],
       "properties": {
-        "userID": {
+        "userId": {
           "type": "string"
         },
         "verified": {

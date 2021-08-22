@@ -175,9 +175,6 @@ func GetIncidents(ctx context.Context, userID string) (*models.GetIncidentsGoodR
 
 	// fields := []string{"id", "long_term_prognosis", "what_material_is_the_object_made_of", "anterior", "date_of_incident", "object_consistency", "gender", "approximate_patient_age", "location_of_object", "incident_description", "largest_length", "object_basic_shape", "the_object_is"}
 
-	// TODO: make a sql query as per website with function for making the bytea to text
-	// OR: TODO find out what that big fucking space is in my gorm query or replace with raw sql
-	// FIRST: make sql query in psql to convert the bytea value to text so you can see what it is
 	err = db.Raw(sql, bytea).Scan(&incidents).Error
 
 	//	err = db.Where(Incident{}, "encrypted_user_id = ?", bytea).Find(&incidents).Error
@@ -456,9 +453,9 @@ func getStringFromBytea(bytea string) string {
 
 func getIDFromPhotoURL(url string) string {
 	const regex = `[^\/]+$`
-	var unformattedString = `\/v0\/b\/chd-backend.appspot.com\/o\/image-uploads\/D7FE3971-1270-4894-979E-D28D085B69E8.jpg`
+	//	var unformattedString = `\/v0\/b\/chd-backend.appspot.com\/o\/image-uploads\/D7FE3971-1270-4894-979E-D28D085B69E8.jpg`
 	re := regexp.MustCompile(regex)
-	formattedStringSlice := re.FindStringSubmatch(unformattedString)
+	formattedStringSlice := re.FindStringSubmatch(url)
 	//	fmt.Println(formattedStringSlice)
 	formattedString := strings.Join(formattedStringSlice, "")
 	// fmt.Println(formattedString)

@@ -19,9 +19,9 @@ import (
 // swagger:model Verify
 type Verify struct {
 
-	// user ID
+	// user Id
 	// Required: true
-	UserID *string `json:"userID"`
+	UserID *string `json:"userId"`
 
 	// verified
 	// Required: true
@@ -48,7 +48,7 @@ func (m *Verify) Validate(formats strfmt.Registry) error {
 
 func (m *Verify) validateUserID(formats strfmt.Registry) error {
 
-	if err := validate.Required("userID", "body", m.UserID); err != nil {
+	if err := validate.Required("userId", "body", m.UserID); err != nil {
 		return err
 	}
 

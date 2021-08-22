@@ -20,14 +20,16 @@ import (
 type Expert struct {
 
 	// f c m token
-	FCMToken string `json:"FCMToken,omitempty"`
+	// Required: true
+	FCMToken *string `json:"FCMToken"`
 
 	// degree
 	// Required: true
 	Degree *string `json:"degree"`
 
 	// device type
-	DeviceType string `json:"deviceType,omitempty"`
+	// Required: true
+	DeviceType *string `json:"deviceType"`
 
 	// email
 	// Required: true
@@ -46,7 +48,15 @@ type Expert struct {
 func (m *Expert) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateFCMToken(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateDegree(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDeviceType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -68,9 +78,27 @@ func (m *Expert) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Expert) validateFCMToken(formats strfmt.Registry) error {
+
+	if err := validate.Required("FCMToken", "body", m.FCMToken); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *Expert) validateDegree(formats strfmt.Registry) error {
 
 	if err := validate.Required("degree", "body", m.Degree); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Expert) validateDeviceType(formats strfmt.Registry) error {
+
+	if err := validate.Required("deviceType", "body", m.DeviceType); err != nil {
 		return err
 	}
 

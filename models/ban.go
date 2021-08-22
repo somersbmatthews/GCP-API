@@ -22,6 +22,10 @@ type Ban struct {
 	// banned
 	// Required: true
 	Banned *bool `json:"banned"`
+
+	// user Id
+	// Required: true
+	UserID *string `json:"userId"`
 }
 
 // Validate validates this ban
@@ -29,6 +33,10 @@ func (m *Ban) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateBanned(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -41,6 +49,15 @@ func (m *Ban) Validate(formats strfmt.Registry) error {
 func (m *Ban) validateBanned(formats strfmt.Registry) error {
 
 	if err := validate.Required("banned", "body", m.Banned); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Ban) validateUserID(formats strfmt.Registry) error {
+
+	if err := validate.Required("userId", "body", m.UserID); err != nil {
 		return err
 	}
 

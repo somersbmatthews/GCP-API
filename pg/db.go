@@ -19,7 +19,7 @@ import (
 var postgrespassword string
 
 var db *gorm.DB
-var conn *sql.DB
+var Conn *sql.DB
 
 func init() {
 	password, err := accessPostgresPassword()
@@ -27,16 +27,29 @@ func init() {
 		panic(err)
 	}
 	postgrespassword = password
-	db, conn = Open()
+	Open()
 	// TODO: add conn.Close for all other db := Open()
-	ok := db.Migrator().HasTable(&User{})
-	if !ok {
-		_ = db.AutoMigrate(&User{})
-	}
-	ok = db.Migrator().HasTable(&Incident{})
+	// ok := db.Migrator().HasTable(&User{})
+	// if !ok {
+	// 	_ = db.AutoMigrate(&User{})
+	// }
+	ok := db.Migrator().HasTable(&Incident{})
 	if !ok {
 		_ = db.AutoMigrate(&Incident{})
 	}
+	ok = db.Migrator().HasTable(&Expert{})
+	if !ok {
+		_ = db.AutoMigrate(&Expert{})
+	}
+	ok = db.Migrator().HasTable(&ENTSwallowedObject{})
+	if !ok {
+		_ = db.AutoMigrate(&ENTSwallowedObject{})
+	}
+	ok = db.Migrator().HasTable(&ENTIncident{})
+	if !ok {
+		_ = db.AutoMigrate(&ENTIncident{})
+	}
+
 }
 
 func accessPostgresPassword() (string, error) {
@@ -84,11 +97,11 @@ func initSocketConnectionPool() (*sql.DB, error) {
 
 func initTCPConnectionPool() (*sql.DB, error) {
 	var (
-		dbUser    = "gorm"
-		dbTcpHost = "10.88.176.3"
-		// dbTcpHost = "127.0.0.1"
-		dbPort = "5432"
-		dbName = "postgres"
+		dbUser = "gorm"
+		//dbTcpHost = "10.88.176.3" // for gcp
+		dbTcpHost = "127.0.0.1" // for local with or without cloud sql proxy
+		dbPort    = "5432"
+		dbName    = "postgres"
 	)
 	var dbURI string
 	dbURI = fmt.Sprintf("host=%s user=%s password=%s port=%s database=%s", dbTcpHost, dbUser, postgrespassword, dbPort, dbName)
@@ -106,7 +119,7 @@ func configureConnectionPool(dbPool *sql.DB) {
 	dbPool.SetConnMaxLifetime(1800)
 }
 
-func Open() (*gorm.DB, *sql.DB) {
+func Open() {
 	//sqlDB, err := initSocketConnectionPool()
 	sqlDB, err := initTCPConnectionPool()
 	if err != nil {
@@ -128,11 +141,11 @@ func Open() (*gorm.DB, *sql.DB) {
 		errMsg := fmt.Sprintf("%v,::: %v", err, render.Render(db))
 		panic(errMsg)
 	}
-	conn, err := db.DB()
+	db = postgresDB
+	connPointer, err := db.DB()
 	if err != nil {
 		panic(err)
 	}
-	db = postgresDB
+	Conn = connPointer
 
-	return db, conn
 }

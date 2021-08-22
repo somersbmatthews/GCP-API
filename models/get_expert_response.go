@@ -19,6 +19,10 @@ import (
 // swagger:model GetExpertResponse
 type GetExpertResponse struct {
 
+	// banned
+	// Required: true
+	Banned *bool `json:"banned"`
+
 	// degree
 	// Required: true
 	Degree *string `json:"degree"`
@@ -37,7 +41,8 @@ type GetExpertResponse struct {
 	Expertise *string `json:"expertise"`
 
 	// id
-	ID string `json:"id,omitempty"`
+	// Required: true
+	ID *string `json:"id"`
 
 	// name
 	// Required: true
@@ -51,6 +56,10 @@ type GetExpertResponse struct {
 // Validate validates this get expert response
 func (m *GetExpertResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateBanned(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateDegree(formats); err != nil {
 		res = append(res, err)
@@ -68,6 +77,10 @@ func (m *GetExpertResponse) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
@@ -79,6 +92,15 @@ func (m *GetExpertResponse) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *GetExpertResponse) validateBanned(formats strfmt.Registry) error {
+
+	if err := validate.Required("banned", "body", m.Banned); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -112,6 +134,15 @@ func (m *GetExpertResponse) validateEmailConfirmed(formats strfmt.Registry) erro
 func (m *GetExpertResponse) validateExpertise(formats strfmt.Registry) error {
 
 	if err := validate.Required("expertise", "body", m.Expertise); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetExpertResponse) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
 	}
 
