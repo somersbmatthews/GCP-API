@@ -6,12 +6,17 @@ package medical_expert
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
+
+	"github.com/gircapp/api/models"
 )
 
 // NewRegisterExpertParams creates a new RegisterExpertParams object
@@ -36,6 +41,11 @@ type RegisterExpertParams struct {
 	  In: header
 	*/
 	Authorization string
+	/*
+	  Required: true
+	  In: body
+	*/
+	Expert *models.Expert
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -49,6 +59,34 @@ func (o *RegisterExpertParams) BindRequest(r *http.Request, route *middleware.Ma
 
 	if err := o.bindAuthorization(r.Header[http.CanonicalHeaderKey("Authorization")], true, route.Formats); err != nil {
 		res = append(res, err)
+	}
+
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body models.Expert
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			if err == io.EOF {
+				res = append(res, errors.Required("expert", "body", ""))
+			} else {
+				res = append(res, errors.NewParseError("expert", "body", "", err))
+			}
+		} else {
+			// validate body object
+			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			ctx := validate.WithOperationRequest(context.Background())
+			if err := body.ContextValidate(ctx, route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			if len(res) == 0 {
+				o.Expert = &body
+			}
+		}
+	} else {
+		res = append(res, errors.Required("expert", "body", ""))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

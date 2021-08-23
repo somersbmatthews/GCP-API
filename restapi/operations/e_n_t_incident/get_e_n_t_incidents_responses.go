@@ -56,3 +56,91 @@ func (o *GetENTIncidentsOK) WriteResponse(rw http.ResponseWriter, producer runti
 		}
 	}
 }
+
+// GetENTIncidentsUnauthorizedCode is the HTTP code returned for type GetENTIncidentsUnauthorized
+const GetENTIncidentsUnauthorizedCode int = 401
+
+/*GetENTIncidentsUnauthorized bad authorization token
+
+swagger:response getENTIncidentsUnauthorized
+*/
+type GetENTIncidentsUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewGetENTIncidentsUnauthorized creates GetENTIncidentsUnauthorized with default headers values
+func NewGetENTIncidentsUnauthorized() *GetENTIncidentsUnauthorized {
+
+	return &GetENTIncidentsUnauthorized{}
+}
+
+// WithPayload adds the payload to the get e n t incidents unauthorized response
+func (o *GetENTIncidentsUnauthorized) WithPayload(payload *models.BadResponse) *GetENTIncidentsUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get e n t incidents unauthorized response
+func (o *GetENTIncidentsUnauthorized) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetENTIncidentsUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// GetENTIncidentsNotFoundCode is the HTTP code returned for type GetENTIncidentsNotFound
+const GetENTIncidentsNotFoundCode int = 404
+
+/*GetENTIncidentsNotFound incident not found
+
+swagger:response getENTIncidentsNotFound
+*/
+type GetENTIncidentsNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.BadResponse `json:"body,omitempty"`
+}
+
+// NewGetENTIncidentsNotFound creates GetENTIncidentsNotFound with default headers values
+func NewGetENTIncidentsNotFound() *GetENTIncidentsNotFound {
+
+	return &GetENTIncidentsNotFound{}
+}
+
+// WithPayload adds the payload to the get e n t incidents not found response
+func (o *GetENTIncidentsNotFound) WithPayload(payload *models.BadResponse) *GetENTIncidentsNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get e n t incidents not found response
+func (o *GetENTIncidentsNotFound) SetPayload(payload *models.BadResponse) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetENTIncidentsNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}

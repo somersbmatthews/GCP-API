@@ -264,9 +264,9 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 		} else if err != nil {
 			panic(err)
 		}
-		fmt.Println("this is running")
+
 		for _, objectValue := range swallowedObjectsFromDB {
-			fmt.Println("this is not")
+
 			object := objectValue
 			newSwallowedObject := models.SwallowedObject{
 				ID:                       &object.ID,
@@ -345,7 +345,107 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 	}, true
 }
 
-// func UpdateIncident()
+func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTIncident, userID string) (*models.GoodResponse, bool) {
+	encryptedUserID, err := encryptUserID(userID)
+	if err != nil {
+		panic(err)
+	}
+
+	bytea := getByteaFromString(encryptedUserID)
+
+	var swallowedObjects []SwallowedObject
+	for _, objectValue := range ENTIncidentRequest.SwallowedObjects {
+		object := objectValue
+		newObject := SwallowedObject{
+			ID:                       *object.ID,
+			IncidentID:               *ENTIncidentRequest.ID,
+			RadioOpacity:             *object.RadioOpacity,
+			Imaging:                  *object.Imaging,
+			AnteriorPhoto:            *object.AnteriorPhoto,
+			PosteriorPhoto:           *object.PosteriorPhoto,
+			LateralPhoto:             *object.LateralPhoto,
+			AnteriorLongestLength:    *object.AnteriorLongestLength,
+			PosteriorLongestLength:   *object.PosteriorLongestLength,
+			LateralLongestLength:     *object.LateralLongestLength,
+			ObjectLocation:           *object.ObjectLocation,
+			NumberOfThisObject:       *object.NumberOfThisObject,
+			ObjectIntact:             *object.ObjectIntact,
+			NumberOfPieces:           *object.NumberOfPieces,
+			ObjectDescription:        *object.ObjectDescription,
+			ObjectShape:              *object.ObjectShape,
+			ObjectCustomShape:        *object.ObjectCustomShape,
+			ObjectDimensionality:     *object.ObjectDimensionality,
+			OtherCharacteristics:     pq.StringArray(object.OtherCharacteristics),
+			Material:                 *object.Material,
+			CustomMaterial:           *object.CustomMaterial,
+			IsBatteryOrMagnet:        *object.IsBatteryOrMagnet,
+			BatteryType:              *object.BatteryType,
+			CustomBatteryType:        *object.CustomBatteryType,
+			BatteryImprintCode:       *object.BatteryImprintCode,
+			MitigatingFeatures:       pq.StringArray(object.MitigatingFeatures),
+			CustomMitigatingFeatures: pq.StringArray(object.CustomMitigatingFeatures),
+			NegativePoleDirection:    *object.NegativePoleDirection,
+			Honey:                    *object.Honey,
+			Sucralfate:               *object.Sucralfate,
+			AceticAcid:               *object.AceticAcid,
+			MagnetType:               *object.MagnetType,
+			CustomMagnetType:         *object.CustomMagnetType,
+			DeviceType:               *object.DeviceType,
+			Submitted:                object.Submitted,
+		}
+
+		swallowedObjects = append(swallowedObjects, newObject)
+	}
+
+	incident := &ENTIncident{
+		ID:                         *ENTIncidentRequest.ID,
+		EncryptedExpertID:          bytea,
+		Country:                    *ENTIncidentRequest.Country,
+		Year:                       *ENTIncidentRequest.Year,
+		AgeYears:                   *ENTIncidentRequest.AgeYears,
+		AgeMonths:                  *ENTIncidentRequest.AgeMonths,
+		Gender:                     *ENTIncidentRequest.Gender,
+		IncidentDescription:        *ENTIncidentRequest.IncidentDescription,
+		DaysUntilRemoval:           *ENTIncidentRequest.DaysUntilRemoval,
+		HoursUntilRemoval:          *ENTIncidentRequest.HoursUntilRemoval,
+		MinutesUntilRemoval:        *ENTIncidentRequest.MinutesUntilRemoval,
+		RemovalStrategy:            *ENTIncidentRequest.RemovalStrategy,
+		OpenSurgery:                *ENTIncidentRequest.OpenSurgery,
+		EaseOfRemoval:              *ENTIncidentRequest.EaseOfRemoval,
+		WasIncidentLifeThreatening: *ENTIncidentRequest.WasIncidentLifeThreatening,
+		Symptoms:                   pq.StringArray(ENTIncidentRequest.Symptoms),
+		CustomSymptoms:             pq.StringArray(ENTIncidentRequest.CustomSymptoms),
+		SymptomSeverity:            *ENTIncidentRequest.SymptomSeverity,
+		Complications:              pq.StringArray(ENTIncidentRequest.Complications),
+		CustomComplications:        pq.StringArray(ENTIncidentRequest.CustomComplications),
+		Anesthesia:                 *ENTIncidentRequest.Anesthesia,
+		Prognosis:                  *ENTIncidentRequest.Prognosis,
+		HospitalStay:               *ENTIncidentRequest.HospitalStay,
+		DeviceType:                 *ENTIncidentRequest.DeviceType,
+		Submitted:                  ENTIncidentRequest.Submitted,
+	}
+
+	err = db.Find(&ENTIncident{}, "id = ?", ENTIncidentRequest.ID).Updates(incident).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	for _, object := range swallowedObjects {
+		err = db.Find(&SwallowedObject{}, "id = ?", &object.ID).Updates(object).Error
+		if err == gorm.ErrRecordNotFound {
+			return nil, false
+		} else if err != nil {
+			panic(err)
+		}
+	}
+
+	message := fmt.Sprintf("incident updated with id: %s", incident.ID)
+	return &models.GoodResponse{
+		Message: message,
+	}, true
+}
 
 func DeleteENTIncident(ctx context.Context, incidentID string) (*models.GoodResponse, bool) {
 	err := db.Delete(&ENTIncident{}, "id = ?", incidentID).Error

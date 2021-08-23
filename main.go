@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gircapp/api/pg"
 	"github.com/gircapp/api/restapi"
 	"github.com/gircapp/api/restapi/operations"
 	"github.com/go-openapi/loads"
@@ -35,10 +34,6 @@ func main() {
 
 	api := operations.NewGircAPI(swaggerSpec)
 	server := restapi.NewServer(api)
-
-	api.ServerShutdown = func() {
-		pg.Conn.Close()
-	}
 
 	// wg := new(sync.WaitGroup)
 

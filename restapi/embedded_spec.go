@@ -401,6 +401,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Notification"
+            }
           }
         ],
         "responses": {
@@ -495,6 +503,18 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/GetENTIncidentsGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
@@ -717,6 +737,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "expert",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Expert"
+            }
           }
         ],
         "responses": {
@@ -803,6 +831,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "expert",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Expert"
+            }
           }
         ],
         "responses": {
@@ -1572,6 +1608,21 @@ func init() {
           "type": "string"
         },
         "xrayOpacity": {
+          "type": "string"
+        }
+      }
+    },
+    "Notification": {
+      "type": "object",
+      "required": [
+        "userId",
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "userId": {
           "type": "string"
         }
       }
@@ -2161,6 +2212,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "incident",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Notification"
+            }
           }
         ],
         "responses": {
@@ -2255,6 +2314,18 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/GetENTIncidentsGoodResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "incident not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
             }
           }
         }
@@ -2477,6 +2548,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "expert",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Expert"
+            }
           }
         ],
         "responses": {
@@ -2563,6 +2642,14 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "name": "expert",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Expert"
+            }
           }
         ],
         "responses": {
@@ -3332,6 +3419,21 @@ func init() {
           "type": "string"
         },
         "xrayOpacity": {
+          "type": "string"
+        }
+      }
+    },
+    "Notification": {
+      "type": "object",
+      "required": [
+        "userId",
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "userId": {
           "type": "string"
         }
       }

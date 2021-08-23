@@ -9,10 +9,13 @@ import (
 	"net/http"
 
 	"github.com/gircapp/api/auth"
+	"github.com/gircapp/api/fba"
 	"github.com/gircapp/api/models"
 	"github.com/gircapp/api/pg"
 	"github.com/gircapp/api/restapi/operations"
+	"github.com/gircapp/api/restapi/operations/e_n_t_incident"
 	"github.com/gircapp/api/restapi/operations/incident"
+	"github.com/gircapp/api/restapi/operations/medical_expert"
 	"github.com/gircapp/api/restapi/operations/user"
 
 	//	"github.com/gircapp/api/restapi/operations/verify"
@@ -254,8 +257,165 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		return response
 	})
 
+	api.MedicalExpertCreateExpertHandler = medical_expert.CreateExpertHandlerFunc(func(params medical_expert.CreateExpertParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return middleware.Error(401, models.BadResponse{
+				Message: "Validation of firebase idToken failed.",
+			})
+		}
+		payload, ok := pg.CreateExpertWithAutoDirectorAndEmailVerification(ctx, params.Expert, userID)
+		if !ok {
+			return middleware.Error(404, models.BadResponse{
+				Message: "could not create medical Expert",
+			})
+		}
+		response := medical_expert.NewCreateExpertOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.MedicalExpertGetExpertHandler = medical_expert.GetExpertHandlerFunc(func(params medical_expert.GetExpertParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return medical_expert.NewGetExpertUnauthorized()
+		}
+		payload, ok := pg.GetMedicalExpert(ctx, userID)
+		if !ok {
+			return medical_expert.NewGetExpertNotFound()
+		}
+		response := medical_expert.NewGetExpertOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.MedicalExpertUpdateExpertHandler = medical_expert.UpdateExpertHandlerFunc(func(params medical_expert.UpdateExpertParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return medical_expert.NewUpdateExpertUnauthorized()
+		}
+		payload, ok := pg.UpdateMedicalExpert(ctx, *params.Expert, userID)
+		if !ok {
+			return medical_expert.NewUpdateExpertNotFound()
+		}
+		response := medical_expert.NewUpdateExpertOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.MedicalExpertDeleteExpertHandler = medical_expert.DeleteExpertHandlerFunc(func(params medical_expert.DeleteExpertParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return medical_expert.NewDeleteExpertUnauthorized()
+		}
+		payload, ok := pg.DeleteMedicalExpert(ctx, userID)
+		if !ok {
+			return medical_expert.NewDeleteExpertNotFound()
+		}
+		response := medical_expert.NewDeleteExpertOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.EntIncidentCreateENTIncidentHandler = e_n_t_incident.CreateENTIncidentHandlerFunc(func(params e_n_t_incident.CreateENTIncidentParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return e_n_t_incident.NewCreateENTIncidentUnauthorized()
+		}
+		payload, ok := pg.CreateENTIncident(ctx, params.Incident, userID)
+		if !ok {
+			return e_n_t_incident.NewCreateENTIncidentNotFound()
+		}
+		response := e_n_t_incident.NewCreateENTIncidentOK()
+		response.WithPayload(payload)
+		return response
+
+	})
+
+	api.EntIncidentGetENTIncidentsHandler = e_n_t_incident.GetENTIncidentsHandlerFunc(func(params e_n_t_incident.GetENTIncidentsParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return e_n_t_incident.NewGetENTIncidentsUnauthorized()
+		}
+		payload, ok := pg.GetENTIncidents(ctx, userID)
+		if !ok {
+			return e_n_t_incident.NewGetENTIncidentsNotFound()
+		}
+		response := e_n_t_incident.NewGetENTIncidentsOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.EntIncidentUpdateENTIncidentHandler = e_n_t_incident.UpdateENTIncidentHandlerFunc(func(params e_n_t_incident.UpdateENTIncidentParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return e_n_t_incident.NewUpdateENTIncidentUnauthorized()
+		}
+		payload, ok := pg.UpdateENTIncident(ctx, *params.Incident, userID)
+		if !ok {
+			return e_n_t_incident.NewGetENTIncidentsNotFound()
+		}
+		response := e_n_t_incident.NewUpdateENTIncidentOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.EntIncidentDeleteENTIncidentHandler = e_n_t_incident.DeleteENTIncidentHandlerFunc(func(params e_n_t_incident.DeleteENTIncidentParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		_, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return e_n_t_incident.NewDeleteENTIncidentUnauthorized()
+		}
+		payload, ok := pg.DeleteENTIncident(ctx, *params.Incident.ENTIncidentID)
+		if !ok {
+			return e_n_t_incident.NewDeleteENTIncidentNotFound()
+		}
+		response := e_n_t_incident.NewDeleteENTIncidentOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.MedicalExpertUpdateFCMtokenHandler = medical_expert.UpdateFCMtokenHandlerFunc(func(params medical_expert.UpdateFCMtokenParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return medical_expert.NewUpdateFCMtokenUnauthorized()
+		}
+		payload, ok := pg.UpdateFCMToken(ctx, *params.FCMToken, userID)
+		if !ok {
+			return medical_expert.NewUpdateFCMtokenNotFound()
+		}
+		response := medical_expert.NewUpdateFCMtokenOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	// api.AdminVerifyExpertHandler = admin.VerifyExpertHandlerFunc(func(params admin.VerifyExpertParams) middleware.Responder {
+	// 	ctx := context.Background()
+	// 	tokenStr := params.Authorization
+	//_, ok := fba.VerifyAdminToken(ctx, tokenStr)
+	// })
+
 	api.PreServerShutdown = func() {}
-	api.ServerShutdown = func() {}
+	api.ServerShutdown = func() {
+		pg.Conn.Close()
+	}
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }
 
