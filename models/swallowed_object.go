@@ -29,7 +29,7 @@ type SwallowedObject struct {
 
 	// anterior longest length
 	// Required: true
-	AnteriorLongestLength *string `json:"anteriorLongestLength"`
+	AnteriorLongestLength *float64 `json:"anteriorLongestLength"`
 
 	// anterior photo
 	// Required: true
@@ -80,7 +80,7 @@ type SwallowedObject struct {
 
 	// lateral longest length
 	// Required: true
-	LateralLongestLength *string `json:"lateralLongestLength"`
+	LateralLongestLength *float64 `json:"lateralLongestLength"`
 
 	// lateral photo
 	// Required: true
@@ -140,7 +140,7 @@ type SwallowedObject struct {
 
 	// posterior longest length
 	// Required: true
-	PosteriorLongestLength *string `json:"posteriorLongestLength"`
+	PosteriorLongestLength *float64 `json:"posteriorLongestLength"`
 
 	// posterior photo
 	// Required: true

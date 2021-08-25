@@ -36,6 +36,8 @@ type ENTIncident struct {
 
 	RemovalStrategy string
 
+	RemovalSetting string
+
 	OpenSurgery string
 
 	EaseOfRemoval string
@@ -82,11 +84,11 @@ type SwallowedObject struct {
 
 	LateralPhoto string
 
-	AnteriorLongestLength string
+	AnteriorLongestLength float64
 
-	PosteriorLongestLength string
+	PosteriorLongestLength float64
 
-	LateralLongestLength string
+	LateralLongestLength float64
 
 	ObjectLocation string
 
@@ -207,6 +209,7 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 		HoursUntilRemoval:          *incidentRequest.HoursUntilRemoval,
 		MinutesUntilRemoval:        *incidentRequest.MinutesUntilRemoval,
 		RemovalStrategy:            *incidentRequest.RemovalStrategy,
+		RemovalSetting:             *incidentRequest.RemovalSetting,
 		OpenSurgery:                *incidentRequest.OpenSurgery,
 		EaseOfRemoval:              *incidentRequest.EaseOfRemoval,
 		WasIncidentLifeThreatening: *incidentRequest.WasIncidentLifeThreatening,
@@ -328,6 +331,7 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 			OpenSurgery:                &incident.OpenSurgery,
 			Prognosis:                  &incident.Prognosis,
 			RemovalStrategy:            &incident.RemovalStrategy,
+			RemovalSetting:             &incident.RemovalSetting,
 			Submitted:                  incident.Submitted,
 			SwallowedObjects:           swallowedObjects,
 			SymptomSeverity:            &incident.SymptomSeverity,
@@ -410,6 +414,7 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 		HoursUntilRemoval:          *ENTIncidentRequest.HoursUntilRemoval,
 		MinutesUntilRemoval:        *ENTIncidentRequest.MinutesUntilRemoval,
 		RemovalStrategy:            *ENTIncidentRequest.RemovalStrategy,
+		RemovalSetting:             *ENTIncidentRequest.RemovalSetting,
 		OpenSurgery:                *ENTIncidentRequest.OpenSurgery,
 		EaseOfRemoval:              *ENTIncidentRequest.EaseOfRemoval,
 		WasIncidentLifeThreatening: *ENTIncidentRequest.WasIncidentLifeThreatening,

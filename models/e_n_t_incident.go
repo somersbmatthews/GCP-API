@@ -92,6 +92,10 @@ type ENTIncident struct {
 	// Required: true
 	Prognosis *string `json:"prognosis"`
 
+	// removal setting
+	// Required: true
+	RemovalSetting *string `json:"removalSetting"`
+
 	// removal strategy
 	// Required: true
 	RemovalStrategy *string `json:"removalStrategy"`
@@ -193,6 +197,10 @@ func (m *ENTIncident) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validatePrognosis(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRemovalSetting(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -382,6 +390,15 @@ func (m *ENTIncident) validateOpenSurgery(formats strfmt.Registry) error {
 func (m *ENTIncident) validatePrognosis(formats strfmt.Registry) error {
 
 	if err := validate.Required("prognosis", "body", m.Prognosis); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ENTIncident) validateRemovalSetting(formats strfmt.Registry) error {
+
+	if err := validate.Required("removalSetting", "body", m.RemovalSetting); err != nil {
 		return err
 	}
 

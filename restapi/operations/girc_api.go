@@ -55,9 +55,6 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		EntIncidentCreateENTIncidentHandler: e_n_t_incident.CreateENTIncidentHandlerFunc(func(params e_n_t_incident.CreateENTIncidentParams) middleware.Responder {
 			return middleware.NotImplemented("operation e_n_t_incident.CreateENTIncident has not yet been implemented")
 		}),
-		MedicalExpertCreateExpertHandler: medical_expert.CreateExpertHandlerFunc(func(params medical_expert.CreateExpertParams) middleware.Responder {
-			return middleware.NotImplemented("operation medical_expert.CreateExpert has not yet been implemented")
-		}),
 		IncidentCreateIncidentHandler: incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
 			return middleware.NotImplemented("operation incident.CreateIncident has not yet been implemented")
 		}),
@@ -152,8 +149,6 @@ type GircAPI struct {
 	AdminBanMedicalExpertHandler admin.BanMedicalExpertHandler
 	// EntIncidentCreateENTIncidentHandler sets the operation handler for the create e n t incident operation
 	EntIncidentCreateENTIncidentHandler e_n_t_incident.CreateENTIncidentHandler
-	// MedicalExpertCreateExpertHandler sets the operation handler for the create expert operation
-	MedicalExpertCreateExpertHandler medical_expert.CreateExpertHandler
 	// IncidentCreateIncidentHandler sets the operation handler for the create incident operation
 	IncidentCreateIncidentHandler incident.CreateIncidentHandler
 	// UserCreateUserHandler sets the operation handler for the create user operation
@@ -272,9 +267,6 @@ func (o *GircAPI) Validate() error {
 	}
 	if o.EntIncidentCreateENTIncidentHandler == nil {
 		unregistered = append(unregistered, "e_n_t_incident.CreateENTIncidentHandler")
-	}
-	if o.MedicalExpertCreateExpertHandler == nil {
-		unregistered = append(unregistered, "medical_expert.CreateExpertHandler")
 	}
 	if o.IncidentCreateIncidentHandler == nil {
 		unregistered = append(unregistered, "incident.CreateIncidentHandler")
@@ -426,10 +418,6 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/v3/entincident"] = e_n_t_incident.NewCreateENTIncident(o.context, o.EntIncidentCreateENTIncidentHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/v3/expert/register"] = medical_expert.NewCreateExpert(o.context, o.MedicalExpertCreateExpertHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

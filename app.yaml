@@ -11,4 +11,4 @@ handlers:
 
 
 vpc_access_connector:
-  name: "projects/gircapp/locations/us-central1/connectors/gircvpcconnector2"
+  name: "projects/gircapp/locations/us-central1/connectors/gircconnector"

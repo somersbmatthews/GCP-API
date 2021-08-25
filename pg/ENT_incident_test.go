@@ -17,8 +17,8 @@ var objectID5 = "1234567770"
 var objectID6 = "1234566789"
 var aceticAcid3 = "yes"
 var aceticAcid4 = "yes"
-var anteriorLongestLength3 = "40"
-var anteriorLongestLength4 = "30"
+var anteriorLongestLength3 = 32.6
+var anteriorLongestLength4 = 33.6
 var anteriorPhoto3 = "photo/asdf.jpg"
 var anteriorPhoto4 = "photo/poiu.jpg"
 var batteryImprintCode3 = "40"
@@ -39,8 +39,8 @@ var imaging3 = "MRI"
 var imaging4 = "XRay"
 var isBatteryOrMagnet3 = "Neither"
 var isBatteryOrMagnet4 = "Magnet"
-var lateralLongestLength3 = "30"
-var lateralLongestLength4 = "40"
+var lateralLongestLength3 = 22.1
+var lateralLongestLength4 = 56.7
 var lateralPhoto3 = "photo2.jpg"
 var lateralPhoto4 = "photo2.jpg"
 var magnetType3 = "Button Battery"
@@ -69,8 +69,8 @@ var objectShape3 = "square"
 var objectShape4 = "round"
 var otherCharacteristics3 = []string{"char1", "char2"}
 var otherCharacteristics4 = []string{"char3", "char4"}
-var posteriorLongestLength3 = "50"
-var posteriorLongestLength4 = "20"
+var posteriorLongestLength3 = 43.6
+var posteriorLongestLength4 = 22.3
 var posteriorPhoto3 = "photo4.jpg"
 var posteriorPhoto4 = "photo5.jpg"
 var radioOpacity3 = "No"
@@ -118,6 +118,8 @@ var prognosis3 = "Death"
 var prognosis4 = "Alive"
 var removalStrategy3 = "Forceps"
 var removalStrategy4 = "Surgery"
+var removalSetting3 = "OR"
+var removalSetting4 = "Doctor's Office"
 var symptomSeverity3 = "severe"
 var symptomSeverity4 = "not severe"
 var symptoms3 = []string{"sneezing", "choking"}
@@ -339,6 +341,7 @@ var ENTIncident1 = models.ENTIncident{
 	OpenSurgery:                &openSurgery3,
 	Prognosis:                  &prognosis3,
 	RemovalStrategy:            &removalStrategy3,
+	RemovalSetting:             &removalSetting3,
 	SwallowedObjects:           []*models.SwallowedObject{&swallowedObject1, &swallowedObject4},
 	SymptomSeverity:            &symptomSeverity3,
 	Symptoms:                   symptoms3,
@@ -367,6 +370,7 @@ var ENTIncident2 = models.ENTIncident{
 	OpenSurgery:                &openSurgery4,
 	Prognosis:                  &prognosis4,
 	RemovalStrategy:            &removalStrategy4,
+	RemovalSetting:             &removalSetting4,
 	SwallowedObjects:           []*models.SwallowedObject{&swallowedObject2, &swallowedObject3},
 	SymptomSeverity:            &symptomSeverity4,
 	Symptoms:                   symptoms4,
@@ -395,6 +399,7 @@ var ENTIncident2Update = models.ENTIncident{
 	OpenSurgery:                &openSurgery3,
 	Prognosis:                  &prognosis3,
 	RemovalStrategy:            &removalStrategy3,
+	RemovalSetting:             &removalSetting3,
 	SwallowedObjects:           []*models.SwallowedObject{&updatedSwallowedObject2, &swallowedObject3},
 	SymptomSeverity:            &symptomSeverity4,
 	Symptoms:                   symptoms4,

@@ -908,59 +908,6 @@ func init() {
         }
       }
     },
-    "/v3/expert/register": {
-      "post": {
-        "description": "use this to register/create a user",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Medical Expert"
-        ],
-        "summary": "Register a Medical Expert",
-        "operationId": "createExpert",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Firebase Id token goes here",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "name": "expert",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Expert"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/GoodResponse"
-            }
-          },
-          "401": {
-            "description": "bad authorization token",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          },
-          "404": {
-            "description": "userId for this incident is not found",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          }
-        }
-      }
-    },
     "/v3/expert/updatefcmtoken": {
       "patch": {
         "description": "use this to update FCM token",
@@ -1214,6 +1161,7 @@ func init() {
         "hoursUntilRemoval",
         "minutesUntilRemoval",
         "removalStrategy",
+        "removalSetting",
         "openSurgery",
         "easeOfRemoval",
         "wasIncidentLifeThreatening",
@@ -1290,6 +1238,9 @@ func init() {
           "type": "string"
         },
         "prognosis": {
+          "type": "string"
+        },
+        "removalSetting": {
           "type": "string"
         },
         "removalStrategy": {
@@ -1672,7 +1623,7 @@ func init() {
           "type": "string"
         },
         "anteriorLongestLength": {
-          "type": "string"
+          "type": "number"
         },
         "anteriorPhoto": {
           "type": "string"
@@ -1714,7 +1665,7 @@ func init() {
           "type": "string"
         },
         "lateralLongestLength": {
-          "type": "string"
+          "type": "number"
         },
         "lateralPhoto": {
           "type": "string"
@@ -1765,7 +1716,7 @@ func init() {
           }
         },
         "posteriorLongestLength": {
-          "type": "string"
+          "type": "number"
         },
         "posteriorPhoto": {
           "type": "string"
@@ -2719,59 +2670,6 @@ func init() {
         }
       }
     },
-    "/v3/expert/register": {
-      "post": {
-        "description": "use this to register/create a user",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Medical Expert"
-        ],
-        "summary": "Register a Medical Expert",
-        "operationId": "createExpert",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Firebase Id token goes here",
-            "name": "Authorization",
-            "in": "header",
-            "required": true
-          },
-          {
-            "name": "expert",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Expert"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/GoodResponse"
-            }
-          },
-          "401": {
-            "description": "bad authorization token",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          },
-          "404": {
-            "description": "userId for this incident is not found",
-            "schema": {
-              "$ref": "#/definitions/BadResponse"
-            }
-          }
-        }
-      }
-    },
     "/v3/expert/updatefcmtoken": {
       "patch": {
         "description": "use this to update FCM token",
@@ -3025,6 +2923,7 @@ func init() {
         "hoursUntilRemoval",
         "minutesUntilRemoval",
         "removalStrategy",
+        "removalSetting",
         "openSurgery",
         "easeOfRemoval",
         "wasIncidentLifeThreatening",
@@ -3101,6 +3000,9 @@ func init() {
           "type": "string"
         },
         "prognosis": {
+          "type": "string"
+        },
+        "removalSetting": {
           "type": "string"
         },
         "removalStrategy": {
@@ -3483,7 +3385,7 @@ func init() {
           "type": "string"
         },
         "anteriorLongestLength": {
-          "type": "string"
+          "type": "number"
         },
         "anteriorPhoto": {
           "type": "string"
@@ -3525,7 +3427,7 @@ func init() {
           "type": "string"
         },
         "lateralLongestLength": {
-          "type": "string"
+          "type": "number"
         },
         "lateralPhoto": {
           "type": "string"
@@ -3576,7 +3478,7 @@ func init() {
           }
         },
         "posteriorLongestLength": {
-          "type": "string"
+          "type": "number"
         },
         "posteriorPhoto": {
           "type": "string"

@@ -257,7 +257,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		return response
 	})
 
-	api.MedicalExpertCreateExpertHandler = medical_expert.CreateExpertHandlerFunc(func(params medical_expert.CreateExpertParams) middleware.Responder {
+	api.MedicalExpertRegisterExpertHandler = medical_expert.RegisterExpertHandlerFunc(func(params medical_expert.RegisterExpertParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
