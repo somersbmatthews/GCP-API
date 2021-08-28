@@ -88,6 +88,9 @@ func NewGircAPI(spec *loads.Document) *GircAPI {
 		UserGetUserHandler: user.GetUserHandlerFunc(func(params user.GetUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.GetUser has not yet been implemented")
 		}),
+		AdminGetUsersHandler: admin.GetUsersHandlerFunc(func(params admin.GetUsersParams) middleware.Responder {
+			return middleware.NotImplemented("operation admin.GetUsers has not yet been implemented")
+		}),
 		MedicalExpertLogoutExpertHandler: medical_expert.LogoutExpertHandlerFunc(func(params medical_expert.LogoutExpertParams) middleware.Responder {
 			return middleware.NotImplemented("operation medical_expert.LogoutExpert has not yet been implemented")
 		}),
@@ -171,6 +174,8 @@ type GircAPI struct {
 	IncidentGetIncidentsHandler incident.GetIncidentsHandler
 	// UserGetUserHandler sets the operation handler for the get user operation
 	UserGetUserHandler user.GetUserHandler
+	// AdminGetUsersHandler sets the operation handler for the get users operation
+	AdminGetUsersHandler admin.GetUsersHandler
 	// MedicalExpertLogoutExpertHandler sets the operation handler for the logout expert operation
 	MedicalExpertLogoutExpertHandler medical_expert.LogoutExpertHandler
 	// MedicalExpertRegisterExpertHandler sets the operation handler for the register expert operation
@@ -300,6 +305,9 @@ func (o *GircAPI) Validate() error {
 	}
 	if o.UserGetUserHandler == nil {
 		unregistered = append(unregistered, "user.GetUserHandler")
+	}
+	if o.AdminGetUsersHandler == nil {
+		unregistered = append(unregistered, "admin.GetUsersHandler")
 	}
 	if o.MedicalExpertLogoutExpertHandler == nil {
 		unregistered = append(unregistered, "medical_expert.LogoutExpertHandler")
@@ -462,6 +470,10 @@ func (o *GircAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/v2/user"] = user.NewGetUser(o.context, o.UserGetUserHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/v3/admin/users"] = admin.NewGetUsers(o.context, o.AdminGetUsersHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

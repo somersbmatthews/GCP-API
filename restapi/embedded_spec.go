@@ -433,6 +433,51 @@ func init() {
         }
       }
     },
+    "/v3/admin/users": {
+      "get": {
+        "description": "use this to get all users",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get all users",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Firebase Id token goes here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUsersResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/admin/verifyexpert": {
       "patch": {
         "description": "use this to director verify an expert",
@@ -1423,6 +1468,12 @@ func init() {
         }
       }
     },
+    "GetUsersResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
     "GoodResponse": {
       "type": "object",
       "properties": {
@@ -1739,6 +1790,40 @@ func init() {
         },
         "validated": {
           "type": "boolean"
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "id",
+        "name",
+        "email",
+        "expertise",
+        "degree",
+        "deviceType",
+        "FCMToken"
+      ],
+      "properties": {
+        "FCMToken": {
+          "type": "string"
+        },
+        "degree": {
+          "type": "string"
+        },
+        "deviceType": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "expertise": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -2205,6 +2290,51 @@ func init() {
         }
       }
     },
+    "/v3/admin/users": {
+      "get": {
+        "description": "use this to get all users",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get all users",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Firebase Id token goes here",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/GetUsersResponse"
+            }
+          },
+          "401": {
+            "description": "bad authorization token",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "$ref": "#/definitions/BadResponse"
+            }
+          }
+        }
+      }
+    },
     "/v3/admin/verifyexpert": {
       "patch": {
         "description": "use this to director verify an expert",
@@ -3195,6 +3325,12 @@ func init() {
         }
       }
     },
+    "GetUsersResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
     "GoodResponse": {
       "type": "object",
       "properties": {
@@ -3511,6 +3647,40 @@ func init() {
         },
         "validated": {
           "type": "boolean"
+        }
+      }
+    },
+    "User": {
+      "required": [
+        "id",
+        "name",
+        "email",
+        "expertise",
+        "degree",
+        "deviceType",
+        "FCMToken"
+      ],
+      "properties": {
+        "FCMToken": {
+          "type": "string"
+        },
+        "degree": {
+          "type": "string"
+        },
+        "deviceType": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "expertise": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
