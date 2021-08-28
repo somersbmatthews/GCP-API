@@ -64,6 +64,8 @@ type ENTIncident struct {
 
 	Submitted bool
 
+	Validated bool
+
 	SwallowedObjects []SwallowedObject `gorm:"foreignKey:IncidentID;references:ID"`
 }
 
@@ -138,6 +140,8 @@ type SwallowedObject struct {
 
 	DeviceType string
 
+	Validated bool
+
 	Submitted bool
 }
 
@@ -189,7 +193,8 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 			MagnetType:               *object.MagnetType,
 			CustomMagnetType:         *object.CustomMagnetType,
 			DeviceType:               *object.DeviceType,
-			Submitted:                object.Submitted,
+			Submitted:                *object.Submitted,
+			Validated:                *object.Validated,
 		}
 
 		swallowedObjects = append(swallowedObjects, newObject)
@@ -222,7 +227,8 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 		Prognosis:                  *incidentRequest.Prognosis,
 		HospitalStay:               *incidentRequest.HospitalStay,
 		DeviceType:                 *incidentRequest.DeviceType,
-		Submitted:                  incidentRequest.Submitted,
+		Validated:                  *incidentRequest.Validated,
+		Submitted:                  *incidentRequest.Submitted,
 		SwallowedObjects:           swallowedObjects,
 	}
 
@@ -305,7 +311,8 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 				PosteriorLongestLength:   &object.PosteriorLongestLength,
 				PosteriorPhoto:           &object.PosteriorPhoto,
 				RadioOpacity:             &object.RadioOpacity,
-				Submitted:                object.Submitted,
+				Validated:                &object.Validated,
+				Submitted:                &object.Submitted,
 				Sucralfate:               &object.Sucralfate,
 			}
 			swallowedObjects = append(swallowedObjects, &newSwallowedObject)
@@ -332,7 +339,8 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 			Prognosis:                  &incident.Prognosis,
 			RemovalStrategy:            &incident.RemovalStrategy,
 			RemovalSetting:             &incident.RemovalSetting,
-			Submitted:                  incident.Submitted,
+			Validated:                  &incident.Validated,
+			Submitted:                  &incident.Submitted,
 			SwallowedObjects:           swallowedObjects,
 			SymptomSeverity:            &incident.SymptomSeverity,
 			Symptoms:                   convertPQToStringArray(incident.Symptoms),
@@ -395,7 +403,8 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 			MagnetType:               *object.MagnetType,
 			CustomMagnetType:         *object.CustomMagnetType,
 			DeviceType:               *object.DeviceType,
-			Submitted:                object.Submitted,
+			Validated:                *object.Validated,
+			Submitted:                *object.Submitted,
 		}
 
 		swallowedObjects = append(swallowedObjects, newObject)
@@ -427,7 +436,8 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 		Prognosis:                  *ENTIncidentRequest.Prognosis,
 		HospitalStay:               *ENTIncidentRequest.HospitalStay,
 		DeviceType:                 *ENTIncidentRequest.DeviceType,
-		Submitted:                  ENTIncidentRequest.Submitted,
+		Validated:                  *ENTIncidentRequest.Validated,
+		Submitted:                  *ENTIncidentRequest.Submitted,
 	}
 
 	err = db.Find(&ENTIncident{}, "id = ?", ENTIncidentRequest.ID).Updates(incident).Error

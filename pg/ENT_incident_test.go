@@ -77,6 +77,8 @@ var radioOpacity3 = "No"
 var radioOpacity4 = "Yes"
 var sucrafate3 = "No"
 var sucrafate4 = "Yes"
+var objectValidated3 = true
+var objectValidated4 = false
 var objectSubmitted3 = true
 var objectSubmitted4 = false
 
@@ -128,8 +130,10 @@ var wasIncidentLifeThreatening3 = "no"
 var wasIncidentLifeThreatening4 = "yes"
 var year3 = "2009"
 var year4 = "2015"
+var incidentValidated3 = false
+var incidentValidated4 = true
 var incidentSubmitted3 = false
-var incidentSubmitted4 = false
+var incidentSubmitted4 = true
 
 var swallowedObject1 = models.SwallowedObject{
 	ID:                       &objectID3,
@@ -166,7 +170,8 @@ var swallowedObject1 = models.SwallowedObject{
 	PosteriorPhoto:           &posteriorPhoto3,
 	RadioOpacity:             &radioOpacity3,
 	Sucralfate:               &sucrafate3,
-	Submitted:                objectSubmitted3,
+	Validated:                &objectValidated3,
+	Submitted:                &objectSubmitted3,
 }
 
 var swallowedObject2 = models.SwallowedObject{
@@ -204,7 +209,8 @@ var swallowedObject2 = models.SwallowedObject{
 	PosteriorPhoto:           &posteriorPhoto4,
 	RadioOpacity:             &radioOpacity4,
 	Sucralfate:               &sucrafate4,
-	Submitted:                objectSubmitted4,
+	Validated:                &objectValidated4,
+	Submitted:                &objectSubmitted4,
 }
 
 var updatedSwallowedObject2 = models.SwallowedObject{
@@ -242,7 +248,8 @@ var updatedSwallowedObject2 = models.SwallowedObject{
 	PosteriorPhoto:           &posteriorPhoto3,
 	RadioOpacity:             &radioOpacity3,
 	Sucralfate:               &sucrafate3,
-	Submitted:                objectSubmitted4,
+	Validated:                &objectValidated3,
+	Submitted:                &objectSubmitted4,
 }
 
 var swallowedObject3 = models.SwallowedObject{
@@ -280,7 +287,8 @@ var swallowedObject3 = models.SwallowedObject{
 	PosteriorPhoto:           &posteriorPhoto4,
 	RadioOpacity:             &radioOpacity4,
 	Sucralfate:               &sucrafate4,
-	Submitted:                objectSubmitted4,
+	Validated:                &objectValidated4,
+	Submitted:                &objectSubmitted4,
 }
 
 var swallowedObject4 = models.SwallowedObject{
@@ -318,7 +326,8 @@ var swallowedObject4 = models.SwallowedObject{
 	PosteriorPhoto:           &posteriorPhoto3,
 	RadioOpacity:             &radioOpacity3,
 	Sucralfate:               &sucrafate3,
-	Submitted:                objectSubmitted3,
+	Validated:                &objectValidated3,
+	Submitted:                &objectSubmitted3,
 }
 
 var ENTIncident1 = models.ENTIncident{
@@ -347,7 +356,8 @@ var ENTIncident1 = models.ENTIncident{
 	Symptoms:                   symptoms3,
 	WasIncidentLifeThreatening: &wasIncidentLifeThreatening3,
 	Year:                       &year3,
-	Submitted:                  incidentSubmitted3,
+	Validated:                  &incidentValidated3,
+	Submitted:                  &incidentSubmitted3,
 }
 
 var ENTIncident2 = models.ENTIncident{
@@ -376,7 +386,8 @@ var ENTIncident2 = models.ENTIncident{
 	Symptoms:                   symptoms4,
 	WasIncidentLifeThreatening: &wasIncidentLifeThreatening4,
 	Year:                       &year4,
-	Submitted:                  incidentSubmitted4,
+	Validated:                  &incidentValidated4,
+	Submitted:                  &incidentSubmitted4,
 }
 
 var ENTIncident2Update = models.ENTIncident{
@@ -405,7 +416,8 @@ var ENTIncident2Update = models.ENTIncident{
 	Symptoms:                   symptoms4,
 	WasIncidentLifeThreatening: &wasIncidentLifeThreatening4,
 	Year:                       &year4,
-	Submitted:                  incidentSubmitted4,
+	Validated:                  &incidentValidated4,
+	Submitted:                  &incidentSubmitted4,
 }
 
 func TestCreateENTIncidents(t *testing.T) {

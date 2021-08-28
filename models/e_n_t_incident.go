@@ -101,7 +101,8 @@ type ENTIncident struct {
 	RemovalStrategy *string `json:"removalStrategy"`
 
 	// submitted
-	Submitted bool `json:"submitted,omitempty"`
+	// Required: true
+	Submitted *bool `json:"submitted"`
 
 	// swallowed objects
 	// Required: true
@@ -114,6 +115,10 @@ type ENTIncident struct {
 	// symptoms
 	// Required: true
 	Symptoms []string `json:"symptoms"`
+
+	// validated
+	// Required: true
+	Validated *bool `json:"validated"`
 
 	// was incident life threatening
 	// Required: true
@@ -208,6 +213,10 @@ func (m *ENTIncident) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateSubmitted(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSwallowedObjects(formats); err != nil {
 		res = append(res, err)
 	}
@@ -217,6 +226,10 @@ func (m *ENTIncident) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateSymptoms(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateValidated(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -414,6 +427,15 @@ func (m *ENTIncident) validateRemovalStrategy(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *ENTIncident) validateSubmitted(formats strfmt.Registry) error {
+
+	if err := validate.Required("submitted", "body", m.Submitted); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *ENTIncident) validateSwallowedObjects(formats strfmt.Registry) error {
 
 	if err := validate.Required("swallowedObjects", "body", m.SwallowedObjects); err != nil {
@@ -451,6 +473,15 @@ func (m *ENTIncident) validateSymptomSeverity(formats strfmt.Registry) error {
 func (m *ENTIncident) validateSymptoms(formats strfmt.Registry) error {
 
 	if err := validate.Required("symptoms", "body", m.Symptoms); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ENTIncident) validateValidated(formats strfmt.Registry) error {
+
+	if err := validate.Required("validated", "body", m.Validated); err != nil {
 		return err
 	}
 

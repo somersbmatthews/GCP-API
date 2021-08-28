@@ -151,11 +151,16 @@ type SwallowedObject struct {
 	RadioOpacity *string `json:"radioOpacity"`
 
 	// submitted
-	Submitted bool `json:"submitted,omitempty"`
+	// Required: true
+	Submitted *bool `json:"submitted"`
 
 	// sucralfate
 	// Required: true
 	Sucralfate *string `json:"sucralfate"`
+
+	// validated
+	// Required: true
+	Validated *bool `json:"validated"`
 }
 
 // Validate validates this swallowed object
@@ -290,7 +295,15 @@ func (m *SwallowedObject) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateSubmitted(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSucralfate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateValidated(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -588,9 +601,27 @@ func (m *SwallowedObject) validateRadioOpacity(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SwallowedObject) validateSubmitted(formats strfmt.Registry) error {
+
+	if err := validate.Required("submitted", "body", m.Submitted); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *SwallowedObject) validateSucralfate(formats strfmt.Registry) error {
 
 	if err := validate.Required("sucralfate", "body", m.Sucralfate); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *SwallowedObject) validateValidated(formats strfmt.Registry) error {
+
+	if err := validate.Required("validated", "body", m.Validated); err != nil {
 		return err
 	}
 

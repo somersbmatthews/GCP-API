@@ -1174,6 +1174,8 @@ func init() {
         "prognosis",
         "hospitalStay",
         "deviceType",
+        "validated",
+        "submitted",
         "swallowedObjects"
       ],
       "properties": {
@@ -1263,6 +1265,9 @@ func init() {
           "items": {
             "type": "string"
           }
+        },
+        "validated": {
+          "type": "boolean"
         },
         "wasIncidentLifeThreatening": {
           "type": "string"
@@ -1613,7 +1618,9 @@ func init() {
         "aceticAcid",
         "magnetType",
         "customMagnetType",
-        "deviceType"
+        "deviceType",
+        "validated",
+        "submitted"
       ],
       "properties": {
         "ID": {
@@ -1729,6 +1736,9 @@ func init() {
         },
         "sucralfate": {
           "type": "string"
+        },
+        "validated": {
+          "type": "boolean"
         }
       }
     },
@@ -2936,6 +2946,8 @@ func init() {
         "prognosis",
         "hospitalStay",
         "deviceType",
+        "validated",
+        "submitted",
         "swallowedObjects"
       ],
       "properties": {
@@ -3025,6 +3037,9 @@ func init() {
           "items": {
             "type": "string"
           }
+        },
+        "validated": {
+          "type": "boolean"
         },
         "wasIncidentLifeThreatening": {
           "type": "string"
@@ -3375,7 +3390,9 @@ func init() {
         "aceticAcid",
         "magnetType",
         "customMagnetType",
-        "deviceType"
+        "deviceType",
+        "validated",
+        "submitted"
       ],
       "properties": {
         "ID": {
@@ -3491,6 +3508,9 @@ func init() {
         },
         "sucralfate": {
           "type": "string"
+        },
+        "validated": {
+          "type": "boolean"
         }
       }
     },
