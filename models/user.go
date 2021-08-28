@@ -19,48 +19,45 @@ import (
 // swagger:model User
 type User struct {
 
-	// f c m token
+	// ID
 	// Required: true
-	FCMToken *string `json:"FCMToken"`
+	ID *string `json:"ID"`
 
 	// degree
 	// Required: true
 	Degree *string `json:"degree"`
 
-	// device type
-	// Required: true
-	DeviceType *string `json:"deviceType"`
-
 	// email
 	// Required: true
 	Email *string `json:"email"`
+
+	// email confirmed
+	// Example: false
+	EmailConfirmed bool `json:"emailConfirmed,omitempty"`
 
 	// expertise
 	// Required: true
 	Expertise *string `json:"expertise"`
 
-	// id
-	// Required: true
-	ID *string `json:"id"`
-
 	// name
 	// Required: true
 	Name *string `json:"name"`
+
+	// verified
+	// Example: false
+	// Required: true
+	Verified *bool `json:"verified"`
 }
 
 // Validate validates this user
 func (m *User) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateFCMToken(formats); err != nil {
+	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateDegree(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateDeviceType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -72,11 +69,11 @@ func (m *User) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateID(formats); err != nil {
+	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateName(formats); err != nil {
+	if err := m.validateVerified(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -86,9 +83,9 @@ func (m *User) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *User) validateFCMToken(formats strfmt.Registry) error {
+func (m *User) validateID(formats strfmt.Registry) error {
 
-	if err := validate.Required("FCMToken", "body", m.FCMToken); err != nil {
+	if err := validate.Required("ID", "body", m.ID); err != nil {
 		return err
 	}
 
@@ -98,15 +95,6 @@ func (m *User) validateFCMToken(formats strfmt.Registry) error {
 func (m *User) validateDegree(formats strfmt.Registry) error {
 
 	if err := validate.Required("degree", "body", m.Degree); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *User) validateDeviceType(formats strfmt.Registry) error {
-
-	if err := validate.Required("deviceType", "body", m.DeviceType); err != nil {
 		return err
 	}
 
@@ -131,18 +119,18 @@ func (m *User) validateExpertise(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *User) validateID(formats strfmt.Registry) error {
+func (m *User) validateName(formats strfmt.Registry) error {
 
-	if err := validate.Required("id", "body", m.ID); err != nil {
+	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *User) validateName(formats strfmt.Registry) error {
+func (m *User) validateVerified(formats strfmt.Registry) error {
 
-	if err := validate.Required("name", "body", m.Name); err != nil {
+	if err := validate.Required("verified", "body", m.Verified); err != nil {
 		return err
 	}
 

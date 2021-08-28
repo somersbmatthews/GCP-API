@@ -207,7 +207,7 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/GetUserGoodResponse"
+              "$ref": "#/definitions/GetUsersResponse"
             }
           },
           "401": {
@@ -1432,42 +1432,6 @@ func init() {
         }
       }
     },
-    "GetUserGoodResponse": {
-      "type": "object",
-      "required": [
-        "userId",
-        "verified",
-        "name",
-        "degree",
-        "expertise",
-        "email"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "emailConfirmed": {
-          "type": "boolean",
-          "example": false
-        },
-        "expertise": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "userId": {
-          "type": "string"
-        },
-        "verified": {
-          "type": "boolean",
-          "example": false
-        }
-      }
-    },
     "GetUsersResponse": {
       "type": "array",
       "items": {
@@ -1794,36 +1758,38 @@ func init() {
       }
     },
     "User": {
+      "type": "object",
       "required": [
-        "id",
+        "ID",
+        "verified",
         "name",
-        "email",
-        "expertise",
         "degree",
-        "deviceType",
-        "FCMToken"
+        "expertise",
+        "email"
       ],
       "properties": {
-        "FCMToken": {
+        "ID": {
           "type": "string"
         },
         "degree": {
           "type": "string"
         },
-        "deviceType": {
-          "type": "string"
-        },
         "email": {
           "type": "string"
+        },
+        "emailConfirmed": {
+          "type": "boolean",
+          "example": false
         },
         "expertise": {
           "type": "string"
         },
-        "id": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
+        },
+        "verified": {
+          "type": "boolean",
+          "example": false
         }
       }
     },
@@ -2064,7 +2030,7 @@ func init() {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/GetUserGoodResponse"
+              "$ref": "#/definitions/GetUsersResponse"
             }
           },
           "401": {
@@ -3289,42 +3255,6 @@ func init() {
         }
       }
     },
-    "GetUserGoodResponse": {
-      "type": "object",
-      "required": [
-        "userId",
-        "verified",
-        "name",
-        "degree",
-        "expertise",
-        "email"
-      ],
-      "properties": {
-        "degree": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "emailConfirmed": {
-          "type": "boolean",
-          "example": false
-        },
-        "expertise": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "userId": {
-          "type": "string"
-        },
-        "verified": {
-          "type": "boolean",
-          "example": false
-        }
-      }
-    },
     "GetUsersResponse": {
       "type": "array",
       "items": {
@@ -3651,36 +3581,38 @@ func init() {
       }
     },
     "User": {
+      "type": "object",
       "required": [
-        "id",
+        "ID",
+        "verified",
         "name",
-        "email",
-        "expertise",
         "degree",
-        "deviceType",
-        "FCMToken"
+        "expertise",
+        "email"
       ],
       "properties": {
-        "FCMToken": {
+        "ID": {
           "type": "string"
         },
         "degree": {
           "type": "string"
         },
-        "deviceType": {
-          "type": "string"
-        },
         "email": {
           "type": "string"
+        },
+        "emailConfirmed": {
+          "type": "boolean",
+          "example": false
         },
         "expertise": {
           "type": "string"
         },
-        "id": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
+        },
+        "verified": {
+          "type": "boolean",
+          "example": false
         }
       }
     },
