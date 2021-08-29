@@ -97,11 +97,11 @@ func initSocketConnectionPool() (*sql.DB, error) {
 
 func initTCPConnectionPool() (*sql.DB, error) {
 	var (
-		dbUser    = "gorm"
-		dbTcpHost = "10.88.176.3" // for gcp
-		//dbTcpHost = "127.0.0.1" // for local
-		dbPort = "5432"
-		dbName = "postgres"
+		dbUser = "gorm"
+		//dbTcpHost = "10.88.176.3" // for gcp
+		dbTcpHost = "127.0.0.1" // for local
+		dbPort    = "5432"
+		dbName    = "postgres"
 	)
 	var dbURI string
 	dbURI = fmt.Sprintf("host=%s user=%s password=%s port=%s database=%s", dbTcpHost, dbUser, postgrespassword, dbPort, dbName)

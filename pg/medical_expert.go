@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gircapp/api/emailer"
 	"github.com/gircapp/api/models"
 	"gorm.io/gorm"
 )
@@ -95,6 +96,8 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 		RegistrationTime: time.Now().Unix(),
 	}
 
+	emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userID)
+
 	err := db.Create(expert).Error
 	if err != nil {
 		return nil, false
@@ -148,10 +151,25 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 		Degree:    *expertRequestObject.Degree,
 		Expertise: *expertRequestObject.Expertise,
 	}
+
+	oldExpert := &Expert{
+		ID: userId,
+	}
+	err := db.Find(oldExpert).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+
+	if &oldExpert.Email != expertRequestObject.Email {
+		emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, userId)
+	}
+
 	model := Expert{
 		ID: userId,
 	}
-	err := db.Model(model).Updates(expert).Error
+	err = db.Model(model).Updates(expert).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
@@ -193,7 +211,16 @@ func VerifyExpert(ctx context.Context, VerifyRequestObject models.Verify, userId
 	} else if err != nil {
 		panic(err)
 	}
-
+	model := &Expert{
+		ID: userId,
+	}
+	err = db.Find(model).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+	emailer.SendUserVerificationWelcomeEmail(model.Email)
 	message := fmt.Sprintf("Medical Expert with id %s is verfied or unverified", userId)
 	return &models.GoodResponse{
 		Message: message,

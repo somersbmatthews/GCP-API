@@ -7,11 +7,9 @@ import (
 	"strings"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
-	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
-
-	"github.com/gircapp/api/pg"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/jordan-wright/email"
+	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
 var emailPassword string
@@ -39,7 +37,7 @@ func init() {
 }
 
 func getWhiteListerEmails() ([]string, error) {
-	name := "projects/gircapp/secrets/EMAIL_JWT_SECRET/versions/latest"
+	name := "projects/gircapp/secrets/WHITELIST_NOTIFICATION_EMAILS/versions/latest"
 	ctx := context.Background()
 	client, err := secretmanager.NewClient(ctx)
 	if err != nil {
@@ -77,7 +75,7 @@ func getJWTSecret() (string, error) {
 }
 
 func getGIRCAPPPassword() (string, error) {
-	name := "projects/gircapp/secrets/GIRCAPP3_EMAILPASSWORD/versions/latest"
+	name := "projects/gircapp/secrets/GIRCAPP3_EMAIL_PASSWORD/versions/latest"
 	ctx := context.Background()
 	client, err := secretmanager.NewClient(ctx)
 	if err != nil {
@@ -97,8 +95,8 @@ func makeEmailJWT(email string, userID string, verified string) (jwtValue string
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userID": userID,
-		"email":  email,
+		"userID":   userID,
+		"email":    email,
 		"verified": verified,
 	})
 
@@ -112,63 +110,53 @@ func makeEmailJWT(email string, userID string, verified string) (jwtValue string
 	return tokenString, nil
 }
 
-func SendConfirmationEmail(emailAddress string, userID string) (err error) {
-	ctx := context.Background()
-	// TODO: make distinction between new non-director verified user and registered user updating his email
-	user, ok := pg.GetMedicalExpert(ctx, userID)
-	if !user.Verified {
-		jwt, err := makeEmailJWT(emailAddress, userID, "true")
-		if err != nil {
-			return err
-		}
-		url := fmt.Sprintf("https://girc.app/confirmemail?key=%s", jwt)
-		e := email.NewEmail()
-		e.From = "admin@globalirc.org"
-		e.To = []string{emailAddress}
-		e.Subject = "Please Confirm Your Email Address"
-		//	e.Text = []byte("Text Body is, of course, supported!")
-		html := fmt.Sprintf("<a href=%s>Click here to confirm email.</a>", url)
-		e.HTML = []byte(html)
-		e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+func SendConfirmationEmailIfVerified(emailAddress string, userID string) error {
 
-		return nil
-	} else { // then user is verified
-		ctx := context.Background()
-		// TODO: make distinction between new non-director verified user and registered user updating his email
-		_, ok := pg.GetMedicalExpert(ctx , userID)
-		if !ok {
-		jwt, err := makeEmailJWT(emailAddress, userID, "false")
-		if err != nil {
-			return err
-		}
-		url := fmt.Sprintf("https://girc.app/confirmemail?key=%s", jwt)
-		e := email.NewEmail()
-		e.From = "admin@globalirc.org"
-		e.To = []string{emailAddress}
-		e.Subject = "Please Confirm Your Email Address"
-		//	e.Text = []byte("Text Body is, of course, supported!")
-		html := fmt.Sprintf("<a href=%s>Click here to confirm email</a>", url)
-		e.HTML = []byte(html)
-		e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
-
-		return nil
-
+	jwt, err := makeEmailJWT(emailAddress, userID, "true")
+	if err != nil {
+		return err
 	}
+	url := fmt.Sprintf("https://girc.app/confirmemail?key=%s", jwt)
+	e := email.NewEmail()
+	e.From = "admin@globalirc.org"
+	e.To = []string{emailAddress}
+	e.Subject = "Please Confirm Your Email Address"
+
+	html := fmt.Sprintf("<a href=%s>Click here to confirm email.</a>", url)
+	e.HTML = []byte(html)
+	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	return nil
+
 }
 
-func DecodeJWT(jwtValue string) (email string, userID string, newUser bool, err error) {
-	// Parse takes the token string and a function for looking up the key. The latter is especially
-	// useful if you use multiple keys for your application.  The standard is to use 'kid' in the
-	// head of the token to identify which key to use, but the parsed token (head and claims) is provided
-	// to the callback, providing flexibility.
+func SendConfirmationEmailIfNotVerified(emailAddress string, userID string) error {
+
+	jwt, err := makeEmailJWT(emailAddress, userID, "false")
+	if err != nil {
+		return err
+	}
+	url := fmt.Sprintf("https://girc.app/confirmemail?key=%s", jwt)
+	e := email.NewEmail()
+	e.From = "admin@globalirc.org"
+	e.To = []string{emailAddress}
+	e.Subject = "Please Confirm Your Email Address"
+
+	html := fmt.Sprintf("<a href=%s>Click here to confirm email.</a>", url)
+	e.HTML = []byte(html)
+	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	return nil
+
+}
+
+func DecodeJWTClaims(jwtValue string) (email string, userID string, verified string, err error) {
+
 	hmacSecret := []byte(jwtSecret)
 	token, err := jwt.Parse(jwtValue, func(token *jwt.Token) (interface{}, error) {
-		// Don't forget to validate the alg is what you expect:
+
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 
-		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
 		return hmacSecret, nil
 	})
 
@@ -176,17 +164,17 @@ func DecodeJWT(jwtValue string) (email string, userID string, newUser bool, err 
 		// fmt.Println(claims["foo"], claims["nbf"])
 		email := fmt.Sprintf("%s", claims["email"])
 		userID := fmt.Sprintf("%s", claims["userID"])
-		newUser := fmt.Sprintf("%s", claims["newUser"])
-		
-		return email, userID, newUser, nil
+		verified := fmt.Sprintf("%s", claims["verified"])
+
+		return email, userID, verified, nil
 	} else {
-		return "", "", err
+		return "", "", "", err
 	}
 
 }
 
 func SendDirectorVerificationEmail(userName string, userEmail string, userID string) {
-	jwt, err := makeEmailJWT(userEmail, userID)
+	jwt, err := makeEmailJWT(userEmail, userID, "false")
 	if err != nil {
 		panic(err)
 	}
@@ -198,5 +186,21 @@ func SendDirectorVerificationEmail(userName string, userEmail string, userID str
 	//	e.Text = []byte("Text Body is, of course, supported!")
 	html := fmt.Sprintf("<a href=%s>link text</a>", url)
 	e.HTML = []byte(html)
+	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+}
+
+func SendUserVerificationWelcomeEmail(userEmail string) {
+	// jwt, err := makeEmailJWT(userEmail, userID, "false")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	//	url := fmt.Sprintf("https://girc.app/directorverifybyemail?key=%s", jwt)
+	e := email.NewEmail()
+	e.From = "admin@globalirc.org"
+	e.To = []string{userEmail}
+	e.Subject = "Welcome to the GIRC App"
+	//	e.Text = []byte("Text Body is, of course, supported!")
+	//html := fmt.Sprintf("<a href=%s>link text</a>", url)
+	e.HTML = []byte("<h1>Welcome to the GIRC App!</h1>")
 	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
 }

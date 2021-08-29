@@ -58,6 +58,10 @@ func TestCreateMedicalExpertWithAutoDirectorAndEmailVerification(t *testing.T) {
 
 	ok = reflect.DeepEqual(*got, want)
 	if !ok {
+		fmt.Println("this is want")
+		fmt.Println(render.Render(want))
+		fmt.Println("this is got")
+		fmt.Println(render.Render(*got))
 		t.Error("medical expert in db does not match medical expert inserted")
 	}
 

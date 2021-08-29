@@ -61,7 +61,7 @@ func main() {
 		}
 		key := keys[0]
 
-		_, userID, err := emailer.DecodeJWT(key)
+		_, userID, _, err := emailer.DecodeJWTClaims(key)
 		if err != nil {
 			panic(err)
 		}
@@ -91,9 +91,13 @@ func main() {
 
 		log.Println("Url Param 'key' is: " + string(key))
 
-		email, userID, err := emailer.DecodeJWT(key)
+		email, userID, verified, err := emailer.DecodeJWTClaims(key)
 		if err != nil {
 			panic(err)
+		}
+
+		if verified == "false" {
+			emailer.SendDirectorVerificationEmail("new User", email, userID)
 		}
 
 		_, ok = pg.ConfirmEmail(ctx, email, userID)
