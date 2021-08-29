@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gircapp/api/emailer"
+	"github.com/gircapp/api/models"
+	"github.com/gircapp/api/pg"
 	"github.com/gircapp/api/restapi"
 	"github.com/gircapp/api/restapi/operations"
 	"github.com/go-openapi/loads"
@@ -47,8 +51,35 @@ func main() {
 
 	// localhost:8080/?key=hello%20golangcode.com
 	//	emailConfirmationTemplate := template.Must(template.ParseFiles("email_confirmation_template.html"))
-	http.HandleFunc("/confirmemail", func(w http.ResponseWriter, r *http.Request) {
 
+	http.HandleFunc("/directorverifybyemail", func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.Background()
+		keys, ok := r.URL.Query()["key"]
+		if !ok || len(keys[0]) < 1 {
+			log.Println("Url Param 'key' is missing")
+			return
+		}
+		key := keys[0]
+
+		_, userID, err := emailer.DecodeJWT(key)
+		if err != nil {
+			panic(err)
+		}
+
+		booleanTrue := true
+		requestObject := models.Verify{
+			UserID:   &userID,
+			Verified: &booleanTrue,
+		}
+
+		_, ok = pg.VerifyExpert(ctx, requestObject, userID)
+		if !ok {
+			// TODO: handle cannot find expert here
+		}
+
+	})
+	http.HandleFunc("/confirmemail", func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.Background()
 		keys, ok := r.URL.Query()["key"]
 
 		if !ok || len(keys[0]) < 1 {
@@ -60,17 +91,16 @@ func main() {
 
 		log.Println("Url Param 'key' is: " + string(key))
 
-		// TODO: get user id from key
+		email, userID, err := emailer.DecodeJWT(key)
+		if err != nil {
+			panic(err)
+		}
 
-		// data := TodoPageData{
-		// 	PageTitle: "My TODO list",
-		// 	Todos: []Todo{
-		// 		{Title: "Task 1", Done: false},
-		// 		{Title: "Task 2", Done: true},
-		// 		{Title: "Task 3", Done: true},
-		// 	},
-		// }
-		//	emailConfirmationTemplate.Execute(w, data)
+		_, ok = pg.ConfirmEmail(ctx, email, userID)
+		if !ok {
+			// TODO: handle cannot find expert here
+		}
+
 	})
 
 	http.Handle("/", server.GetHandler())

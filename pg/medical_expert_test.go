@@ -11,11 +11,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestDeleteMedicalExpert(t *testing.T) {
-	ctx := context.Background()
-	_, _ = DeleteMedicalExpert(ctx, testUserID)
+// func TestDeleteMedicalExpert(t *testing.T) {
+// 	ctx := context.Background()
+// 	_, _ = DeleteMedicalExpert(ctx, testUserID)
 
-}
+// }
 
 func TestCreateMedicalExpertWithAutoDirectorAndEmailVerification(t *testing.T) {
 	ctx := context.Background()

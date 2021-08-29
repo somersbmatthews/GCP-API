@@ -267,6 +267,7 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 				Message: "Validation of firebase idToken failed.",
 			})
 		}
+		// TODO:  apply registration normally functionality here
 		payload, ok := pg.CreateExpertWithAutoDirectorAndEmailVerification(ctx, params.Expert, userID)
 		if !ok {
 			return middleware.Error(404, models.BadResponse{

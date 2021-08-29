@@ -80,7 +80,7 @@ func CreateExpertWithAutoDirectorWithoutEmailVerification(ctx context.Context, e
 }
 
 func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Expert, userID string) (*models.GoodResponse, bool) {
-
+	// TODO: send confirmation email here
 	expert := Expert{
 		ID:               userID,
 		Email:            *expertRequestObject.Email,
@@ -110,7 +110,7 @@ func ConfirmEmail(ctx context.Context, email string, userID string) (*models.Goo
 		ID: userID,
 	}
 
-	err := db.Model(model).Update("email", email)
+	err := db.Model(model).Update("email", email).Update("email_confirmed", true).Error
 	if err != nil {
 		return nil, false
 	}
