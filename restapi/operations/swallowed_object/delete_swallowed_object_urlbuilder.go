@@ -35,7 +35,7 @@ func (o *DeleteSwallowedObjectURL) SetBasePath(bp string) {
 func (o *DeleteSwallowedObjectURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/v3/swallowedObject"
+	var _path = "/v3/swallowedobject"
 
 	_basePath := o._basePath
 	if _basePath == "" {

@@ -1006,7 +1006,7 @@ func init() {
         }
       }
     },
-    "/v3/swallowedObject": {
+    "/v3/swallowedobject": {
       "delete": {
         "description": "use this to delete swallowed object",
         "consumes": [
@@ -1021,6 +1021,13 @@ func init() {
         "summary": "Delete Swallowed Object",
         "operationId": "deleteSwallowedObject",
         "parameters": [
+          {
+            "type": "string",
+            "description": "firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
           {
             "name": "incident",
             "in": "body",
@@ -2829,7 +2836,7 @@ func init() {
         }
       }
     },
-    "/v3/swallowedObject": {
+    "/v3/swallowedobject": {
       "delete": {
         "description": "use this to delete swallowed object",
         "consumes": [
@@ -2844,6 +2851,13 @@ func init() {
         "summary": "Delete Swallowed Object",
         "operationId": "deleteSwallowedObject",
         "parameters": [
+          {
+            "type": "string",
+            "description": "firebase id token",
+            "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
           {
             "name": "incident",
             "in": "body",

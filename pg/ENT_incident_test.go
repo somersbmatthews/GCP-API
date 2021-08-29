@@ -496,6 +496,15 @@ func TestDeleteENTIncident(t *testing.T) {
 	}
 }
 
+func TestDeleteSwallowedObject(t *testing.T) {
+	ctx := context.Background()
+	_, ok := DeleteSwallowedObject(ctx, *ENTIncident1.ID)
+	if !ok {
+		t.Error("delete swallowed object failed")
+	}
+
+}
+
 func PrettyPrint(data interface{}) {
 	var p []byte
 	//    var err := error

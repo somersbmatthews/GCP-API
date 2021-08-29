@@ -476,7 +476,19 @@ func DeleteENTIncident(ctx context.Context, incidentID string) (*models.GoodResp
 		panic(err)
 	}
 	return &models.GoodResponse{
-		Message: "ENT Incident Created",
+		Message: "ENT Incident Deleted",
+	}, true
+}
+
+func DeleteSwallowedObject(ctx context.Context, objectID string) (*models.GoodResponse, bool) {
+	err := db.Delete(&SwallowedObject{}, "id = ?", objectID).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, false
+	} else if err != nil {
+		panic(err)
+	}
+	return &models.GoodResponse{
+		Message: "Swallowd Object Deleted",
 	}, true
 }
 

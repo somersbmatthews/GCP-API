@@ -16,6 +16,7 @@ import (
 	"github.com/gircapp/api/restapi/operations/e_n_t_incident"
 	"github.com/gircapp/api/restapi/operations/incident"
 	"github.com/gircapp/api/restapi/operations/medical_expert"
+	"github.com/gircapp/api/restapi/operations/swallowed_object"
 	"github.com/gircapp/api/restapi/operations/user"
 
 	//	"github.com/gircapp/api/restapi/operations/verify"
@@ -402,6 +403,22 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			return medical_expert.NewUpdateFCMtokenNotFound()
 		}
 		response := medical_expert.NewUpdateFCMtokenOK()
+		response.WithPayload(payload)
+		return response
+	})
+
+	api.SwallowedObjectDeleteSwallowedObjectHandler = swallowed_object.DeleteSwallowedObjectHandlerFunc(func(params swallowed_object.DeleteSwallowedObjectParams) middleware.Responder {
+		ctx := context.Background()
+		tokenStr := params.Authorization
+		_, ok := fba.VerifyToken(ctx, tokenStr)
+		if !ok {
+			return swallowed_object.NewDeleteSwallowedObjectUnauthorized()
+		}
+		payload, ok := pg.DeleteSwallowedObject(ctx, *params.Incident.SwallowedObjectID)
+		if !ok {
+			return swallowed_object.NewDeleteSwallowedObjectNotFound()
+		}
+		response := swallowed_object.NewDeleteSwallowedObjectOK()
 		response.WithPayload(payload)
 		return response
 	})

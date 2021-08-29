@@ -29,7 +29,7 @@ func NewDeleteSwallowedObject(ctx *middleware.Context, handler DeleteSwallowedOb
 	return &DeleteSwallowedObject{Context: ctx, Handler: handler}
 }
 
-/* DeleteSwallowedObject swagger:route DELETE /v3/swallowedObject Swallowed Object deleteSwallowedObject
+/* DeleteSwallowedObject swagger:route DELETE /v3/swallowedobject Swallowed Object deleteSwallowedObject
 
 Delete Swallowed Object
 

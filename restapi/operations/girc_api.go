@@ -449,7 +449,7 @@ func (o *GircAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/v3/swallowedObject"] = swallowed_object.NewDeleteSwallowedObject(o.context, o.SwallowedObjectDeleteSwallowedObjectHandler)
+	o.handlers["DELETE"]["/v3/swallowedobject"] = swallowed_object.NewDeleteSwallowedObject(o.context, o.SwallowedObjectDeleteSwallowedObjectHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
