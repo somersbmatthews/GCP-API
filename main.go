@@ -30,7 +30,7 @@ import (
 // http.ListenAndServe(":8080", globalMiddleware(api.Serve(authedMiddleware))
 
 func main() {
-	fmt.Println("this is running first")
+	//fmt.Println("this is running first")
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
 		panic(err)
@@ -108,7 +108,7 @@ func main() {
 	})
 
 	http.Handle("/", server.GetHandler())
-	fmt.Println("this is running")
+	//fmt.Println("this is running")
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

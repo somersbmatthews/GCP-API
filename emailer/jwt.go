@@ -33,6 +33,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(whiteListerEmailsSecret)
 	whiteListerEmails = whiteListerEmailsSecret
 }
 
@@ -143,7 +144,10 @@ func SendConfirmationEmailIfNotVerified(emailAddress string, userID string) erro
 
 	html := fmt.Sprintf("<a href=%s>Click here to confirm email.</a>", url)
 	e.HTML = []byte(html)
-	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	err = e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	if err != nil {
+		return err
+	}
 	return nil
 
 }
@@ -184,7 +188,7 @@ func SendDirectorVerificationEmail(userName string, userEmail string, userID str
 	e.To = whiteListerEmails
 	e.Subject = "A New User Has Confirmed Their Email"
 	//	e.Text = []byte("Text Body is, of course, supported!")
-	html := fmt.Sprintf("<a href=%s>link text</a>", url)
+	html := fmt.Sprintf("<a href=%s>Click Here To Confirm User with email address: %s</a>", url, userEmail)
 	e.HTML = []byte(html)
 	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
 }

@@ -96,9 +96,13 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 		RegistrationTime: time.Now().Unix(),
 	}
 
-	emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userID)
+	fmt.Println("create expert normally is running")
+	err := emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userID)
+	if err != nil {
+		panic(err)
+	}
 
-	err := db.Create(expert).Error
+	err = db.Create(expert).Error
 	if err != nil {
 		return nil, false
 	}
