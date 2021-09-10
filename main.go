@@ -223,7 +223,7 @@ func main() {
 				</p>
 				<p style="text-align: center; line-height: 14px;">
 				 <span style="font-size: 28px; line-height: 33px;">
-				  Thank you for your confirming your email. Your submission to the GIRC will be reviewed.
+				  Thank you for confirming your email. Your submission to the GIRC will be reviewed.
 				 </span>
 				</p>
 				<p style="line-height: 14px;">

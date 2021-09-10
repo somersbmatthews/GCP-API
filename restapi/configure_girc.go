@@ -21,12 +21,41 @@ import (
 	"golang.org/x/mod/semver"
 
 	//	"github.com/gircapp/api/restapi/operations/verify"
+	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
-const LatestAppleStoreApprovedAppVersion = "2.10"
+func init() {
+	latestAppleStoreApprovedAppVersionValue, err := accessLatestAppleStoreApprovedAppVersion()
+	if err != nil {
+		panic(err)
+	}
+	LatestAppleStoreApprovedAppVersion = latestAppleStoreApprovedAppVersionValue
+}
+
+var LatestAppleStoreApprovedAppVersion = "2.11"
+
+func accessLatestAppleStoreApprovedAppVersion() (string, error) {
+	name := "projects/gircapp/secrets/LATESTAPPLESTOREAPPROVEDAPPVERSION/versions/latest"
+	ctx := context.Background()
+	client, err := secretmanager.NewClient(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to create secretmanager client: %v", err)
+	}
+	req := &secretmanagerpb.AccessSecretVersionRequest{
+		Name: name,
+	}
+	result, err := client.AccessSecretVersion(ctx, req)
+	if err != nil {
+		return "", fmt.Errorf("failed to access secret version: %v", err)
+	}
+	return string(result.Payload.Data), nil
+}
+
+
 
 // ./cloud_sql_proxy -instances=gircapp:us-central1:gircapppostgres=tcp:5432
 //go:generate swagger generate server --target ../../gircapp2 --name Girc --spec ../swagger.yaml --principal interface{}
@@ -271,6 +300,10 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 			})
 		}
 		appVersion := params.AppVersion
+		fmt.Println("appVersion from request is")
+		fmt.Println(appVersion)
+		fmt.Println("this is latest apple store approved app version")
+		fmt.Println(LatestAppleStoreApprovedAppVersion)
 		switch semver.Compare(LatestAppleStoreApprovedAppVersion, appVersion) {
 		case -1:
 			payload, ok := pg.CreateExpertWithAutoDirectorAndEmailVerification(ctx, params.Expert, userID)
