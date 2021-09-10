@@ -36,6 +36,11 @@ type RegisterExpertParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
+	/*App version from ios App
+	  Required: true
+	  In: header
+	*/
+	AppVersion string
 	/*if using google oauth, set that token here
 	  Required: true
 	  In: header
@@ -56,6 +61,10 @@ func (o *RegisterExpertParams) BindRequest(r *http.Request, route *middleware.Ma
 	var res []error
 
 	o.HTTPRequest = r
+
+	if err := o.bindAppVersion(r.Header[http.CanonicalHeaderKey("App-Version")], true, route.Formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := o.bindAuthorization(r.Header[http.CanonicalHeaderKey("Authorization")], true, route.Formats); err != nil {
 		res = append(res, err)
@@ -91,6 +100,26 @@ func (o *RegisterExpertParams) BindRequest(r *http.Request, route *middleware.Ma
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+// bindAppVersion binds and validates parameter AppVersion from header.
+func (o *RegisterExpertParams) bindAppVersion(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("App-Version", "header", rawData)
+	}
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: true
+
+	if err := validate.RequiredString("App-Version", "header", raw); err != nil {
+		return err
+	}
+	o.AppVersion = raw
+
 	return nil
 }
 

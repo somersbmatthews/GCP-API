@@ -76,7 +76,7 @@ func getJWTSecret() (string, error) {
 }
 
 func getGIRCAPPPassword() (string, error) {
-	name := "projects/gircapp/secrets/GIRCAPP3_EMAIL_PASSWORD/versions/latest"
+	name := "projects/gircapp/secrets/EMAIL_PASSWORD/versions/latest"
 	ctx := context.Background()
 	client, err := secretmanager.NewClient(ctx)
 	if err != nil {
@@ -92,13 +92,15 @@ func getGIRCAPPPassword() (string, error) {
 	return string(result.Payload.Data), nil
 }
 
-func makeEmailJWT(email string, userID string, verified string) (jwtValue string, err error) {
+func makeEmailJWT(email string, userID string, specialty string, fullName string, verified string) (jwtValue string, err error) {
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userID":   userID,
-		"email":    email,
-		"verified": verified,
+		"userID":    userID,
+		"email":     email,
+		"specialty": specialty,
+		"fullName":  fullName,
+		"verified":  verified,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -111,40 +113,50 @@ func makeEmailJWT(email string, userID string, verified string) (jwtValue string
 	return tokenString, nil
 }
 
-func SendConfirmationEmailIfVerified(emailAddress string, userID string) error {
+func SendConfirmationEmailIfVerified(emailAddress string, specialty string, fullName string, userID string) error {
 
-	jwt, err := makeEmailJWT(emailAddress, userID, "true")
+	jwt, err := makeEmailJWT(emailAddress, userID, specialty, fullName, "true")
 	if err != nil {
 		return err
 	}
+	fullNameStrSlice := strings.Split(fullName, " ")
+
+	firstName := fullNameStrSlice[0]
 	url := fmt.Sprintf("https://girc.app/confirmemail?key=%s", jwt)
 	e := email.NewEmail()
 	e.From = "admin@globalirc.org"
 	e.To = []string{emailAddress}
-	e.Subject = "Please Confirm Your Email Address"
+	e.Subject = fmt.Sprintf("%s, Please Confirm Your GIRC Updated Email Address", firstName)
 
 	html := fmt.Sprintf("<a href=%s>Click here to confirm email.</a>", url)
 	e.HTML = []byte(html)
-	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "admin@globalirc.org", emailPassword, "smtp.gmail.com"))
 	return nil
 
 }
 
-func SendConfirmationEmailIfNotVerified(emailAddress string, userID string) error {
+func SendConfirmationEmailIfNotVerified(emailAddress string, userID string, fullName string, specialty string) error {
 
-	jwt, err := makeEmailJWT(emailAddress, userID, "false")
+	jwt, err := makeEmailJWT(emailAddress, userID, specialty, fullName, "false")
 	if err != nil {
 		return err
 	}
+	fullNameStrSlice := strings.Split(fullName, " ")
+
+	firstName := fullNameStrSlice[0]
+
 	url := fmt.Sprintf("https://girc.app/confirmemail?key=%s", jwt)
 	e := email.NewEmail()
 	e.From = "admin@globalirc.org"
 	e.To = []string{emailAddress}
-	e.Subject = "Please Confirm Your Email Address"
+	e.Subject = fmt.Sprintf("%s, Please Confirm Your GIRC Account", firstName)
 
-	html := fmt.Sprintf("<a href=%s>Click here to confirm email.</a>", url)
+	html, err := makeEmailConfirmationEmailTemplate(url)
+	if err != nil {
+		panic(err)
+	}
 	e.HTML = []byte(html)
-	err = e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	err = e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "admin@globalirc.org", emailPassword, "smtp.gmail.com"))
 	if err != nil {
 		return err
 	}
@@ -152,7 +164,7 @@ func SendConfirmationEmailIfNotVerified(emailAddress string, userID string) erro
 
 }
 
-func DecodeJWTClaims(jwtValue string) (email string, userID string, verified string, err error) {
+func DecodeJWTClaims(jwtValue string) (email string, userID string, specialty string, fullName string, verified string, err error) {
 
 	hmacSecret := []byte(jwtSecret)
 	token, err := jwt.Parse(jwtValue, func(token *jwt.Token) (interface{}, error) {
@@ -168,17 +180,19 @@ func DecodeJWTClaims(jwtValue string) (email string, userID string, verified str
 		// fmt.Println(claims["foo"], claims["nbf"])
 		email := fmt.Sprintf("%s", claims["email"])
 		userID := fmt.Sprintf("%s", claims["userID"])
+		specialty := fmt.Sprintf("%s", claims["specialty"])
+		fullName := fmt.Sprintf("%s", claims["fullName"])
 		verified := fmt.Sprintf("%s", claims["verified"])
 
-		return email, userID, verified, nil
+		return email, userID, specialty, fullName, verified, nil
 	} else {
-		return "", "", "", err
+		return "", "", "", "", "", err
 	}
 
 }
 
-func SendDirectorVerificationEmail(userName string, userEmail string, userID string) {
-	jwt, err := makeEmailJWT(userEmail, userID, "false")
+func SendDirectorVerificationEmail(fullName string, specialty string, userEmail string, userID string) {
+	jwt, err := makeEmailJWT(userEmail, userID, specialty, fullName, "false")
 	if err != nil {
 		panic(err)
 	}
@@ -188,9 +202,11 @@ func SendDirectorVerificationEmail(userName string, userEmail string, userID str
 	e.To = whiteListerEmails
 	e.Subject = "A New User Has Confirmed Their Email"
 	//	e.Text = []byte("Text Body is, of course, supported!")
-	html := fmt.Sprintf("<a href=%s>Click Here To Confirm User with email address: %s</a>", url, userEmail)
+	html := fmt.Sprintf(
+		"<a href=%s>Click Here To Confirm User with email address: %s</a><div>User name: %s </div><div>User Specialty: %s</div>",
+		url, userEmail, fullName, specialty)
 	e.HTML = []byte(html)
-	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "admin@globalirc.org", emailPassword, "smtp.gmail.com"))
 }
 
 func SendUserVerificationWelcomeEmail(userEmail string) {
@@ -204,7 +220,11 @@ func SendUserVerificationWelcomeEmail(userEmail string) {
 	e.To = []string{userEmail}
 	e.Subject = "Welcome to the GIRC App"
 	//	e.Text = []byte("Text Body is, of course, supported!")
-	//html := fmt.Sprintf("<a href=%s>link text</a>", url)
-	e.HTML = []byte("<h1>Welcome to the GIRC App!</h1>")
-	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "gircapp3@gmail.com", emailPassword, "smtp.gmail.com"))
+	// html := fmt.Sprintf("<a href=%s>link text</a>", url)
+	html, err := makeWelcomeEmailTemplate()
+	if err != nil {
+		panic(err)
+	}
+	e.HTML = []byte(html)
+	e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "admin@globalirc.org", emailPassword, "smtp.gmail.com"))
 }

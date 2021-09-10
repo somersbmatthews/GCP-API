@@ -234,6 +234,7 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 
 	err = db.Create(newIncident).Error
 	if err != nil {
+		panic(err)
 		return nil, false
 	}
 	return &models.GoodResponse{

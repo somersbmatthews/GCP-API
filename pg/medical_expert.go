@@ -96,8 +96,8 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 		RegistrationTime: time.Now().Unix(),
 	}
 
-	fmt.Println("create expert normally is running")
-	err := emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userID)
+	//	fmt.Println("create expert normally is running")
+	err := emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userID, *expertRequestObject.Name, *expertRequestObject.Expertise)
 	if err != nil {
 		panic(err)
 	}
@@ -166,8 +166,12 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 		panic(err)
 	}
 
+	// fullNameStrSlice := strings.Split(*expertRequestObject.Name, " ")
+
+	// firstName := fullNameStrSlice[0]
+
 	if &oldExpert.Email != expertRequestObject.Email {
-		emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, userId)
+		emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, *expertRequestObject.Expertise, *expertRequestObject.Name, userId)
 	}
 
 	model := Expert{

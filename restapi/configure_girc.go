@@ -18,12 +18,15 @@ import (
 	"github.com/gircapp/api/restapi/operations/medical_expert"
 	"github.com/gircapp/api/restapi/operations/swallowed_object"
 	"github.com/gircapp/api/restapi/operations/user"
+	"golang.org/x/mod/semver"
 
 	//	"github.com/gircapp/api/restapi/operations/verify"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 )
+
+const LatestAppleStoreApprovedAppVersion = "2.10"
 
 // ./cloud_sql_proxy -instances=gircapp:us-central1:gircapppostgres=tcp:5432
 //go:generate swagger generate server --target ../../gircapp2 --name Girc --spec ../swagger.yaml --principal interface{}
@@ -267,17 +270,33 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 				Message: "Validation of firebase idToken failed.",
 			})
 		}
-		// TODO:  apply registration normally functionality here
-		// payload, ok := pg.CreateExpertWithAutoDirectorAndEmailVerification(ctx, params.Expert, userID)
-		payload, ok := pg.CreateExpertNormally(ctx, params.Expert, userID)
-		if !ok {
-			return middleware.Error(404, models.BadResponse{
-				Message: "could not create medical Expert",
-			})
+		appVersion := params.AppVersion
+		switch semver.Compare(LatestAppleStoreApprovedAppVersion, appVersion) {
+		case -1:
+			payload, ok := pg.CreateExpertWithAutoDirectorAndEmailVerification(ctx, params.Expert, userID)
+			if !ok {
+				return middleware.Error(404, models.BadResponse{
+					Message: "could not create medical Expert",
+				})
+			}
+			response := medical_expert.NewCreateExpertOK()
+			response.WithPayload(payload)
+			return response
+
+		default:
+			// TODO:  apply registration normally functionality here
+			// payload, ok := pg.CreateExpertWithAutoDirectorAndEmailVerification(ctx, params.Expert, userID)
+			payload, ok := pg.CreateExpertNormally(ctx, params.Expert, userID)
+			if !ok {
+				return middleware.Error(404, models.BadResponse{
+					Message: "could not create medical Expert",
+				})
+			}
+			response := medical_expert.NewCreateExpertOK()
+			response.WithPayload(payload)
+			return response
 		}
-		response := medical_expert.NewCreateExpertOK()
-		response.WithPayload(payload)
-		return response
+
 	})
 
 	api.MedicalExpertGetExpertHandler = medical_expert.GetExpertHandlerFunc(func(params medical_expert.GetExpertParams) middleware.Responder {
