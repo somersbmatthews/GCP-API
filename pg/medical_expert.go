@@ -84,7 +84,7 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 	// TODO: send confirmation email here
 	expert := Expert{
 		ID:               userID,
-		Email:            *expertRequestObject.Email,
+	//	Email:            *expertRequestObject.Email,
 		Name:             *expertRequestObject.Name,
 		Expertise:        *expertRequestObject.Expertise,
 		Degree:           *expertRequestObject.Degree,
@@ -171,7 +171,11 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 	// firstName := fullNameStrSlice[0]
 
 	if &oldExpert.Email != expertRequestObject.Email {
-		emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, *expertRequestObject.Expertise, *expertRequestObject.Name, userId)
+		if oldExpert.DirectorVerified {
+			emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, *expertRequestObject.Expertise, *expertRequestObject.Name, userId)
+		} else {
+			emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userId, *expertRequestObject.Name, *expertRequestObject.Expertise)
+		}
 	}
 
 	model := Expert{

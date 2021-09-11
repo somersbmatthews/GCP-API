@@ -28,6 +28,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	go.mongodb.org/mongo-driver v1.5.4 // indirect
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
+	golang.org/x/mod v0.4.2
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	google.golang.org/api v0.50.0
