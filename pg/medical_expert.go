@@ -273,6 +273,8 @@ func DeleteMedicalExpert(ctx context.Context, userId string) (*models.GoodRespon
 	}, true
 }
 
+
+
 // func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
 // 	db, conn := Open()
 // 	defer conn.Close()
