@@ -170,7 +170,8 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 
 	// firstName := fullNameStrSlice[0]
 
-	if &oldExpert.Email != expertRequestObject.Email {
+
+	if oldExpert.Email != *expertRequestObject.Email {
 		if oldExpert.DirectorVerified {
 			emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, *expertRequestObject.Expertise, *expertRequestObject.Name, userId)
 		} else {

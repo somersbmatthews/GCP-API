@@ -405,7 +405,7 @@ func makeEmailConfirmationEmailTemplate(url string) (htmlTemplate string, err er
 												<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px; font-family: Tahoma, Verdana, sans-serif"><![endif]-->
 												<div style="color:#393d47;font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;line-height:1.2;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
 													<div class="txtTinyMce-wrapper" style="font-size: 14px; line-height: 1.2; font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif; color: #393d47; mso-line-height-alt: 17px;">
-														<p style="margin: 0; font-size: 30px; line-height: 1.2; word-break: break-word; text-align: center; mso-line-height-alt: 36px; margin-top: 0; margin-bottom: 0;"><span style="font-size: 30px;"><strong>Thank you for signing in.</strong></span></p>
+														<p style="margin: 0; font-size: 30px; line-height: 1.2; word-break: break-word; text-align: center; mso-line-height-alt: 36px; margin-top: 0; margin-bottom: 0;"><span style="font-size: 30px;"><strong>Thank you for signing up.</strong></span></p>
 													</div>
 												</div>
 												<!--[if mso]></td></tr></table><![endif]-->
@@ -427,7 +427,7 @@ func makeEmailConfirmationEmailTemplate(url string) (htmlTemplate string, err er
 												<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px; font-family: Tahoma, Verdana, sans-serif"><![endif]-->
 												<div style="color:#393d47;font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;line-height:1.2;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
 													<div class="txtTinyMce-wrapper" style="font-size: 14px; line-height: 1.2; font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif; color: #393d47; mso-line-height-alt: 17px;">
-														<p style="margin: 0; font-size: 26px; line-height: 1.2; word-break: break-word; text-align: center; mso-line-height-alt: 31px; margin-top: 0; margin-bottom: 0;"><span style="font-size: 26px;">Verify your email address.</span></p>
+														<p style="margin: 0; font-size: 26px; line-height: 1.2; word-break: break-word; text-align: center; mso-line-height-alt: 31px; margin-top: 0; margin-bottom: 0;"><span style="font-size: 26px;">Confirm your email address.</span></p>
 													</div>
 												</div>
 												<!--[if mso]></td></tr></table><![endif]-->
