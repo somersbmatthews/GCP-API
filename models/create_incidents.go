@@ -21,9 +21,6 @@ type CreateIncidents struct {
 
 	// incidents
 	Incidents []*Incident `json:"incidents"`
-
-	// user Id
-	UserID string `json:"userId,omitempty"`
 }
 
 // Validate validates this create incidents

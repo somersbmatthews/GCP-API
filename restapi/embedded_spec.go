@@ -1099,9 +1099,6 @@ func init() {
           "items": {
             "$ref": "#/definitions/Incident"
           }
-        },
-        "userId": {
-          "type": "string"
         }
       }
     },
@@ -2936,9 +2933,6 @@ func init() {
           "items": {
             "$ref": "#/definitions/Incident"
           }
-        },
-        "userId": {
-          "type": "string"
         }
       }
     },

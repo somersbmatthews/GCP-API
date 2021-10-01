@@ -61,7 +61,7 @@ func accessLatestAppleStoreApprovedAppVersion() (string, error) {
 //go:generate swagger generate server --target ../../gircapp2 --name Girc --spec ../swagger.yaml --principal interface{}
 
 // USE THIS ONE, THIS IS THE UPDATED COMMAND:
-// swagger generate server -f ./swagger/swagger5.yaml --exclude-main -A girc
+// swagger generate server -f ./swagger/swagger88.yaml --exclude-main -A girc
 func configureFlags(api *operations.GircAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
@@ -192,17 +192,17 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 	api.IncidentCreateIncidentHandler = incident.CreateIncidentHandlerFunc(func(params incident.CreateIncidentParams) middleware.Responder {
 		ctx := context.Background()
 		tokenStr := params.Authorization
-		ok := auth.VerifyOldDataToken(tokenStr)
+		userID, ok := fba.VerifyToken(ctx, tokenStr)
 		// booleanFalse := false
 		if !ok {
 			return middleware.Error(401, models.BadResponse{
 				Message: "Validation of firebase idToken failed.",
 			})
 		}
-		payload, ok := pg.CreateIncidents(ctx, params.Incident.Incidents, params.Incident.UserID)
+		payload, ok := pg.CreateIncidents(ctx, params.Incident.Incidents, userID)
 		if !ok {
 			return middleware.Error(409, models.BadResponse{
-				Message: fmt.Sprintf("could not create incidents for userId: %s", params.Incident.UserID),
+				Message: fmt.Sprintf("could not create incidents for userId: %s", userID),
 			})
 		}
 		response := incident.NewCreateIncidentOK()
