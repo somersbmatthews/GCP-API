@@ -204,7 +204,8 @@ func SendDirectorVerificationEmail(fullName string, specialty string, userEmail 
 	e := email.NewEmail()
 	e.From = "admin@globalirc.org"
 	e.To = whiteListerEmails
-	e.Subject = "A New User Has Confirmed Their Email"
+	subject := fmt.Sprintf("%s Has Confirmed Their Email ", fullName)
+	e.Subject = subject
 	//	e.Text = []byte("Text Body is, of course, supported!")
 	html := fmt.Sprintf(
 		"<a href=%s>Click Here To Confirm User with email address: %s</a><div>User name: %s </div><div>User Specialty: %s</div>",
