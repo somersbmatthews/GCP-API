@@ -119,8 +119,9 @@ func SendConfirmationEmailIfVerified(emailAddress string, specialty string, full
 	if err != nil {
 		return err
 	}
-	fullNameStrSlice := strings.Split(fullName, " ")
+	
 
+	fullNameStrSlice := strings.Split(fullName, " ")
 	firstName := fullNameStrSlice[0]
 	url := fmt.Sprintf("https://girc.app/confirmemail?key=%s", jwt)
 	e := email.NewEmail()
@@ -141,6 +142,7 @@ func SendConfirmationEmailIfNotVerified(emailAddress string, userID string, full
 	if err != nil {
 		return err
 	}
+
 	fullNameStrSlice := strings.Split(fullName, " ")
 
 	firstName := fullNameStrSlice[0]
@@ -191,6 +193,8 @@ func DecodeJWTClaims(jwtValue string) (email string, userID string, specialty st
 
 }
 
+
+// TODO: return error ?
 func SendDirectorVerificationEmail(fullName string, specialty string, userEmail string, userID string) {
 	jwt, err := makeEmailJWT(userEmail, userID, specialty, fullName, "false")
 	if err != nil {

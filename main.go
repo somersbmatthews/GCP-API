@@ -73,12 +73,22 @@ func main() {
 			Verified: &booleanTrue,
 		}
 
+
+
 		_, ok = pg.VerifyExpert(ctx, requestObject, userID)
 		if !ok {
 			// TODO: handle cannot find expert here
 		}
 
+		ok = pg.KillDirectorJWT(userID)
+		if !ok {
+			err := fmt.Errorf("cannot kill director jwt")
+			panic(err)
+		}
+
+
 	})
+
 	http.HandleFunc("/confirmemail", func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.Background()
 		keys, ok := r.URL.Query()["key"]
@@ -97,9 +107,15 @@ func main() {
 			panic(err)
 		}
 
-		if verified == "false" {
+		
+
+		emailTokenIsLive := pg.CheckEmailConfirmationJWT(userID)
+
+		if verified == "false" && emailTokenIsLive{
 			emailer.SendDirectorVerificationEmail(fullName, specialty, email, userID)
 		}
+
+		pg.KillEmailConfimationJWT(userID)
 
 		_, ok = pg.ConfirmEmail(ctx, email, userID)
 		if !ok {

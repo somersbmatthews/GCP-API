@@ -26,6 +26,8 @@ type Expert struct {
 	LastOpeningAppTime                           int64
 	RegistrationTime                             int64
 	Banned                                       bool
+	EmailConfirmationTokenIsLive bool
+	DirectorTokenIsLive bool
 }
 
 func CreateExpertWithAutoDirectorAndEmailVerification(ctx context.Context, expertRequestObject *models.Expert, userID string) (*models.GoodResponse, bool) {
@@ -42,6 +44,8 @@ func CreateExpertWithAutoDirectorAndEmailVerification(ctx context.Context, exper
 		DeviceType:       *expertRequestObject.DeviceType,
 		Banned:           false,
 		RegistrationTime: time.Now().Unix(),
+		EmailConfirmationTokenIsLive: false,
+	    DirectorTokenIsLive: false,
 	}
 
 	err := db.Create(expert).Error
@@ -68,6 +72,8 @@ func CreateExpertWithAutoDirectorWithoutEmailVerification(ctx context.Context, e
 		DeviceType:       *expertRequestObject.DeviceType,
 		Banned:           false,
 		RegistrationTime: time.Now().Unix(),
+		EmailConfirmationTokenIsLive: false,
+	    DirectorTokenIsLive: false,
 	}
 
 	err := db.Create(expert).Error
@@ -94,6 +100,13 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 		DeviceType:       *expertRequestObject.DeviceType,
 		Banned:           false,
 		RegistrationTime: time.Now().Unix(),
+		EmailConfirmationTokenIsLive: false,
+	    DirectorTokenIsLive: false,
+	}
+
+    ok := SetEmailConfirmationJWTLive(userID)
+	if !ok {
+		return nil, false
 	}
 
 	//	fmt.Println("create expert normally is running")
@@ -173,8 +186,16 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 
 	if oldExpert.Email != *expertRequestObject.Email {
 		if oldExpert.DirectorVerified {
+			ok := SetEmailConfirmationJWTLive(userId)
+			if !ok {
+				return nil, false
+			}
 			emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, *expertRequestObject.Expertise, *expertRequestObject.Name, userId)
 		} else {
+			ok := SetEmailConfirmationJWTLive(userId)
+			if !ok {
+				return nil, false
+			}
 			emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userId, *expertRequestObject.Name, *expertRequestObject.Expertise)
 		}
 	}
@@ -233,7 +254,9 @@ func VerifyExpert(ctx context.Context, VerifyRequestObject models.Verify, userId
 	} else if err != nil {
 		panic(err)
 	}
-	emailer.SendUserVerificationWelcomeEmail(model.Email)
+	if model.DirectorTokenIsLive {
+		emailer.SendUserVerificationWelcomeEmail(model.Email)
+	}
 	message := fmt.Sprintf("Medical Expert with id %s is verfied or unverified", userId)
 	return &models.GoodResponse{
 		Message: message,
@@ -274,27 +297,88 @@ func DeleteMedicalExpert(ctx context.Context, userId string) (*models.GoodRespon
 	}, true
 }
 
+func SetEmailConfirmationJWTLive(userId string) bool {
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Model(expert).Update("email_confirmation_token_is_live", true).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	} else if err != nil {
+		panic(err)
+	}
+	return true
+}
 
+func SetDirectorJWTLive(userId string) bool {
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Model(expert).Update("director_token_is_live", true).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	} else if err != nil {
+		panic(err)
+	}
+	return true
+}
 
-// func UpdateUser(ctx context.Context, user User) (*models.UpdateUserGoodResponse, bool) {
-// 	db, conn := Open()
-// 	defer conn.Close()
-// 	model := user
-// 	err := db.First(&User{}, "user_id = ?", user.UserID).Updates(user).Error
-// 	if err == gorm.ErrRecordNotFound {
-// 		return nil, false
-// 	} else if err != nil {
-// 		panic(err)
-// 	}
-// 	booleanTrue := true
-// 	return &models.UpdateUserGoodResponse{
-// 			UserID:    &model.UserID,
-// 			Name:      &model.Name,
-// 			Email:     &model.Email,
-// 			Degree:    &model.Degree,
-// 			Specialty: &model.Specialty,
-// 			Updated:   &booleanTrue,
-// 			Verified:  model.Verified,
-// 		},
-// 		true
-// }
+func KillEmailConfimationJWT(userId string) bool {
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Model(expert).Update("email_confirmation_token_is_live", false).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	} else if err != nil {
+		panic(err)
+	}
+	return true
+}
+
+func KillDirectorJWT(userId string) bool {
+	expert := &Expert{
+		ID: userId,
+	}
+	err := db.Model(expert).Update("director_token_is_live", false).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	} else if err != nil {
+		panic(err)
+	}
+	return true
+}
+
+func CheckEmailConfirmationJWT(userID string) bool{
+	expert := &Expert{
+		ID: userID,
+	}
+	err := db.Find(expert).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	} else if err != nil {
+		panic(err)
+	}
+	if expert.EmailConfirmationTokenIsLive {
+		return true
+	} else {
+		return false
+	}
+}
+
+func CheckDirectorJWT(userID string) bool {
+	expert := &Expert{
+		ID: userID,
+	}
+	err := db.Find(expert).Error
+	if err == gorm.ErrRecordNotFound {
+		return false
+	} else if err != nil {
+		panic(err)
+	}
+	if expert.DirectorTokenIsLive {
+		return true
+	} else {
+		return false
+	}
+}
