@@ -30,6 +30,8 @@ type Expert struct {
 	DirectorTokenIsLive bool
 }
 
+
+
 func CreateExpertWithAutoDirectorAndEmailVerification(ctx context.Context, expertRequestObject *models.Expert, userID string) (*models.GoodResponse, bool) {
 
 	expert := Expert{
@@ -104,10 +106,7 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 	    DirectorTokenIsLive: false,
 	}
 
-    ok := SetEmailConfirmationJWTLive(userID)
-	if !ok {
-		return nil, false
-	}
+
 
 	//	fmt.Println("create expert normally is running")
 	err := emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userID, *expertRequestObject.Name, *expertRequestObject.Expertise)
@@ -117,6 +116,10 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 
 	err = db.Create(expert).Error
 	if err != nil {
+		return nil, false
+	}
+	ok := SetEmailConfirmationJWTLive(userID)
+	if !ok {
 		return nil, false
 	}
 	message := fmt.Sprintf("Medical Expert with UserID: %s", userID)
@@ -301,6 +304,7 @@ func SetEmailConfirmationJWTLive(userId string) bool {
 	expert := &Expert{
 		ID: userId,
 	}
+fmt.Println("set email confirmation jwt to live is being run")
 	err := db.Model(expert).Update("email_confirmation_token_is_live", true).Error
 	if err == gorm.ErrRecordNotFound {
 		return false
@@ -315,6 +319,7 @@ func SetDirectorJWTLive(userId string) bool {
 		ID: userId,
 	}
 	err := db.Model(expert).Update("director_token_is_live", true).Error
+	// err := db.Model(expert).Updates(map[string]interface{}{"director_token_is_live": true}).Error
 	if err == gorm.ErrRecordNotFound {
 		return false
 	} else if err != nil {
@@ -324,13 +329,20 @@ func SetDirectorJWTLive(userId string) bool {
 }
 
 func KillEmailConfimationJWT(userId string) bool {
+	fmt.Println("kill email confirmation token is being run")
 	expert := &Expert{
 		ID: userId,
 	}
 	err := db.Model(expert).Update("email_confirmation_token_is_live", false).Error
+	// sql := "UPDATE experts SET email_confirmation_token_is_live = true WHERE id = ?"
+
+	// err := db.Raw(sql, userId).Error
 	if err == gorm.ErrRecordNotFound {
+		fmt.Println("record not found error")
+		fmt.Println(err)
 		return false
 	} else if err != nil {
+		fmt.Println(err)
 		panic(err)
 	}
 	return true
