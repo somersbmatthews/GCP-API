@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/gdexlab/go-render/render"
 	"github.com/gircapp/api/models"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
@@ -448,7 +449,38 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 		panic(err)
 	}
 
+// 	db.Clauses(clause.OnConflict{
+//   UpdateAll: true,
+// }).Create(&users)
+
 	for _, object := range swallowedObjects {
+		// object upsert
+		fmt.Println("this is object from swallowed object")
+		fmt.Println(render.Render(object))
+		foundObject := &SwallowedObject{}
+		result := db.Find(foundObject, "id = ?", &object.ID)
+		// if err == gorm.ErrRecordNotFound {
+		// 	return nil, false
+		// } else if err != nil {
+		// 	panic(err)
+		// }
+		fmt.Println("this is gorm found records count from upsert object")
+		fmt.Println(result.RowsAffected)
+
+
+		
+		if result.RowsAffected == 0 {
+			err = db.Create(object).Error
+				if err == gorm.ErrRecordNotFound {
+					return nil, false
+				} else if err != nil {
+					panic(err)
+				}
+				continue
+		}
+
+
+		// object update
 		err = db.Find(&SwallowedObject{}, "id = ?", &object.ID).Updates(object).Error
 		if err == gorm.ErrRecordNotFound {
 			return nil, false
