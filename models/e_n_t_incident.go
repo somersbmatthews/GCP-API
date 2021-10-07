@@ -46,11 +46,11 @@ type ENTIncident struct {
 
 	// custom complications
 	// Required: true
-	CustomComplications []string `json:"customComplications"`
+	CustomComplications *string `json:"customComplications"`
 
 	// custom symptoms
 	// Required: true
-	CustomSymptoms []string `json:"customSymptoms"`
+	CustomSymptoms *string `json:"customSymptoms"`
 
 	// days until removal
 	// Required: true

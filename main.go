@@ -61,6 +61,11 @@ func main() {
 			return
 		}
 		key := keys[0]
+		keyLength := len(key)
+		if keyLength == 0 {
+			log.Println("key is empty")
+			return
+		}
 
 		_, userID, _, _, _, err := emailer.DecodeJWTClaims(key)
 		if err != nil {

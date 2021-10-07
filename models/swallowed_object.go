@@ -57,7 +57,7 @@ type SwallowedObject struct {
 
 	// custom mitigating features
 	// Required: true
-	CustomMitigatingFeatures []string `json:"customMitigatingFeatures"`
+	CustomMitigatingFeatures *string `json:"customMitigatingFeatures"`
 
 	// device type
 	// Required: true

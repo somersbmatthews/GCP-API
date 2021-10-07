@@ -1257,16 +1257,10 @@ func init() {
           "type": "string"
         },
         "customComplications": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "customSymptoms": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "daysUntilRemoval": {
           "type": "integer"
@@ -1677,10 +1671,7 @@ func init() {
           "type": "string"
         },
         "customMitigatingFeatures": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "deviceType": {
           "type": "string"
@@ -3091,16 +3082,10 @@ func init() {
           "type": "string"
         },
         "customComplications": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "customSymptoms": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "daysUntilRemoval": {
           "type": "integer"
@@ -3511,10 +3496,7 @@ func init() {
           "type": "string"
         },
         "customMitigatingFeatures": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "deviceType": {
           "type": "string"

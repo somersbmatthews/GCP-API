@@ -31,8 +31,8 @@ var customMagnetType3 = "fridge"
 var customMagnetType4 = "big"
 var customMateral3 = "paper"
 var customMateral4 = "plastic"
-var customMitigatingFeatures3 = []string{"feature1", "feature2"}
-var customMitigatingFeatures4 = []string{"feature3", "feature4"}
+var customMitigatingFeatures3 = "feature1 feature2"
+var customMitigatingFeatures4 = "feature3 feature4"
 var honey3 = "yes"
 var honey4 = "no"
 var imaging3 = "MRI"
@@ -94,10 +94,10 @@ var complications3 = []string{"vomiting", "choking"}
 var complications4 = []string{"choking", "vomiting"}
 var country3 = "USA"
 var country4 = "Mexico"
-var customComplications3 = []string{"coughing", "choking"}
-var customComplications4 = []string{"vomiting", "coughing"}
-var customSymptoms3 = []string{"vomiting", "choking"}
-var customSymptoms4 = []string{"vomiting", "choking"}
+var customComplications3 = "coughing choking"
+var customComplications4 = "vomiting coughing"
+var customSymptoms3 = "vomiting choking"
+var customSymptoms4 = "vomiting choking"
 var daysUntilRemoval3 int64 = 3
 var daysUntilRemoval4 int64 = 4
 var deviceType3 = "iPhone 6"
@@ -146,7 +146,7 @@ var swallowedObject1 = models.SwallowedObject{
 	CustomBatteryType:        &customBatteryType3,
 	CustomMagnetType:         &customMagnetType3,
 	CustomMaterial:           &customMateral3,
-	CustomMitigatingFeatures: customMitigatingFeatures3,
+	CustomMitigatingFeatures: &customMitigatingFeatures3,
 	DeviceType:               &deviceType3,
 	Honey:                    &honey3,
 	Imaging:                  &imaging3,
@@ -185,7 +185,7 @@ var swallowedObject2 = models.SwallowedObject{
 	CustomBatteryType:        &customBatteryType4,
 	CustomMagnetType:         &customMagnetType4,
 	CustomMaterial:           &customMateral4,
-	CustomMitigatingFeatures: customMitigatingFeatures4,
+	CustomMitigatingFeatures: &customMitigatingFeatures4,
 	DeviceType:               &deviceType4,
 	Honey:                    &honey4,
 	Imaging:                  &imaging4,
@@ -224,7 +224,7 @@ var updatedSwallowedObject2 = models.SwallowedObject{
 	CustomBatteryType:        &customBatteryType3,
 	CustomMagnetType:         &customMagnetType3,
 	CustomMaterial:           &customMateral3,
-	CustomMitigatingFeatures: customMitigatingFeatures3,
+	CustomMitigatingFeatures: &customMitigatingFeatures3,
 	DeviceType:               &deviceType3,
 	Honey:                    &honey3,
 	Imaging:                  &imaging3,
@@ -263,7 +263,7 @@ var swallowedObject3 = models.SwallowedObject{
 	CustomBatteryType:        &customBatteryType4,
 	CustomMagnetType:         &customMagnetType4,
 	CustomMaterial:           &customMateral4,
-	CustomMitigatingFeatures: customMitigatingFeatures4,
+	CustomMitigatingFeatures: &customMitigatingFeatures4,
 	DeviceType:               &deviceType4,
 	Honey:                    &honey4,
 	Imaging:                  &imaging4,
@@ -302,7 +302,7 @@ var swallowedObject4 = models.SwallowedObject{
 	CustomBatteryType:        &customBatteryType3,
 	CustomMagnetType:         &customMagnetType3,
 	CustomMaterial:           &customMateral3,
-	CustomMitigatingFeatures: customMitigatingFeatures3,
+	CustomMitigatingFeatures: &customMitigatingFeatures3,
 	DeviceType:               &deviceType3,
 	Honey:                    &honey3,
 	Imaging:                  &imaging3,
@@ -337,8 +337,8 @@ var ENTIncident1 = models.ENTIncident{
 	Anesthesia:                 &anesthesia3,
 	Complications:              complications3,
 	Country:                    &country3,
-	CustomComplications:        customComplications3,
-	CustomSymptoms:             customSymptoms3,
+	CustomComplications:        &customComplications3,
+	CustomSymptoms:             &customSymptoms3,
 	DaysUntilRemoval:           &daysUntilRemoval3,
 	DeviceType:                 &deviceType3,
 	EaseOfRemoval:              &easeOfRemoval3,
@@ -367,8 +367,8 @@ var ENTIncident2 = models.ENTIncident{
 	Anesthesia:                 &anesthesia4,
 	Complications:              complications4,
 	Country:                    &country4,
-	CustomComplications:        customComplications4,
-	CustomSymptoms:             customSymptoms4,
+	CustomComplications:        &customComplications4,
+	CustomSymptoms:             &customSymptoms4,
 	DaysUntilRemoval:           &daysUntilRemoval4,
 	DeviceType:                 &deviceType4,
 	EaseOfRemoval:              &easeOfRemoval4,
@@ -397,8 +397,8 @@ var ENTIncident2Update = models.ENTIncident{
 	Anesthesia:                 &anesthesia3,
 	Complications:              complications3,
 	Country:                    &country3,
-	CustomComplications:        customComplications3,
-	CustomSymptoms:             customSymptoms3,
+	CustomComplications:        &customComplications3,
+	CustomSymptoms:             &customSymptoms3,
 	DaysUntilRemoval:           &daysUntilRemoval3,
 	DeviceType:                 &deviceType3,
 	EaseOfRemoval:              &easeOfRemoval3,

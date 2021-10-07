@@ -3,15 +3,16 @@ package pg
 import (
 	"context"
 	"fmt"
+	"math"
+	"time"
 
-	"github.com/gdexlab/go-render/render"
 	"github.com/gircapp/api/models"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 type ENTIncident struct {
-	//CreatedAt int64
+	CreatedAt int64
 
 	ID string `gorm:"unique;not null;primary_key"`
 
@@ -47,13 +48,13 @@ type ENTIncident struct {
 
 	Symptoms pq.StringArray `gorm:"type:text[]"`
 
-	CustomSymptoms pq.StringArray `gorm:"type:text[]"`
+	CustomSymptoms string
 
 	SymptomSeverity string
 
 	Complications pq.StringArray `gorm:"type:text[]"`
 
-	CustomComplications pq.StringArray `gorm:"type:text[]"`
+	CustomComplications string
 
 	Anesthesia string
 
@@ -125,7 +126,7 @@ type SwallowedObject struct {
 
 	MitigatingFeatures pq.StringArray `gorm:"type:text[]"`
 
-	CustomMitigatingFeatures pq.StringArray `gorm:"type:text[]"`
+	CustomMitigatingFeatures string
 
 	NegativePoleDirection string
 
@@ -159,6 +160,16 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 	var swallowedObjects []SwallowedObject
 	for _, objectValue := range incidentRequest.SwallowedObjects {
 		object := objectValue
+
+		anteriorLongestLength := math.Round(*object.AnteriorLongestLength)
+		lateralLongestLength := math.Round(*object.LateralLongestLength)
+		posteriorLongestLength := math.Round(*object.PosteriorLongestLength)
+
+		object.AnteriorLongestLength = &anteriorLongestLength
+		object.LateralLongestLength = &lateralLongestLength
+		object.PosteriorLongestLength = &posteriorLongestLength
+
+
 		newObject := SwallowedObject{
 			ID:                       *object.ID,
 			IncidentID:               *incidentRequest.ID,
@@ -186,7 +197,7 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 			CustomBatteryType:        *object.CustomBatteryType,
 			BatteryImprintCode:       *object.BatteryImprintCode,
 			MitigatingFeatures:       pq.StringArray(object.MitigatingFeatures),
-			CustomMitigatingFeatures: pq.StringArray(object.CustomMitigatingFeatures),
+			CustomMitigatingFeatures: *object.CustomMitigatingFeatures,
 			NegativePoleDirection:    *object.NegativePoleDirection,
 			Honey:                    *object.Honey,
 			Sucralfate:               *object.Sucralfate,
@@ -202,7 +213,7 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 	}
 
 	newIncident := &ENTIncident{
-		///	CreatedAt:                  time.Now().Unix(),
+	    CreatedAt:                  time.Now().Unix(),
 		ID:                         *incidentRequest.ID,
 		EncryptedExpertID:          bytea,
 		Country:                    *incidentRequest.Country,
@@ -220,10 +231,10 @@ func CreateENTIncident(ctx context.Context, incidentRequestObject *models.ENTInc
 		EaseOfRemoval:              *incidentRequest.EaseOfRemoval,
 		WasIncidentLifeThreatening: *incidentRequest.WasIncidentLifeThreatening,
 		Symptoms:                   pq.StringArray(incidentRequest.Symptoms),
-		CustomSymptoms:             pq.StringArray(incidentRequest.CustomSymptoms),
+		CustomSymptoms:             *incidentRequest.CustomSymptoms,
 		SymptomSeverity:            *incidentRequest.SymptomSeverity,
 		Complications:              pq.StringArray(incidentRequest.Complications),
-		CustomComplications:        pq.StringArray(incidentRequest.CustomComplications),
+		CustomComplications:        *incidentRequest.CustomComplications,
 		Anesthesia:                 *incidentRequest.Anesthesia,
 		Prognosis:                  *incidentRequest.Prognosis,
 		HospitalStay:               *incidentRequest.HospitalStay,
@@ -279,6 +290,7 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 		for _, objectValue := range swallowedObjectsFromDB {
 
 			object := objectValue
+
 			newSwallowedObject := models.SwallowedObject{
 				ID:                       &object.ID,
 				IncidentID:               incident.ID,
@@ -290,7 +302,7 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 				CustomBatteryType:        &object.CustomBatteryType,
 				CustomMagnetType:         &object.CustomMagnetType,
 				CustomMaterial:           &object.CustomMaterial,
-				CustomMitigatingFeatures: convertPQToStringArray(object.CustomMitigatingFeatures),
+				CustomMitigatingFeatures: &object.CustomMitigatingFeatures,
 				DeviceType:               &object.DeviceType,
 				Honey:                    &object.Honey,
 				Imaging:                  &object.Imaging,
@@ -327,8 +339,8 @@ func GetENTIncidents(ctx context.Context, userID string) (*models.GetENTIncident
 			Anesthesia:                 &incident.Anesthesia,
 			Complications:              convertPQToStringArray(incident.Complications),
 			Country:                    &incident.Country,
-			CustomComplications:        convertPQToStringArray(incident.CustomComplications),
-			CustomSymptoms:             convertPQToStringArray(incident.CustomSymptoms),
+			CustomComplications:        &incident.CustomComplications,
+			CustomSymptoms:             &incident.CustomSymptoms,
 			DaysUntilRemoval:           &incident.DaysUntilRemoval,
 			DeviceType:                 &incident.DeviceType,
 			EaseOfRemoval:              &incident.EaseOfRemoval,
@@ -370,6 +382,15 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 	var swallowedObjects []SwallowedObject
 	for _, objectValue := range ENTIncidentRequest.SwallowedObjects {
 		object := objectValue
+
+		anteriorLongestLength := math.Round(*object.AnteriorLongestLength)
+		lateralLongestLength := math.Round(*object.LateralLongestLength)
+		posteriorLongestLength := math.Round(*object.PosteriorLongestLength)
+
+		object.AnteriorLongestLength = &anteriorLongestLength
+		object.LateralLongestLength = &lateralLongestLength
+		object.PosteriorLongestLength = &posteriorLongestLength
+
 		newObject := SwallowedObject{
 			ID:                       *object.ID,
 			IncidentID:               *ENTIncidentRequest.ID,
@@ -397,7 +418,7 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 			CustomBatteryType:        *object.CustomBatteryType,
 			BatteryImprintCode:       *object.BatteryImprintCode,
 			MitigatingFeatures:       pq.StringArray(object.MitigatingFeatures),
-			CustomMitigatingFeatures: pq.StringArray(object.CustomMitigatingFeatures),
+			CustomMitigatingFeatures: *object.CustomMitigatingFeatures,
 			NegativePoleDirection:    *object.NegativePoleDirection,
 			Honey:                    *object.Honey,
 			Sucralfate:               *object.Sucralfate,
@@ -430,33 +451,29 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 		EaseOfRemoval:              *ENTIncidentRequest.EaseOfRemoval,
 		WasIncidentLifeThreatening: *ENTIncidentRequest.WasIncidentLifeThreatening,
 		Symptoms:                   pq.StringArray(ENTIncidentRequest.Symptoms),
-		CustomSymptoms:             pq.StringArray(ENTIncidentRequest.CustomSymptoms),
+		CustomSymptoms:             *ENTIncidentRequest.CustomSymptoms,
 		SymptomSeverity:            *ENTIncidentRequest.SymptomSeverity,
 		Complications:              pq.StringArray(ENTIncidentRequest.Complications),
-		CustomComplications:        pq.StringArray(ENTIncidentRequest.CustomComplications),
+		CustomComplications:        *ENTIncidentRequest.CustomComplications,
 		Anesthesia:                 *ENTIncidentRequest.Anesthesia,
 		Prognosis:                  *ENTIncidentRequest.Prognosis,
 		HospitalStay:               *ENTIncidentRequest.HospitalStay,
 		DeviceType:                 *ENTIncidentRequest.DeviceType,
-		Validated:                  *ENTIncidentRequest.Validated,
 		Submitted:                  *ENTIncidentRequest.Submitted,
+		Validated:                  *ENTIncidentRequest.Validated,
 	}
 
-	err = db.Find(&ENTIncident{}, "id = ?", ENTIncidentRequest.ID).Updates(incident).Error
+	err = db.Find(&ENTIncident{}, "id = ?", ENTIncidentRequest.ID).Select("*").Updates(incident).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, false
 	} else if err != nil {
 		panic(err)
 	}
 
-// 	db.Clauses(clause.OnConflict{
-//   UpdateAll: true,
-// }).Create(&users)
-
 	for _, object := range swallowedObjects {
 		// object upsert
-		fmt.Println("this is object from swallowed object")
-		fmt.Println(render.Render(object))
+		// fmt.Println("this is object from swallowed object")
+		// fmt.Println(render.Render(object))
 		foundObject := &SwallowedObject{}
 		result := db.Find(foundObject, "id = ?", &object.ID)
 		// if err == gorm.ErrRecordNotFound {
@@ -464,8 +481,8 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 		// } else if err != nil {
 		// 	panic(err)
 		// }
-		fmt.Println("this is gorm found records count from upsert object")
-		fmt.Println(result.RowsAffected)
+		// fmt.Println("this is gorm found records count from upsert object")
+		// fmt.Println(result.RowsAffected)
 
 
 		
@@ -481,7 +498,7 @@ func UpdateENTIncident(ctx context.Context, ENTIncidentRequest models.ENTInciden
 
 
 		// object update
-		err = db.Find(&SwallowedObject{}, "id = ?", &object.ID).Updates(object).Error
+		err = db.Find(&SwallowedObject{}, "id = ?", &object.ID).Select("*").Updates(object).Error
 		if err == gorm.ErrRecordNotFound {
 			return nil, false
 		} else if err != nil {
