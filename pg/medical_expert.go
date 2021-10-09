@@ -151,6 +151,7 @@ func GetMedicalExpert(ctx context.Context, userID string) (*models.GetExpertResp
 	} else if err != nil {
 		panic(err)
 	}
+
 	return &models.GetExpertResponse{
 		ID:             &model.ID,
 		Name:           &model.Name,

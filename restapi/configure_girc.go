@@ -336,12 +336,20 @@ func configureAPI(api *operations.GircAPI) http.Handler {
 		ctx := context.Background()
 		tokenStr := params.Authorization
 		userID, ok := fba.VerifyToken(ctx, tokenStr)
+		appVersion := params.AppVersion
 		if !ok {
 			return medical_expert.NewGetExpertUnauthorized()
 		}
 		payload, ok := pg.GetMedicalExpert(ctx, userID)
 		if !ok {
-			return medical_expert.NewGetExpertNotFound()
+			switch semver.Compare(LatestAppleStoreApprovedAppVersion, appVersion) {
+			case -1:  
+				return middleware.Error(418, models.BadResponse{
+					Message: "I'm a teapot.",
+				})
+			default:  
+				return medical_expert.NewGetExpertNotFound()
+			}
 		}
 		response := medical_expert.NewGetExpertOK()
 		response.WithPayload(payload)

@@ -739,6 +739,13 @@ func init() {
             "name": "Authorization",
             "in": "header",
             "required": true
+          },
+          {
+            "type": "string",
+            "description": "App version from ios App",
+            "name": "App-Version",
+            "in": "header",
+            "required": true
           }
         ],
         "responses": {
@@ -2562,6 +2569,13 @@ func init() {
             "type": "string",
             "description": "if using google oauth, set that token here",
             "name": "Authorization",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "App version from ios App",
+            "name": "App-Version",
             "in": "header",
             "required": true
           }
