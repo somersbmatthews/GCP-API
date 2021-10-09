@@ -28,11 +28,6 @@ func init() {
 	}
 	postgrespassword = password
 	Open()
-	// TODO: add conn.Close for all other db := Open()
-	// ok := db.Migrator().HasTable(&User{})
-	// if !ok {
-	// 	_ = db.AutoMigrate(&User{})
-	// }
 	ok := db.Migrator().HasTable(&Incident{})
 	if !ok {
 		_ = db.AutoMigrate(&Incident{})
