@@ -3,6 +3,7 @@ package pg
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gircapp/api/emailer"
@@ -106,10 +107,11 @@ func CreateExpertNormally(ctx context.Context, expertRequestObject *models.Exper
 	    DirectorTokenIsLive: false,
 	}
 
+	emailAllLower := *expertRequestObject.Email
 
 
 	//	fmt.Println("create expert normally is running")
-	err := emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userID, *expertRequestObject.Name, *expertRequestObject.Expertise)
+	err := emailer.SendConfirmationEmailIfNotVerified(emailAllLower, userID, *expertRequestObject.Name, *expertRequestObject.Expertise)
 	if err != nil {
 		panic(err)
 	}
@@ -187,20 +189,21 @@ func UpdateMedicalExpert(ctx context.Context, expertRequestObject models.Expert,
 
 	// firstName := fullNameStrSlice[0]
 
+	emailAllLower := strings.ToLower(*expertRequestObject.Email)
 
-	if oldExpert.Email != *expertRequestObject.Email {
+	if oldExpert.Email != emailAllLower {
 		if oldExpert.DirectorVerified {
 			ok := SetEmailConfirmationJWTLive(userId)
 			if !ok {
 				return nil, false
 			}
-			emailer.SendConfirmationEmailIfVerified(*expertRequestObject.Email, *expertRequestObject.Expertise, *expertRequestObject.Name, userId)
+			emailer.SendConfirmationEmailIfVerified(emailAllLower, *expertRequestObject.Expertise, *expertRequestObject.Name, userId)
 		} else {
 			ok := SetEmailConfirmationJWTLive(userId)
 			if !ok {
 				return nil, false
 			}
-			emailer.SendConfirmationEmailIfNotVerified(*expertRequestObject.Email, userId, *expertRequestObject.Name, *expertRequestObject.Expertise)
+			emailer.SendConfirmationEmailIfNotVerified(emailAllLower, userId, *expertRequestObject.Name, *expertRequestObject.Expertise)
 		}
 	}
 
