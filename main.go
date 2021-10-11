@@ -100,7 +100,7 @@ func main() {
 
 		if !ok || len(keys[0]) < 1 {
 			log.Println("Url Param 'key' is missing")
-			return
+			w.WriteHeader(http.StatusBadRequest)
 		}
 
 		key := keys[0]
@@ -109,7 +109,7 @@ func main() {
 
 		email, userID, specialty, fullName, verified, err := emailer.DecodeJWTClaims(key)
 		if err != nil {
-			panic(err)
+			w.WriteHeader(http.StatusBadRequest)
 		}
 
 		
@@ -124,7 +124,7 @@ func main() {
 
 		_, ok = pg.ConfirmEmail(ctx, email, userID)
 		if !ok {
-			// TODO: handle cannot find expert here
+			w.WriteHeader(http.StatusBadRequest)
 		}
 
 		tmpl := template.Must(template.New("email-confirmation-thank-you").Parse(`<!DOCTYPE html>

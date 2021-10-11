@@ -95,9 +95,11 @@ func getGIRCAPPPassword() (string, error) {
 func makeEmailJWT(email string, userID string, specialty string, fullName string, verified string) (jwtValue string, err error) {
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
+
+	emailAllLower := strings.ToLower(email)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userID":    userID,
-		"email":     email,
+		"email":     emailAllLower,
 		"specialty": specialty,
 		"fullName":  fullName,
 		"verified":  verified,
