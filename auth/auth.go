@@ -16,11 +16,11 @@ var oldDataToken string
 var tokenSecret string
 
 func init() {
-	oldDataTokenValue, err := accessOldDataToken()
-	if err != nil {
-		panic(err)
-	}
-	oldDataToken = oldDataTokenValue
+	// oldDataTokenValue, err := accessOldDataToken()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// oldDataToken = oldDataTokenValue
 
 	// tokenSecretValue, err := accessTokenSecret()
 	// if err != nil {

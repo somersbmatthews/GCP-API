@@ -11,6 +11,7 @@ import (
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"github.com/gdexlab/go-render/render"
+	"github.com/gircapp/api/secret"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -21,8 +22,12 @@ var postgrespassword string
 var db *gorm.DB
 var Conn *sql.DB
 
+
+const databaseIP = "10.57.224.3"  // testing
+// const databaseIP = "10.88.176.3" // production
+
 func init() {
-	password, err := accessPostgresPassword()
+	password, err := secret.GetSecret("POSTGRESPASSWORD")
 	if err != nil {
 		panic(err)
 	}
@@ -93,7 +98,7 @@ func initSocketConnectionPool() (*sql.DB, error) {
 func initTCPConnectionPool() (*sql.DB, error) {
 	var (
 		dbUser    = "gorm"
-		dbTcpHost = "10.88.176.3" // for gcp
+		dbTcpHost = databaseIP // for gcp
 		// dbTcpHost = "127.0.0.1" // for local
 		dbPort = "5432"
 		dbName = "postgres"

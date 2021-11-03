@@ -1,14 +1,12 @@
 runtime: go115
 handlers:
-- url: /dashboard/templates
-  static_dir: dashboard/templates
+  - url: /dashboard/templates
+    static_dir: dashboard/templates
 
-- url: /swagger
-  static_dir: swagger
+  - url: /swagger
+    static_dir: swagger
 
-- url: /.*
-  script: auto
-
-
-vpc_access_connector:
-  name: "projects/gircapp/locations/us-central1/connectors/gircconnector"
+  - url: /.*
+    script: auto
+# vpc_access_connector:
+#   name: "projects/gircapp/locations/us-central1/connectors/gircconnector"

@@ -23,7 +23,7 @@ func init() {
 	}
 	emailPassword = emailPasswordSecret
 
-	jwtSecretSecret, err := getJWTSecret()
+	jwtSecretSecret, err := getJWTSecret() //TODO: at here
 	if err != nil {
 		panic(err)
 	}

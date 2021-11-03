@@ -8,6 +8,7 @@ import (
 	"log"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
+	"github.com/gircapp/api/secret"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
@@ -16,7 +17,7 @@ var encyptionKey string
 var iv = []byte("1234567812345679")
 
 func init() {
-	key, err := getEncryptionKey()
+	key, err := secret.GetSecret("ENCRYPTIONKEY")
 	if err != nil {
 		panic(err)
 	}
